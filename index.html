@@ -1,143 +1,149 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>three-vrm Safe Hello World</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Marionet - VRM Hello World</title>
     <style>
-        body {
-            margin: 0;
-            overflow: hidden;
-            background-color: #333333; /* Lighter background so you can see it working */
-        }
-        canvas {
-            display: block;
-            width: 100vw;
-            height: 100vh;
-        }
-        #loading {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            color: white;
-            font-family: sans-serif;
-            font-size: 18px;
-            background: rgba(0,0,0,0.7);
-            padding: 10px 20px;
-            border-radius: 5px;
-            pointer-events: none;
-        }
+      :root {
+        --bg-top: #0f172a;
+        --bg-bottom: #1f2937;
+        --text: #e5e7eb;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+        overflow: hidden;
+        background: linear-gradient(180deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
+        color: var(--text);
+        font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+      }
+
+      #app {
+        position: fixed;
+        inset: 0;
+      }
+
+      .label {
+        position: fixed;
+        top: 16px;
+        left: 16px;
+        padding: 10px 12px;
+        border-radius: 10px;
+        background: rgba(15, 23, 42, 0.7);
+        backdrop-filter: blur(6px);
+        font-size: 14px;
+        letter-spacing: 0.02em;
+      }
     </style>
-</head>
-<body>
-
-    <div id="loading">Loading VRM Model...</div>
-
-    <!-- Import maps polyfill -->
-    <script async src="https://unpkg.com/es-module-shims@1.6.3/dist/es-module-shims.js"></script>
+  </head>
+  <body>
+    <div id="app"></div>
+    <div class="label" id="status">marionet / loading avatar...</div>
 
     <script type="importmap">
       {
         "imports": {
-          "three": "https://unpkg.com/three@0.154.0/build/three.module.js",
-          "three/addons/": "https://unpkg.com/three@0.154.0/examples/jsm/",
-          "@pixiv/three-vrm": "https://unpkg.com/@pixiv/three-vrm@2.1.0/lib/three-vrm.module.js"
+          "three": "https://cdn.jsdelivr.net/npm/three@0.171.0/build/three.module.js",
+          "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.171.0/examples/jsm/",
+          "@pixiv/three-vrm": "https://cdn.jsdelivr.net/npm/@pixiv/three-vrm@3.4.2/lib/three-vrm.module.js"
         }
       }
     </script>
 
     <script type="module">
-        import * as THREE from 'three';
-        import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-        import { VRMLoaderPlugin, VRMUtils } from '@pixiv/three-vrm';
+      import * as THREE from "three";
+      import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+      import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+      import { VRMLoaderPlugin } from "@pixiv/three-vrm";
 
-        // --- 1. Basic Three.js Setup ---
-        const scene = new THREE.Scene();
-        
-        // Add a grid helper so you can see the 3D space immediately even if loading fails
-        const gridHelper = new THREE.GridHelper(10, 10);
-        scene.add(gridHelper);
+      const app = document.querySelector("#app");
+      const status = document.querySelector("#status");
 
-        const camera = new THREE.PerspectiveCamera(30.0, window.innerWidth / window.innerHeight, 0.1, 20.0);
-        camera.position.set(0.0, 1.4, 1.4);
+      const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.outputColorSpace = THREE.SRGBColorSpace;
+      app.append(renderer.domElement);
 
-        const renderer = new THREE.WebGLRenderer({ antialias: true });
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setPixelRatio(window.devicePixelRatio);
-        renderer.outputColorSpace = THREE.SRGBColorSpace;
-        document.body.appendChild(renderer.domElement);
+      const scene = new THREE.Scene();
 
-        const controls = new OrbitControls(camera, renderer.domElement);
-        controls.target.set(0.0, 1.3, 0.0);
-        controls.update();
+      const camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 0.1, 100);
+      camera.position.set(0, 1.45, 2.6);
 
-        // --- 2. Lighting ---
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-        scene.add(ambientLight);
+      const controls = new OrbitControls(camera, renderer.domElement);
+      controls.target.set(0, 1.25, 0);
+      controls.enablePan = false;
+      controls.enableDamping = true;
+      controls.minDistance = 1.3;
+      controls.maxDistance = 4;
 
-        const directionalLight = new THREE.DirectionalLight(0xffffff, Math.PI);
-        directionalLight.position.set(1.0, 1.0, 1.0).normalize();
-        scene.add(directionalLight);
+      const hemiLight = new THREE.HemisphereLight(0xffffff, 0x243047, 1.25);
+      hemiLight.position.set(0, 2, 0);
+      scene.add(hemiLight);
 
-        // --- 3. Load VRM Model ---
-        let currentVrm = null;
-        const loader = new GLTFLoader();
+      const dirLight = new THREE.DirectionalLight(0xffffff, 1.6);
+      dirLight.position.set(1.2, 2.4, 2.2);
+      scene.add(dirLight);
 
-        loader.register((parser) => {
-            return new VRMLoaderPlugin(parser);
-        });
+      const floor = new THREE.Mesh(
+        new THREE.CircleGeometry(2.8, 64),
+        new THREE.MeshStandardMaterial({ color: 0x0b1020, transparent: true, opacity: 0.7 })
+      );
+      floor.rotation.x = -Math.PI / 2;
+      floor.position.y = -0.01;
+      scene.add(floor);
 
-        // Official test VRM asset URL
-        const vrmUrl = 'https://pixiv.github.io/three-vrm/packages/three-vrm/examples/models/VRM1_Constraint_Twist_Sample.vrm';
+      const loader = new GLTFLoader();
+      loader.register((parser) => new VRMLoaderPlugin(parser));
 
-        loader.load(
-            vrmUrl,
-            (gltf) => {
-                const vrm = gltf.userData.vrm;
-                currentVrm = vrm;
+      const modelUrl =
+        "https://cdn.jsdelivr.net/gh/pixiv/three-vrm@release/packages/three-vrm/examples/models/VRM1_Constraint_Twist_Sample.vrm";
 
-                scene.add(vrm.scene);
-                VRMUtils.rotateVRM0(vrm); 
+      let vrm;
 
-                document.getElementById('loading').innerText = 'VRM Loaded Successfully! Use mouse to rotate.';
-                console.log('VRM Loaded:', vrm);
-            },
-            (progress) => {
-                const percentage = Math.round((progress.loaded / progress.total) * 100);
-                document.getElementById('loading').innerText = `Loading: ${percentage}%`;
-            },
-            (error) => {
-                document.getElementById('loading').style.color = '#ff4444';
-                document.getElementById('loading').innerText = 'Error loading VRM. Check browser console (F12).';
-                console.error(error);
-            }
-        );
+      loader.load(
+        modelUrl,
+        (gltf) => {
+          vrm = gltf.userData.vrm;
+          vrm.scene.rotation.y = Math.PI;
+          scene.add(vrm.scene);
+          status.textContent = "marionet / avatar loaded";
+        },
+        undefined,
+        (error) => {
+          console.error("Failed to load VRM model", error);
+          status.textContent = "marionet / failed to load avatar";
+        }
+      );
 
-        // --- 4. Animation Loop ---
-        const clock = new THREE.Clock();
+      const clock = new THREE.Clock();
+      const animate = () => {
+        requestAnimationFrame(animate);
 
-        function animate() {
-            requestAnimationFrame(animate);
-
-            const deltaTime = clock.getDelta();
-
-            // Safe update loop: only calls update if the instance actually exists
-            if (currentVrm) {
-                currentVrm.update(deltaTime);
-            }
-
-            renderer.render(scene, camera);
+        const delta = clock.getDelta();
+        if (vrm) {
+          vrm.update(delta);
+          vrm.scene.rotation.y += Math.sin(clock.elapsedTime * 0.6) * 0.0008;
         }
 
-        animate();
+        controls.update();
+        renderer.render(scene, camera);
+      };
 
-        // --- 5. Handle Window Resize ---
-        window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        });
+      animate();
+
+      window.addEventListener("resize", () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      });
     </script>
-</body>
+  </body>
 </html>
