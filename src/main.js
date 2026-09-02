@@ -7,6 +7,7 @@ import { applyClip, applyRestPose, loadVrm, sampleUrl, snapshotPose } from "./vr
 const $ = (id) => document.getElementById(id);
 
 const LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+const DEMO = new URLSearchParams(location.search).get("demo") === "1";
 
 const state = {
   vrm: null,
@@ -20,6 +21,52 @@ const state = {
 
 function setStatus(text) {
   $("status").textContent = text;
+}
+
+function setCaption(text) {
+  const el = $("caption");
+  if (el) el.textContent = text;
+}
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function waitClip() {
+  return new Promise((resolve) => {
+    const tick = () => {
+      if (!state.playing) resolve();
+      else requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  });
+}
+
+function playDesc(desc) {
+  state.clip = compileSignDesc(desc);
+  state.clipTime = 0;
+  state.playing = true;
+  showDesc(desc);
+  setStatus(`marionet / ${desc.id}`);
+}
+
+async function runReadmeDemo() {
+  document.body.classList.add("demo");
+  camera.position.set(0.12, 1.4, 1.9);
+  if (controls) controls.target.set(0.08, 1.25, 0);
+  const ily = await fetch("./data/signs/ase/i-love-you.json").then((r) => r.json());
+  const gato = await fetch("./data/signs/gsm/gato.json").then((r) => r.json());
+  window.marionet.demoReady = true;
+  for (;;) {
+    setCaption("ASL  ·  I-LOVE-YOU");
+    playDesc(ily);
+    await waitClip();
+    await sleep(500);
+    setCaption("LENSEGUA  ·  GATO");
+    playDesc(gato);
+    await waitClip();
+    await sleep(900);
+  }
 }
 
 function renderAlphabet() {
@@ -66,7 +113,7 @@ async function mountVrm(source, label) {
   scene.add(vrm.scene);
   state.vrm = vrm;
   setStatus(`marionet / ${label}`);
-  if (state.signs.has(state.letter)) selectLetter(state.letter);
+  if (!DEMO && state.signs.has(state.letter)) selectLetter(state.letter);
 }
 
 const app = $("app");
@@ -191,6 +238,7 @@ async function boot() {
     return;
   }
   await mountVrm(sampleUrl(), "sample avatar");
+  if (DEMO) await runReadmeDemo();
 }
 
 boot().catch((err) => {

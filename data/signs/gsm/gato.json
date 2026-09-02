@@ -1,0 +1,28 @@
+{
+  "schema": "marionet.signdesc/v0",
+  "id": "gsm/gato",
+  "language": "gsm",
+  "gloss": "GATO",
+  "spoken": ["gato", "cat"],
+  "handed": "1h",
+  "dominant": {
+    "handshape": "F",
+    "orientation": "palm-in",
+    "location": "cheek",
+    "movement": [{ "type": "whisker", "reps": 2 }]
+  },
+  "library": { "handshape": "F", "location": "cheek" },
+  "compileReady": true,
+  "notes": "Demo sketch, not a gold LENSEGUA lexicon row. No LENSEGUA dump is on the allowlist. Phonology follows the iconic F-hand whisker CAT (same major/minor location as ASL-LEX cat: F, Head, CheekNose). Replace when a licensed LENSEGUA source is ingested.",
+  "source": {
+    "dataset": "demo-sketch",
+    "alignedWith": "ase/asllex/cat",
+    "phonology": {
+      "Handshape.2.0": "f",
+      "MajorLocation.2.0": "Head",
+      "MinorLocation.2.0": "CheekNose",
+      "Movement.2.0": "Straight",
+      "SignType.2.0": "OneHanded"
+    }
+  }
+}

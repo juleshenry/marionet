@@ -47,6 +47,24 @@ function movementKeyframes(basePose, movements, side) {
     return { bones, duration: 1.05 };
   }
 
+  if (first.type === "present") {
+    const fwd = mergePoses(basePose, { [`${side}UpperArm`]: { x: -0.18, y: 0, z: 0 } });
+    apply(basePose, 0, 0.3);
+    apply(fwd, 0.65, 2.2);
+    return { bones, duration: 2.3 };
+  }
+
+  if (first.type === "whisker") {
+    const s = side === "right" ? 1 : -1;
+    const out = mergePoses(basePose, wristOffset(side, { y: -0.4 * s, x: 0.08 }));
+    apply(basePose, 0, 0.18);
+    apply(out, 0.38);
+    apply(basePose, 0.55);
+    apply(out, 0.78);
+    apply(basePose, 0.98, 1.2);
+    return { bones, duration: 1.25 };
+  }
+
   if (first.type === "trace" && first.path === "z") {
     const a = basePose;
     const b = mergePoses(basePose, wristOffset(side, { y: -0.55, x: 0.05 }));

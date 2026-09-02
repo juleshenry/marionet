@@ -115,6 +115,29 @@
         overflow: auto;
         max-height: 42vh;
       }
+
+      body.demo #hud {
+        display: none;
+      }
+
+      #caption {
+        display: none;
+        position: fixed;
+        left: 50%;
+        bottom: 28px;
+        transform: translateX(-50%);
+        padding: 10px 16px;
+        border-radius: 12px;
+        background: rgba(12, 16, 24, 0.78);
+        color: var(--text);
+        font-size: 18px;
+        letter-spacing: 0.04em;
+        white-space: nowrap;
+      }
+
+      body.demo #caption {
+        display: block;
+      }
     </style>
   </head>
   <body>
@@ -128,6 +151,7 @@
       <button id="replay" type="button">replay</button>
       <pre id="signdesc">{}</pre>
     </aside>
+    <div id="caption"></div>
     <script type="importmap">
       {
         "imports": {

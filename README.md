@@ -8,7 +8,11 @@ Sign language production systems typically either bake a particular signer into 
 
 Rather than regressing high-dimensional pose from text, Marionet compiles through a phonological intermediate representation (`SignDesc`) whose features — handshape, location, orientation, movement, and non-manuals — follow established sign phonology rather than a private latent. An expertise library of VRM-native primitives realizes those features as executable clips (`MarionetClip`). Learned models, when introduced, predict `SignDesc` and residual timing; they do not emit raw quaternions as a first language.
 
-This repository begins with the runtime and the compiler. The first lexicon is American Sign Language fingerspelling (A–Z) as a proof that parametric handshapes, a citation-form station, and two path movements (J, Z) can drive an arbitrary VRM. Isolated lexical signs, public-corpus retargeting, and multilingual dictionaries follow. Photoreal signer video (as in SignVIP) is a different task; Marionet’s claim is portability, inspectability, and phonology as a first-class object.
+This repository begins with the runtime, the compiler, and a licensed isolated lexicon. The first authored set is American Sign Language fingerspelling (A–Z). Lexical `SignDesc` rows come from ASL-LEX 2.0 (OSF, CC BY 4.0) and SignPuddle ASL notation (official SPML dump). Most sign languages (EVK and the rest) are not written down: **video is the corpus**, and the experiment is to emit Marionet syntax from those clips. Photoreal signer video is a different task; we do not train diffusion.
+
+![ASL I-LOVE-YOU, then LENSEGUA GATO](docs/demo.gif)
+
+Compiler demo: **ASL I-LOVE-YOU** (`["I","L","Y"]` simultaneous, ASL-LEX `I_love_you`) then **LENSEGUA GATO**. The cat sign is a citation-form *sketch* — F-hand, cheek, whisker stroke, aligned with ASL-LEX `cat` (F / Head / CheekNose) — because no LENSEGUA dump is on the allowlist yet. Replay with `http://localhost:8080/?demo=1`.
 
 ## This repository
 
@@ -20,6 +24,9 @@ This repository begins with the runtime and the compiler. The first lexicon is A
 | `src/compile.js` | `SignDesc` → `MarionetClip` |
 | `src/vrm.js` | Load, rest pose, apply clips |
 | `data/signs/ase/fingerspelling.json` | A–Z as `SignDesc` |
+| `data/signs/ase/asllex_signdesc.json` | ASL-LEX 2.0 → `SignDesc` (features only) |
+| `dataingestplan.md` | License gate, disk cap, dump-only ingest |
+| `paper/REGIME.md` | Research paper: video corpus → Marionet syntax |
 
 ```sh
 python3 -m http.server 8080
@@ -28,19 +35,62 @@ python3 -m http.server 8080
 
 Drop a `.vrm` onto the stage, or use the bundled sample. Type A–Z.
 
+## Video → Marionet syntax
+
+The experiment: a clip of a signer in, `MarionetClip` JSON out. That JSON is what the VRM player already plays. No Stable Diffusion, no AnimateDiff, no signer identity.
+
+```
+allowed isolated-sign video
+        → pose extract          (cloud GPU: DWPose + HaMeR)
+        → marionet.pose/v0      (landmarks / MANO — not mp4)
+        → geometric retarget
+        → MarionetClip          (bone euler tracks)
+        → drop onto index.html
+```
+
+SignVIP is the **pose tokenizer** standard (DWPose + HaMeR → discrete motion). We take that front-end and stop. Their diffusion decoder is irrelevant. `SignDesc` (`["I","L","Y"]`, location, movement) is a later head on the same pose tokens; v1 is playable clips from video.
+
+**Compute.** Mac = player, IR, compiler. Rented GPU = HaMeR/DWPose (one 48GB card, batch 1, isolated clips). MediaPipe is the local stand-in so the path exists before you rent a box.
+
+**Two files.** Pose JSON is the intermediate (`marionet.pose/v0`: fps, per-frame body + 21×2 hands, optional MANO). `MarionetClip` is the syntax (`marionet.clip/v0`, same schema `compile.js` already emits, `source: "retargeted"`). Keep videos and large pose dumps out of git.
+
+**CLI (to be added):**
+
+```sh
+python scripts/video_to_marionet.py clip.mp4 --backend mediapipe -o data/clips/out.json
+python scripts/video_to_marionet.py clip.mp4 --backend dwpose_hamer -o data/clips/out.json
+```
+
+Drop the JSON on the player the same way you drop a `.vrm`.
+
+For languages without a spreadsheet (Estonian Sign Language / EVK / `eso`, and most of the world), this is the lexicon: video you are allowed to pose-extract, then syntax. No SpreadTheSign scrape in the job script.
+
+The full experimental regime (supervision tiers, FSQ translator, E1–E5, metrics) is `paper/REGIME.md`.
+
 ## Data and licensing
 
-SpreadTheSign is a multilingual sign dictionary and a genuine research resource. It is **not** a scrape target. The European Sign Language Centre prohibits download and use of the videos without permission, including for research. SignCLIP obtained a license and still cannot redistribute the data. Internet Archive snapshots of the site do not confer a license, and using the Wayback Machine to bypass blocking is still unauthorized copying.
+Ingest follows `dataingestplan.md`. Official dumps only, 20 MB per file, no site mirrors, no SpreadTheSign, no Internet Archive as a licence.
 
-Marionet will request a research license (pose extraction only, no video redistribution, Deaf-led evaluation). Until that exists, training data is public isolated corpora (WLASL, ASL-LEX, and similarly licensed sets). No scraper for SpreadTheSign belongs in this repo.
+| Now | What |
+|---|---|
+| ASL-LEX 2.0 OSF `signdata.csv` | 2,723 signs → `data/signs/ase/asllex_signdesc.json` (CC BY 4.0 files) |
+| SignPuddle `sgn4.spml` | Gloss + FSW coverage; XML stays in gitignored `data/raw/` |
+| v0 library map | Only existing solver IDs (`A`–`Y`, `1`, `neutral-space`). Unmapped codes stay as source phonology. |
+
+462 ASL-LEX rows compile on today’s primitives (mapped handshape **and** Neutral location). The rest of the lexicon is data, not fake bone poses. Citations: `data/sources/CITATIONS.md`. Allowlist: `data/sources/allowlist.jsonl`.
+
+```sh
+python3 scripts/ingest_asllex.py
+python3 scripts/ingest_signpuddle.py
+```
 
 ## Status
 
 - [x] VRM player, custom avatar drop, arms-down rest pose
 - [x] `SignDesc` / `MarionetClip` v0
 - [x] ASL fingerspelling expertise-library proof
-- [ ] Location / orientation / movement catalogs beyond fingerspelling
-- [ ] MediaPipe video → clip retargeter
-- [ ] Isolated lexical signs from public corpora
-- [ ] Gloss → `SignDesc` model
-- [ ] Licensed SpreadTheSign pose slice, if granted
+- [x] License allowlist + ASL-LEX / SignPuddle dumps
+- [ ] Location / orientation / movement catalogs beyond fingerspelling (`5`, `open_b`, Head, …)
+- [ ] Video → pose → `MarionetClip` (MediaPipe local, DWPose+HaMeR on rented GPU)
+- [ ] Pose tokens → `SignDesc` translator (no diffusion)
+- [ ] Player: drop a retargeted `.json` clip

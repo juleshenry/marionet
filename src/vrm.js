@@ -2,7 +2,7 @@ import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { VRMLoaderPlugin, VRMUtils } from "@pixiv/three-vrm";
 
-const REST_ARM = Math.PI * 0.33;
+const REST_ARM = Math.PI * 0.47;
 
 const SAMPLE_VRM =
   "https://cdn.jsdelivr.net/gh/pixiv/three-vrm@release/packages/three-vrm/examples/models/VRM1_Constraint_Twist_Sample.vrm";

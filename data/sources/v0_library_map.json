@@ -1,0 +1,33 @@
+{
+  "comment": "Map ASL-LEX 2.0 codes onto Marionet v0 solver IDs only when the primitive already exists. Unmapped codes stay as source phonology — do not invent solver IDs.",
+  "handshape": {
+    "a": "A",
+    "s": "S",
+    "c": "C",
+    "f": "F",
+    "o": "O",
+    "h": "H",
+    "v": "V",
+    "y": "Y",
+    "l": "L",
+    "g": "G",
+    "r": "R",
+    "i": "I",
+    "d": "D",
+    "e": "E",
+    "w": "W",
+    "1": "1",
+    "ily": ["I", "L", "Y"]
+  },
+  "majorLocation": {
+    "Neutral": "neutral-space"
+  },
+  "signType": {
+    "OneHanded": "1h",
+    "SymmetricalOrAlternating": "2h-symmetric",
+    "AsymmetricalDifferentHandshape": "2h-asymmetric",
+    "AsymmetricalSameHandshape": "2h-asymmetric",
+    "DominanceViolation": "2h-asymmetric",
+    "SymmetryViolation": "2h-symmetric"
+  }
+}

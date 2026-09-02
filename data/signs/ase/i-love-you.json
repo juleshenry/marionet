@@ -1,0 +1,27 @@
+{
+  "schema": "marionet.signdesc/v0",
+  "id": "ase/i-love-you",
+  "language": "ase",
+  "gloss": "I-LOVE-YOU",
+  "spoken": ["I love you"],
+  "handed": "1h",
+  "dominant": {
+    "handshape": ["I", "L", "Y"],
+    "orientation": "palm-out",
+    "location": "chest-front",
+    "movement": [{ "type": "present" }]
+  },
+  "library": { "handshape": ["I", "L", "Y"], "location": "chest-front" },
+  "compileReady": true,
+  "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "I_love_you",
+    "phonology": {
+      "Handshape.2.0": "ily",
+      "MajorLocation.2.0": "Neutral",
+      "MinorLocation.2.0": "Neutral",
+      "Movement.2.0": "Straight",
+      "SignType.2.0": "OneHanded"
+    }
+  }
+}

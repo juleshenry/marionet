@@ -5,6 +5,7 @@ export const CLIP_SCHEMA = "marionet.clip/v0";
 
 export const LANGUAGES = Object.freeze({
   ase: "American Sign Language",
+  gsm: "Guatemalan Sign Language (LENSEGUA)",
 });
 
 export const HANDED = Object.freeze(["1h", "2h-symmetric", "2h-asymmetric", "2h-alternating"]);
@@ -17,7 +18,16 @@ export const ORIENTATIONS = Object.freeze([
   "palm-side",
 ]);
 
-export const LOCATIONS = Object.freeze(["rest", "fs-station", "neutral-space", "neutral-space-high"]);
+export const LOCATIONS = Object.freeze([
+  "rest",
+  "fs-station",
+  "neutral-space",
+  "neutral-space-high",
+  "chest-front",
+  "cheek",
+]);
+
+/** Solver catalogs. Lexicon rows may use unmapped ASL-LEX codes; only these compile. */
 
 const isObj = (v) => v !== null && typeof v === "object" && !Array.isArray(v);
 
@@ -40,19 +50,32 @@ export function validateSignDesc(desc) {
   return errors;
 }
 
+function isHandshapeRef(v) {
+  if (typeof v === "string" && v) return true;
+  return Array.isArray(v) && v.length > 0 && v.every((id) => typeof id === "string" && id);
+}
+
 function validateArticulator(art, label, errors) {
-  if (typeof art.handshape !== "string" || !art.handshape) {
-    errors.push(`${label}.handshape required`);
+  if (!isHandshapeRef(art.handshape)) {
+    errors.push(`${label}.handshape must be a primitive id or a list of simultaneous primitives`);
   }
   if (art.orientation && !ORIENTATIONS.includes(art.orientation)) {
     errors.push(`${label}.orientation unknown: ${art.orientation}`);
   }
-  if (art.location && !LOCATIONS.includes(art.location)) {
-    errors.push(`${label}.location unknown: ${art.location}`);
+  if (art.location != null && typeof art.location !== "string") {
+    errors.push(`${label}.location must be a string`);
   }
   if (art.movement != null && !Array.isArray(art.movement)) {
     errors.push(`${label}.movement must be an array`);
   }
+}
+
+export function isCompilable(desc) {
+  if (typeof desc?.compileReady === "boolean") return desc.compileReady;
+  const lib = desc?.library;
+  if (lib) return Boolean(lib.handshape && lib.location && LOCATIONS.includes(lib.location));
+  const art = desc?.dominant;
+  return Boolean(art?.handshape && art?.location && LOCATIONS.includes(art.location));
 }
 
 export function validateClip(clip) {

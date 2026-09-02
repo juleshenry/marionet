@@ -154,12 +154,45 @@ function curlJoints(curl, profile) {
 }
 
 /**
- * Solve a named handshape into local Euler offsets for one hand.
+ * Simultaneous handshapes: most-extended finger wins, thumb abduction
+ * wins over opposition. I+L+Y is I-LOVE-YOU; I+Y is horns.
+ */
+export function composeHandshapes(ids) {
+  const specs = ids.map((id) => {
+    const shape = HANDSHAPES[id];
+    if (!shape) throw new Error(`unknown handshape: ${id}`);
+    return shape;
+  });
+  const fingerKeys = ["index", "middle", "ring", "little"];
+  const fingers = {};
+  for (const key of fingerKeys) {
+    fingers[key] = Math.min(...specs.map((s) => s.fingers[key]));
+  }
+  fingers.spread = Math.max(...specs.map((s) => s.fingers.spread));
+  return {
+    id: ids.join("+"),
+    fingers,
+    thumb: {
+      curl: Math.min(...specs.map((s) => s.thumb.curl)),
+      opposition: Math.min(...specs.map((s) => s.thumb.opposition)),
+      abduction: Math.max(...specs.map((s) => s.thumb.abduction)),
+    },
+  };
+}
+
+function shapeSpec(shapeId) {
+  if (Array.isArray(shapeId)) return composeHandshapes(shapeId);
+  const shape = HANDSHAPES[shapeId];
+  if (!shape) throw new Error(`unknown handshape: ${shapeId}`);
+  return shape;
+}
+
+/**
+ * Solve a named handshape, or a simultaneous list of them, into local Euler offsets.
  * `side` is "left" or "right". Right is the default dominant hand.
  */
 export function solveHandshape(shapeId, side = "right") {
-  const shape = HANDSHAPES[shapeId];
-  if (!shape) throw new Error(`unknown handshape: ${shapeId}`);
+  const shape = shapeSpec(shapeId);
 
   const pose = {};
   const prefix = side;
@@ -209,10 +242,10 @@ export function solveLocation(locationId, side = "right") {
 
   if (locationId === "fs-station" || locationId === "neutral-space-high") {
     return {
-      [`${side}Shoulder`]: euler(0.08, 0.1 * s, 0.12 * s),
-      [`${side}UpperArm`]: euler(-0.35, 0.45 * s, 0.85 * s),
-      [`${side}LowerArm`]: euler(0.15, 1.35 * s, 0.1 * s),
-      [`${side}Hand`]: euler(-0.2, 0.2 * s, 0.05 * s),
+      [`${side}Shoulder`]: euler(0.06, 0.08 * s, 0.05 * s),
+      [`${side}UpperArm`]: euler(-0.95, 0.12 * s, -0.35 * s),
+      [`${side}LowerArm`]: euler(0.2, 1.45 * s, 0.05 * s),
+      [`${side}Hand`]: euler(-0.15, 0.25 * s, 0.08 * s),
     };
   }
 
@@ -222,6 +255,24 @@ export function solveLocation(locationId, side = "right") {
       [`${side}UpperArm`]: euler(0.75, 0.18 * s, 0.12 * s),
       [`${side}LowerArm`]: euler(0.35, 0.9 * s, 0.05 * s),
       [`${side}Hand`]: euler(0.1, 0.05 * s, 0),
+    };
+  }
+
+  if (locationId === "chest-front") {
+    return {
+      [`${side}Shoulder`]: euler(0.05, 0.1 * s, 0.08 * s),
+      [`${side}UpperArm`]: euler(-0.55, 0.22 * s, -0.15 * s),
+      [`${side}LowerArm`]: euler(0.12, 1.05 * s, 0.05 * s),
+      [`${side}Hand`]: euler(0.35, 0.75 * s, 0.12 * s),
+    };
+  }
+
+  if (locationId === "cheek") {
+    return {
+      [`${side}Shoulder`]: euler(0.06, 0.08 * s, 0.05 * s),
+      [`${side}UpperArm`]: euler(-0.95, 0.12 * s, -0.35 * s),
+      [`${side}LowerArm`]: euler(0.2, 1.45 * s, 0.05 * s),
+      [`${side}Hand`]: euler(0.55, -0.35 * s, 0.25 * s),
     };
   }
 
