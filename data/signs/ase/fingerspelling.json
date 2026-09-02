@@ -1,0 +1,276 @@
+{
+  "language": "ase",
+  "inventory": "ASL fingerspelling A–Z",
+  "signs": [
+    {
+      "schema": "marionet.signdesc/v0",
+      "id": "ase/fs/A",
+      "language": "ase",
+      "gloss": "FS:A",
+      "spoken": ["A"],
+      "handed": "1h",
+      "dominant": { "handshape": "A", "orientation": "palm-out", "location": "fs-station", "movement": [] },
+      "nmf": { "eyebrows": "neutral", "mouth": "neutral", "eyegaze": "hand" }
+    },
+    {
+      "schema": "marionet.signdesc/v0",
+      "id": "ase/fs/B",
+      "language": "ase",
+      "gloss": "FS:B",
+      "spoken": ["B"],
+      "handed": "1h",
+      "dominant": { "handshape": "B", "orientation": "palm-out", "location": "fs-station", "movement": [] },
+      "nmf": { "eyebrows": "neutral", "mouth": "neutral", "eyegaze": "hand" }
+    },
+    {
+      "schema": "marionet.signdesc/v0",
+      "id": "ase/fs/C",
+      "language": "ase",
+      "gloss": "FS:C",
+      "spoken": ["C"],
+      "handed": "1h",
+      "dominant": { "handshape": "C", "orientation": "palm-out", "location": "fs-station", "movement": [] },
+      "nmf": { "eyebrows": "neutral", "mouth": "neutral", "eyegaze": "hand" }
+    },
+    {
+      "schema": "marionet.signdesc/v0",
+      "id": "ase/fs/D",
+      "language": "ase",
+      "gloss": "FS:D",
+      "spoken": ["D"],
+      "handed": "1h",
+      "dominant": { "handshape": "D", "orientation": "palm-out", "location": "fs-station", "movement": [] },
+      "nmf": { "eyebrows": "neutral", "mouth": "neutral", "eyegaze": "hand" }
+    },
+    {
+      "schema": "marionet.signdesc/v0",
+      "id": "ase/fs/E",
+      "language": "ase",
+      "gloss": "FS:E",
+      "spoken": ["E"],
+      "handed": "1h",
+      "dominant": { "handshape": "E", "orientation": "palm-out", "location": "fs-station", "movement": [] },
+      "nmf": { "eyebrows": "neutral", "mouth": "neutral", "eyegaze": "hand" }
+    },
+    {
+      "schema": "marionet.signdesc/v0",
+      "id": "ase/fs/F",
+      "language": "ase",
+      "gloss": "FS:F",
+      "spoken": ["F"],
+      "handed": "1h",
+      "dominant": { "handshape": "F", "orientation": "palm-out", "location": "fs-station", "movement": [] },
+      "nmf": { "eyebrows": "neutral", "mouth": "neutral", "eyegaze": "hand" }
+    },
+    {
+      "schema": "marionet.signdesc/v0",
+      "id": "ase/fs/G",
+      "language": "ase",
+      "gloss": "FS:G",
+      "spoken": ["G"],
+      "handed": "1h",
+      "dominant": { "handshape": "G", "orientation": "palm-side", "location": "fs-station", "movement": [] },
+      "nmf": { "eyebrows": "neutral", "mouth": "neutral", "eyegaze": "hand" }
+    },
+    {
+      "schema": "marionet.signdesc/v0",
+      "id": "ase/fs/H",
+      "language": "ase",
+      "gloss": "FS:H",
+      "spoken": ["H"],
+      "handed": "1h",
+      "dominant": { "handshape": "H", "orientation": "palm-side", "location": "fs-station", "movement": [] },
+      "nmf": { "eyebrows": "neutral", "mouth": "neutral", "eyegaze": "hand" }
+    },
+    {
+      "schema": "marionet.signdesc/v0",
+      "id": "ase/fs/I",
+      "language": "ase",
+      "gloss": "FS:I",
+      "spoken": ["I"],
+      "handed": "1h",
+      "dominant": { "handshape": "I", "orientation": "palm-out", "location": "fs-station", "movement": [] },
+      "nmf": { "eyebrows": "neutral", "mouth": "neutral", "eyegaze": "hand" }
+    },
+    {
+      "schema": "marionet.signdesc/v0",
+      "id": "ase/fs/J",
+      "language": "ase",
+      "gloss": "FS:J",
+      "spoken": ["J"],
+      "handed": "1h",
+      "dominant": {
+        "handshape": "I",
+        "orientation": "palm-out",
+        "location": "fs-station",
+        "movement": [{ "type": "hook", "path": "j" }]
+      },
+      "nmf": { "eyebrows": "neutral", "mouth": "neutral", "eyegaze": "hand" }
+    },
+    {
+      "schema": "marionet.signdesc/v0",
+      "id": "ase/fs/K",
+      "language": "ase",
+      "gloss": "FS:K",
+      "spoken": ["K"],
+      "handed": "1h",
+      "dominant": { "handshape": "K", "orientation": "palm-out", "location": "fs-station", "movement": [] },
+      "nmf": { "eyebrows": "neutral", "mouth": "neutral", "eyegaze": "hand" }
+    },
+    {
+      "schema": "marionet.signdesc/v0",
+      "id": "ase/fs/L",
+      "language": "ase",
+      "gloss": "FS:L",
+      "spoken": ["L"],
+      "handed": "1h",
+      "dominant": { "handshape": "L", "orientation": "palm-out", "location": "fs-station", "movement": [] },
+      "nmf": { "eyebrows": "neutral", "mouth": "neutral", "eyegaze": "hand" }
+    },
+    {
+      "schema": "marionet.signdesc/v0",
+      "id": "ase/fs/M",
+      "language": "ase",
+      "gloss": "FS:M",
+      "spoken": ["M"],
+      "handed": "1h",
+      "dominant": { "handshape": "M", "orientation": "palm-out", "location": "fs-station", "movement": [] },
+      "nmf": { "eyebrows": "neutral", "mouth": "neutral", "eyegaze": "hand" }
+    },
+    {
+      "schema": "marionet.signdesc/v0",
+      "id": "ase/fs/N",
+      "language": "ase",
+      "gloss": "FS:N",
+      "spoken": ["N"],
+      "handed": "1h",
+      "dominant": { "handshape": "N", "orientation": "palm-out", "location": "fs-station", "movement": [] },
+      "nmf": { "eyebrows": "neutral", "mouth": "neutral", "eyegaze": "hand" }
+    },
+    {
+      "schema": "marionet.signdesc/v0",
+      "id": "ase/fs/O",
+      "language": "ase",
+      "gloss": "FS:O",
+      "spoken": ["O"],
+      "handed": "1h",
+      "dominant": { "handshape": "O", "orientation": "palm-out", "location": "fs-station", "movement": [] },
+      "nmf": { "eyebrows": "neutral", "mouth": "neutral", "eyegaze": "hand" }
+    },
+    {
+      "schema": "marionet.signdesc/v0",
+      "id": "ase/fs/P",
+      "language": "ase",
+      "gloss": "FS:P",
+      "spoken": ["P"],
+      "handed": "1h",
+      "dominant": { "handshape": "K", "orientation": "palm-down", "location": "fs-station", "movement": [] },
+      "nmf": { "eyebrows": "neutral", "mouth": "neutral", "eyegaze": "hand" }
+    },
+    {
+      "schema": "marionet.signdesc/v0",
+      "id": "ase/fs/Q",
+      "language": "ase",
+      "gloss": "FS:Q",
+      "spoken": ["Q"],
+      "handed": "1h",
+      "dominant": { "handshape": "G", "orientation": "palm-down", "location": "fs-station", "movement": [] },
+      "nmf": { "eyebrows": "neutral", "mouth": "neutral", "eyegaze": "hand" }
+    },
+    {
+      "schema": "marionet.signdesc/v0",
+      "id": "ase/fs/R",
+      "language": "ase",
+      "gloss": "FS:R",
+      "spoken": ["R"],
+      "handed": "1h",
+      "dominant": { "handshape": "R", "orientation": "palm-out", "location": "fs-station", "movement": [] },
+      "nmf": { "eyebrows": "neutral", "mouth": "neutral", "eyegaze": "hand" }
+    },
+    {
+      "schema": "marionet.signdesc/v0",
+      "id": "ase/fs/S",
+      "language": "ase",
+      "gloss": "FS:S",
+      "spoken": ["S"],
+      "handed": "1h",
+      "dominant": { "handshape": "S", "orientation": "palm-out", "location": "fs-station", "movement": [] },
+      "nmf": { "eyebrows": "neutral", "mouth": "neutral", "eyegaze": "hand" }
+    },
+    {
+      "schema": "marionet.signdesc/v0",
+      "id": "ase/fs/T",
+      "language": "ase",
+      "gloss": "FS:T",
+      "spoken": ["T"],
+      "handed": "1h",
+      "dominant": { "handshape": "T", "orientation": "palm-out", "location": "fs-station", "movement": [] },
+      "nmf": { "eyebrows": "neutral", "mouth": "neutral", "eyegaze": "hand" }
+    },
+    {
+      "schema": "marionet.signdesc/v0",
+      "id": "ase/fs/U",
+      "language": "ase",
+      "gloss": "FS:U",
+      "spoken": ["U"],
+      "handed": "1h",
+      "dominant": { "handshape": "U", "orientation": "palm-out", "location": "fs-station", "movement": [] },
+      "nmf": { "eyebrows": "neutral", "mouth": "neutral", "eyegaze": "hand" }
+    },
+    {
+      "schema": "marionet.signdesc/v0",
+      "id": "ase/fs/V",
+      "language": "ase",
+      "gloss": "FS:V",
+      "spoken": ["V"],
+      "handed": "1h",
+      "dominant": { "handshape": "V", "orientation": "palm-out", "location": "fs-station", "movement": [] },
+      "nmf": { "eyebrows": "neutral", "mouth": "neutral", "eyegaze": "hand" }
+    },
+    {
+      "schema": "marionet.signdesc/v0",
+      "id": "ase/fs/W",
+      "language": "ase",
+      "gloss": "FS:W",
+      "spoken": ["W"],
+      "handed": "1h",
+      "dominant": { "handshape": "W", "orientation": "palm-out", "location": "fs-station", "movement": [] },
+      "nmf": { "eyebrows": "neutral", "mouth": "neutral", "eyegaze": "hand" }
+    },
+    {
+      "schema": "marionet.signdesc/v0",
+      "id": "ase/fs/X",
+      "language": "ase",
+      "gloss": "FS:X",
+      "spoken": ["X"],
+      "handed": "1h",
+      "dominant": { "handshape": "X", "orientation": "palm-out", "location": "fs-station", "movement": [] },
+      "nmf": { "eyebrows": "neutral", "mouth": "neutral", "eyegaze": "hand" }
+    },
+    {
+      "schema": "marionet.signdesc/v0",
+      "id": "ase/fs/Y",
+      "language": "ase",
+      "gloss": "FS:Y",
+      "spoken": ["Y"],
+      "handed": "1h",
+      "dominant": { "handshape": "Y", "orientation": "palm-out", "location": "fs-station", "movement": [] },
+      "nmf": { "eyebrows": "neutral", "mouth": "neutral", "eyegaze": "hand" }
+    },
+    {
+      "schema": "marionet.signdesc/v0",
+      "id": "ase/fs/Z",
+      "language": "ase",
+      "gloss": "FS:Z",
+      "spoken": ["Z"],
+      "handed": "1h",
+      "dominant": {
+        "handshape": "1",
+        "orientation": "palm-out",
+        "location": "fs-station",
+        "movement": [{ "type": "trace", "path": "z" }]
+      },
+      "nmf": { "eyebrows": "neutral", "mouth": "neutral", "eyegaze": "hand" }
+    }
+  ]
+}
