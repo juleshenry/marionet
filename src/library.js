@@ -259,20 +259,22 @@ export function solveLocation(locationId, side = "right") {
   }
 
   if (locationId === "chest-front") {
+    // Hold out from the sternum so the hand reads in front of the torso, not buried in it.
     return {
-      [`${side}Shoulder`]: euler(0.05, 0.1 * s, 0.08 * s),
-      [`${side}UpperArm`]: euler(-0.55, 0.22 * s, -0.15 * s),
-      [`${side}LowerArm`]: euler(0.12, 1.05 * s, 0.05 * s),
-      [`${side}Hand`]: euler(0.35, 0.75 * s, 0.12 * s),
+      [`${side}Shoulder`]: euler(0.08, 0.14 * s, 0.1 * s),
+      [`${side}UpperArm`]: euler(-0.72, 0.35 * s, -0.28 * s),
+      [`${side}LowerArm`]: euler(0.05, 1.15 * s, 0.08 * s),
+      [`${side}Hand`]: euler(0.2, 0.55 * s, 0.05 * s),
     };
   }
 
+  // Citation-form cheek/nose: ipsilateral hand beside the face (near head height).
   if (locationId === "cheek") {
     return {
-      [`${side}Shoulder`]: euler(0.06, 0.08 * s, 0.05 * s),
-      [`${side}UpperArm`]: euler(-0.95, 0.12 * s, -0.35 * s),
-      [`${side}LowerArm`]: euler(0.2, 1.45 * s, 0.05 * s),
-      [`${side}Hand`]: euler(0.55, -0.35 * s, 0.25 * s),
+      [`${side}Shoulder`]: euler(0.1, 0.12 * s, 0.1 * s),
+      [`${side}UpperArm`]: euler(-1.0, 0.05 * s, -0.5 * s),
+      [`${side}LowerArm`]: euler(0.1, 2.1 * s, 0.1 * s),
+      [`${side}Hand`]: euler(0.25, -0.2 * s, 0.25 * s),
     };
   }
 

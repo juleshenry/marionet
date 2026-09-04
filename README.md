@@ -10,9 +10,16 @@ Rather than regressing high-dimensional pose from text, Marionet compiles throug
 
 This repository begins with the runtime, the compiler, and a licensed isolated lexicon. The first authored set is American Sign Language fingerspelling (A–Z). Lexical `SignDesc` rows come from ASL-LEX 2.0 (OSF, CC BY 4.0) and SignPuddle ASL notation (official SPML dump). Most sign languages (EVK and the rest) are not written down: **video is the corpus**, and the experiment is to emit Marionet syntax from those clips. Photoreal signer video is a different task; we do not train diffusion.
 
-![ASL I-LOVE-YOU, then LENSEGUA GATO](docs/demo.gif)
+![ASL I-LOVE-YOU](docs/demo-ily.gif)
 
-Compiler demo: **ASL I-LOVE-YOU** (`["I","L","Y"]` simultaneous, ASL-LEX `I_love_you`) then **LENSEGUA GATO**. The cat sign is a citation-form *sketch* — F-hand, cheek, whisker stroke, aligned with ASL-LEX `cat` (F / Head / CheekNose) — because no LENSEGUA dump is on the allowlist yet. Replay with `http://localhost:8080/?demo=1`.
+![LENSEGUA GATO](docs/demo-gato.gif)
+
+Compiler demos (separate clips):
+
+- **ASL I-LOVE-YOU** — `["I","L","Y"]` simultaneous at chest-front (ASL-LEX `I_love_you`). Replay: `http://localhost:8080/?demo=ily`
+- **LENSEGUA GATO** — citation-form *sketch*: F-hand, cheek, whisker stroke, aligned with ASL-LEX `cat` (F / Head / CheekNose). No LENSEGUA dump is on the allowlist yet. Replay: `http://localhost:8080/?demo=gato`
+
+Loop both with `http://localhost:8080/?demo=1`.
 
 ## This repository
 

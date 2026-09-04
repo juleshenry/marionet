@@ -107,6 +107,7 @@ function sampleTrack(keys, time) {
 
 /**
  * Apply a MarionetClip at time `t` as Euler offsets on top of a rest snapshot.
+ * Re-sync quaternion after euler writes so humanoid.update() cannot ignore them.
  */
 export function applyClip(vrm, clip, rest, t) {
   restorePose(vrm, rest);
@@ -118,6 +119,7 @@ export function applyClip(vrm, clip, rest, t) {
     node.rotation.x += x;
     node.rotation.y += y;
     node.rotation.z += z;
+    node.quaternion.setFromEuler(node.rotation);
   }
 }
 

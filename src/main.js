@@ -2,12 +2,15 @@ import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { compileSignDesc } from "./compile.js";
 import { validateSignDesc } from "./ir.js";
-import { applyClip, applyRestPose, loadVrm, sampleUrl, snapshotPose } from "./vrm.js";
+import { applyClip, applyRestPose, loadVrm, restorePose, sampleUrl, snapshotPose } from "./vrm.js";
 
 const $ = (id) => document.getElementById(id);
 
 const LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
-const DEMO = new URLSearchParams(location.search).get("demo") === "1";
+const params = new URLSearchParams(location.search);
+const DEMO_MODE = (params.get("demo") || "").toLowerCase(); // "1" | "ily" | "gato"
+const DEMO = DEMO_MODE === "1" || DEMO_MODE === "ily" || DEMO_MODE === "gato";
+const DEMO_ONCE = params.get("once") === "1" || DEMO_MODE === "ily" || DEMO_MODE === "gato";
 
 const state = {
   vrm: null,
@@ -50,23 +53,42 @@ function playDesc(desc) {
   setStatus(`marionet / ${desc.id}`);
 }
 
+function frameDemoCamera() {
+  camera.position.set(0.55, 1.42, 1.35);
+  if (controls) {
+    controls.target.set(0.02, 1.28, 0.05);
+    controls.update();
+  }
+}
+
 async function runReadmeDemo() {
   document.body.classList.add("demo");
-  camera.position.set(0.12, 1.4, 1.9);
-  if (controls) controls.target.set(0.08, 1.25, 0);
+  frameDemoCamera();
   const ily = await fetch("./data/signs/ase/i-love-you.json").then((r) => r.json());
   const gato = await fetch("./data/signs/gsm/gato.json").then((r) => r.json());
+  const sequence =
+    DEMO_MODE === "ily" ? [{ caption: "ASL  ·  I-LOVE-YOU", desc: ily }]
+    : DEMO_MODE === "gato" ? [{ caption: "LENSEGUA  ·  GATO", desc: gato }]
+    : [
+        { caption: "ASL  ·  I-LOVE-YOU", desc: ily },
+        { caption: "LENSEGUA  ·  GATO", desc: gato },
+      ];
+
   window.marionet.demoReady = true;
-  for (;;) {
-    setCaption("ASL  ·  I-LOVE-YOU");
-    playDesc(ily);
-    await waitClip();
-    await sleep(500);
-    setCaption("LENSEGUA  ·  GATO");
-    playDesc(gato);
-    await waitClip();
-    await sleep(900);
-  }
+  do {
+    for (const step of sequence) {
+      // Brief rest so the next rise-from-rest is visible and clips do not hard-cut.
+      if (state.vrm && state.rest) restorePose(state.vrm, state.rest);
+      state.clip = null;
+      state.playing = false;
+      await sleep(280);
+      setCaption(step.caption);
+      playDesc(step.desc);
+      await waitClip();
+      await sleep(DEMO_ONCE ? 700 : 450);
+    }
+  } while (!DEMO_ONCE);
+  window.marionet.demoDone = true;
 }
 
 function renderAlphabet() {
@@ -160,12 +182,15 @@ function animate() {
   if (!renderer) return;
   const delta = clock.getDelta();
   if (state.vrm) {
-    if (state.clip && state.playing) {
-      state.clipTime += delta;
-      if (state.clipTime > state.clip.duration) {
-        state.clipTime = state.clip.duration;
-        state.playing = false;
+    if (state.clip) {
+      if (state.playing) {
+        state.clipTime += delta;
+        if (state.clipTime > state.clip.duration) {
+          state.clipTime = state.clip.duration;
+          state.playing = false;
+        }
       }
+      // Keep applying the held frame after the clip ends (avoids snap-back to rest).
       applyClip(state.vrm, state.clip, state.rest, state.clipTime);
     }
     state.vrm.update(delta);
@@ -214,6 +239,9 @@ document.addEventListener("drop", onDrop);
 
 $("replay").addEventListener("click", () => selectLetter(state.letter));
 window.marionet = state;
+window.marionet.camera = camera;
+window.marionet.controls = controls;
+window.marionet.frameDemoCamera = frameDemoCamera;
 
 async function boot() {
   renderAlphabet();
