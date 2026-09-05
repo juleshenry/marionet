@@ -54,10 +54,14 @@ function playDesc(desc) {
 }
 
 function frameDemoCamera() {
-  camera.position.set(0.55, 1.42, 1.35);
+  // Straight-on upper body — no 3/4 “looking past you” angle.
+  camera.position.set(0, 1.35, 1.85);
   if (controls) {
-    controls.target.set(0.02, 1.28, 0.05);
+    controls.target.set(0, 1.28, 0);
     controls.update();
+  }
+  if (state.vrm?.lookAt) {
+    state.vrm.lookAt.target = camera;
   }
 }
 
@@ -134,6 +138,7 @@ async function mountVrm(source, label) {
   state.rest = snapshotPose(vrm);
   scene.add(vrm.scene);
   state.vrm = vrm;
+  if (vrm.lookAt) vrm.lookAt.target = camera;
   setStatus(`marionet / ${label}`);
   if (!DEMO && state.signs.has(state.letter)) selectLetter(state.letter);
 }
@@ -141,7 +146,7 @@ async function mountVrm(source, label) {
 const app = $("app");
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 0.1, 100);
-camera.position.set(-0.35, 1.42, 2.15);
+camera.position.set(0, 1.35, 2.05);
 
 let renderer = null;
 let controls = null;
@@ -152,7 +157,7 @@ try {
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   app.append(renderer.domElement);
   controls = new OrbitControls(camera, renderer.domElement);
-  controls.target.set(0.15, 1.22, 0);
+  controls.target.set(0, 1.25, 0);
   controls.enablePan = false;
   controls.enableDamping = true;
   controls.minDistance = 1.1;
@@ -266,6 +271,7 @@ async function boot() {
     return;
   }
   await mountVrm(sampleUrl(), "sample avatar");
+  if (state.vrm?.lookAt) state.vrm.lookAt.target = camera;
   if (DEMO) await runReadmeDemo();
 }
 

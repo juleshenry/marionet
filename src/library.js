@@ -259,12 +259,12 @@ export function solveLocation(locationId, side = "right") {
   }
 
   if (locationId === "chest-front") {
-    // Hold out from the sternum so the hand reads in front of the torso, not buried in it.
+    // Elbow forward of the ribs so the forearm mesh reaches the hand (no sleeve gap).
     return {
-      [`${side}Shoulder`]: euler(0.08, 0.14 * s, 0.1 * s),
-      [`${side}UpperArm`]: euler(-0.72, 0.35 * s, -0.28 * s),
-      [`${side}LowerArm`]: euler(0.05, 1.15 * s, 0.08 * s),
-      [`${side}Hand`]: euler(0.2, 0.55 * s, 0.05 * s),
+      [`${side}Shoulder`]: euler(0.06, 0.12 * s, 0.08 * s),
+      [`${side}UpperArm`]: euler(-0.85, 0.28 * s, -0.22 * s),
+      [`${side}LowerArm`]: euler(0.15, 1.05 * s, 0.1 * s),
+      [`${side}Hand`]: euler(0.15, 0.45 * s, 0.05 * s),
     };
   }
 
