@@ -52,10 +52,10 @@ export const HANDSHAPES = {
   },
   F: {
     id: "F",
-    // On this VRM, rest thumb hangs down in palm-in. Positive opposition drops it
-    // further (superhuman stretch). extra.y is a lift so the pad meets the index.
-    fingers: { index: 0.5, middle: 0.04, ring: 0.04, little: 0.04, spread: 0.15 },
-    thumb: { curl: 0.12, opposition: 0, abduction: 0, extra: { x: 0.5, y: -0.75, z: 0 } },
+    // Small metacarpal lift only. Large extra.y hyperextends the CMC (broken-looking
+    // thumb); zero extra leaves the rest thumb pointing down in the demo camera.
+    fingers: { index: 0.48, middle: 0.03, ring: 0.03, little: 0.03, spread: 0.18 },
+    thumb: { curl: 0.08, opposition: 0, abduction: 0.05, extra: { x: 0.15, y: -0.35, z: 0 } },
   },
   G: {
     id: "G",
