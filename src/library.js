@@ -52,8 +52,10 @@ export const HANDSHAPES = {
   },
   F: {
     id: "F",
-    fingers: { index: 0.58, middle: 0.05, ring: 0.05, little: 0.05, spread: 0.25 },
-    thumb: { curl: 0.4, opposition: 0.85, abduction: 0.25 },
+    // On this VRM, rest thumb hangs down in palm-in. Positive opposition drops it
+    // further (superhuman stretch). extra.y is a lift so the pad meets the index.
+    fingers: { index: 0.5, middle: 0.04, ring: 0.04, little: 0.04, spread: 0.15 },
+    thumb: { curl: 0.12, opposition: 0, abduction: 0, extra: { x: 0.45, y: -0.65, z: 0 } },
   },
   G: {
     id: "G",
@@ -220,13 +222,16 @@ export function solveHandshape(shapeId, side = "right") {
   }
 
   const t = shape.thumb;
+  const extra = t.extra ?? {};
+  // Keep most opposition on the metacarpal only — stacking it on proximal too
+  // over-rotates the chain and stretches the skinned thumb.
   pose[`${prefix}ThumbMetacarpal`] = euler(
-    t.curl * THUMB_CURL_MAX * 0.35,
-    t.opposition * THUMB_OPP_MAX * sign,
-    t.abduction * THUMB_ABD_MAX * sign
+    t.curl * THUMB_CURL_MAX * 0.3 + (extra.x ?? 0),
+    t.opposition * THUMB_OPP_MAX * 0.75 * sign + (extra.y ?? 0) * sign,
+    t.abduction * THUMB_ABD_MAX * sign + (extra.z ?? 0) * sign
   );
-  pose[`${prefix}ThumbProximal`] = euler(t.curl * THUMB_CURL_MAX, t.opposition * 0.25 * sign, 0);
-  pose[`${prefix}ThumbDistal`] = euler(t.curl * THUMB_CURL_MAX * 0.6, 0, 0);
+  pose[`${prefix}ThumbProximal`] = euler(t.curl * THUMB_CURL_MAX * 0.85, 0, 0);
+  pose[`${prefix}ThumbDistal`] = euler(t.curl * THUMB_CURL_MAX * 0.45, 0, 0);
 
   return pose;
 }
