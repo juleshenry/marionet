@@ -55,7 +55,7 @@ export const HANDSHAPES = {
     // On this VRM, rest thumb hangs down in palm-in. Positive opposition drops it
     // further (superhuman stretch). extra.y is a lift so the pad meets the index.
     fingers: { index: 0.5, middle: 0.04, ring: 0.04, little: 0.04, spread: 0.15 },
-    thumb: { curl: 0.12, opposition: 0, abduction: 0, extra: { x: 0.45, y: -0.65, z: 0 } },
+    thumb: { curl: 0.12, opposition: 0, abduction: 0, extra: { x: 0.5, y: -0.75, z: 0 } },
   },
   G: {
     id: "G",

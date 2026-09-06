@@ -7,13 +7,13 @@
   "handed": "1h",
   "dominant": {
     "handshape": "F",
-    "orientation": "palm-in",
+    "orientation": "palm-down",
     "location": "cheek",
     "movement": [{ "type": "whisker", "reps": 2 }]
   },
   "library": { "handshape": "F", "location": "cheek" },
   "compileReady": true,
-  "notes": "Demo sketch, not a gold LENSEGUA lexicon row. No LENSEGUA dump is on the allowlist. Phonology follows the iconic F-hand whisker CAT (same major/minor location as ASL-LEX cat: F, Head, CheekNose). Replace when a licensed LENSEGUA source is ingested.",
+  "notes": "Demo sketch, not a gold LENSEGUA lexicon row. No LENSEGUA dump is on the allowlist. Phonology follows the iconic F-hand whisker CAT (same major/minor location as ASL-LEX cat: F, Head, CheekNose). Palm-down is a camera-facing F so the thumb does not hang; citation-form CAT is often palm-in. Replace when a licensed LENSEGUA source is ingested.",
   "source": {
     "dataset": "demo-sketch",
     "alignedWith": "ase/asllex/cat",
