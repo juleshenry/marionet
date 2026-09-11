@@ -11,26 +11,81 @@ _SCRIPTS = str(Path(__file__).resolve().parents[2] / "scripts")
 if _SCRIPTS not in sys.path:
     sys.path.insert(0, _SCRIPTS)
 
-from marionet_pose import _xyz, finger_curls, finger_spread, thumb_curl  # noqa: E402
+from marionet_pose import (  # noqa: E402
+    POSE_CONF_MIN,
+    _xyz,
+    canonical_span,
+    finger_curls,
+    finger_spread,
+    hand_confidence,
+    thumb_curl,
+)
 
 # 21×3 mean, 21×3 std, 6 curls mean/std, 3 wrist mean, 3 wrist std, 3 motion
 FEAT_DIM = 21 * 3 * 2 + 6 * 2 + 9
 
 
+def _window(pose: dict) -> tuple[int, int]:
+    span = pose.get("canonical") if isinstance(pose.get("canonical"), dict) else canonical_span(pose)
+    n = int(pose.get("n_frames") or 0)
+    start = int(span.get("start") or 0)
+    end = int(span.get("end") if span.get("end") is not None else n)
+    start = max(0, start)
+    end = min(n if n else end, end)
+    if end <= start:
+        return 0, n if n else end
+    return start, end
+
+
 def _hand_frames(pose: dict) -> list:
+    """Nucleus frames with usable hand confidence. Prep/retract and occluded frames drop out."""
+    start, end = _window(pose)
     right = pose.get("right") or []
     left = pose.get("left") or []
     frames = []
     for i, fr in enumerate(right):
+        if i < start or i >= end:
+            continue
         xyz = fr.get("xyz") if isinstance(fr, dict) else None
-        if xyz and len(xyz) == 21:
+        if xyz and len(xyz) == 21 and hand_confidence(fr) >= POSE_CONF_MIN:
             frames.append(("right", i, xyz))
     if not frames:
         for i, fr in enumerate(left):
+            if i < start or i >= end:
+                continue
             xyz = fr.get("xyz") if isinstance(fr, dict) else None
-            if xyz and len(xyz) == 21:
+            if xyz and len(xyz) == 21 and hand_confidence(fr) >= POSE_CONF_MIN:
                 frames.append(("left", i, xyz))
     return frames
+
+
+def pose_quality(pose: dict) -> dict:
+    start, end = _window(pose)
+    n_nucleus = max(end - start, 0)
+    confs = []
+    occluded = 0
+    for side in ("right", "left"):
+        frames = pose.get(side) or []
+        for i in range(start, min(end, len(frames))):
+            fr = frames[i]
+            if not isinstance(fr, dict):
+                continue
+            if fr.get("occluded") is True or hand_confidence(fr) < POSE_CONF_MIN:
+                if fr.get("xyz"):
+                    occluded += 1
+                continue
+            if fr.get("xyz"):
+                confs.append(hand_confidence(fr))
+    n_conf = len(confs)
+    mean_conf = float(sum(confs) / n_conf) if n_conf else 0.0
+    denom = max(n_nucleus, 1)
+    return {
+        "mean_conf": mean_conf,
+        "n_nucleus": n_nucleus,
+        "n_confident": n_conf,
+        "occluded_frac": occluded / denom,
+        "occluded": bool(n_conf == 0 and (occluded > 0 or n_nucleus > 0 and mean_conf < POSE_CONF_MIN)),
+    }
 
 
 def _cloud(xyz21) -> np.ndarray:

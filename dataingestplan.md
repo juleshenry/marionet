@@ -4,6 +4,18 @@ Treat the five catalogs as **indexes and dump endpoints**, not as sites to HTML-
 
 The Hub catalog being CC BY 4.0 does **not** license WLASL, Signbank videos, or Wikisigns clips. Verify the original page every time. The Hub’s own `LICENSE_ATTRIBUTION.md` is wrong in several places (WLASL is C-UDA, not CC BY; ASL Citizen is not CC BY; ASL-LEX website is NC).
 
+## Do this first (blocks E2 video supervision)
+
+**1. Request ASL-LEX reference-video permission.** The OSF CSVs are public. The citation-form videos are not. [asl-lex.org/download](https://asl-lex.org/download.html): the database/visualization (excluding videos) is CC BY-NC 4.0 on the website; the **sign reference videos are © ASL-LEX.org**, “provided solely for personal searches,” and “may not be saved, displayed, or otherwise used for any other purpose without explicit permission.” Caselli et al. 2017 (ASL-LEX 1.0) said downloads are “only available … with the authors’ permission.” OSF `osf.io/zpha4` has an “ASL examples” folder of paper clips — that is not the 2,723-sign set.
+
+Write the authors before renting a GPU. If permission stalls, E2 has no aligned video: D falls back to synthetic-from-lexicon poses, and the paper must say so (`paper/REGIME.md`). Do not scrape the visualization, and do not treat the website BY-NC label as a video license.
+
+The clips, if granted, are **one signer, fixed background**. They will not give a signer-held-out split. Plan multi-signer L2 (INCLUDE / AUTSL / Wikisigns, under their own licenses) for generalization.
+
+**2. Check HaMeR / DWPose / MANO terms before publishing derived poses.** HaMeR code is MIT; it requires `MANO_RIGHT.pkl`, and MANO is **non-commercial scientific research only** (no distribution of the model, no commercial derivatives). Do not assume research weights permit redistributing extracted 21-joint pose JSON. Get a written reading: poses-without-mesh local-only vs publishable. Until that is yes, keep `marionet.pose/v0` dumps out of any public artifact; `SignDesc` and compiled VRM clips are the releasable layer.
+
+These two checks are order-0 in the paper regime. Corpus-scale pose extract waits on them and on the D-pilot.
+
 Keep disk small: metadata, spreadsheets, and XML dumps only until a later step explicitly asks for motion or video. No 3D-LEX FBX/GLB packs, no WLASL mp4 cache, no Wikisigns crawl, no site mirrors.
 
 ## License gate (only ingest through this)
@@ -12,7 +24,7 @@ Keep disk small: metadata, spreadsheets, and XML dumps only until a later step e
 |---|---|---|
 | **A — CC BY / BY-SA dumps** | Download, derive `SignDesc`, retarget, redistribute derived artifacts with attribution (SA if the source is SA) | ASL-LEX 2.0 **OSF files**, 3D-LEX v1.0 (deferred: mocap is large), Global Signbank **NGT public**, Wikisigns (LSM, Malagasy, West Bengal: BY-SA 4.0), Wikisign LSC (BY-SA 2.0 ES), SignPuddle **SPML/FSW notation**, BdSL47 |
 | **B — NC / C-UDA / research** | Local research, pose extraction, **no commercial, no video redistrib** | WLASL (C-UDA; annotations only are theirs), How2Sign (BY-NC), OpenASL (BY-NC), ASL Signbank (BY-NC-SA), ASL-LEX **website** (BY-NC — use OSF instead) |
-| **C — register / contract** | After they say yes | DGS Corpus, BSL Corpus / SignBank, ASLLVD, BOBSL, most Signbank forks |
+| **C — register / contract** | After they say yes | **ASL-LEX reference videos**, DGS Corpus, BSL Corpus / SignBank, ASLLVD, BOBSL, most Signbank forks |
 | **D — skip** | — | SpreadTheSign, YouTube-SL-25 videos (IDs are BY, footage is YouTube ToS), anything with no stated license, Internet Archive captures used as a licence |
 
 Marionet’s README already says training data is public isolated corpora and pose is not redistributed video. That maps onto **A for the lexicon IR, B only if we stay non-commercial**.
@@ -82,7 +94,8 @@ Do these in order. All are official download paths.
 
 | Priority | Dataset | How | What Marionet gets | Disk |
 |---|---|---|---|---|
-| 1 | **ASL-LEX 2.0** | OSF: https://osf.io/zpha4/ (CC BY 4.0 on the **files**; website UI is BY-NC) | 2,723 signs: handshape, location, movement, selected fingers, major/minor location, lexical class, Signbank IDs. `SignDesc` seed for ASL. | fetch |
+| 1 | **ASL-LEX 2.0 CSVs** | OSF: https://osf.io/zpha4/ (files on OSF; website database is BY-NC; **videos are ©, permission required** — see “Do this first”) | 2,723 EntryIDs / 2,663 LemmaIDs: onset-coded features (selected fingers, flexion, spread, thumb, Battison type, path movement, major/minor/second-minor location). `SignDesc` **feature** seed for ASL. Named `Handshape.2.0` is secondary. | fetch (CSVs done) |
+| 1b | **ASL-LEX 2.0 videos** | Authors’ permission only. Do not scrape asl-lex.org. | Onset-aligned isolated clips for E2. One signer, fixed background. Without this, E2 is synthetic. | **blocked on email** |
 | 2 | **SignPuddle ASL** | `sgn4.spml` | Gloss + FSW as a phonological/notation prior, not as video | fetch |
 | 3 | **Global Signbank NGT** | Register → CSV export of public signs | Gloss, translations, phonetic fields; video URLs only if the dataset page still says BY | later (CSV only) |
 | 4 | **3D-LEX v1.0** | OSF: https://osf.io/cv276/ (CC BY 4.0). FBX + GLB | 1,000 ASL + 1,000 NGT mocap signs; closest VRM-ready clips | **deferred** |
@@ -95,14 +108,16 @@ Skip How2Sign / OpenASL / BOBSL / DGS until continuous signing is in scope. They
 ### Phase 2 — map into Marionet IR
 
 ```
-ASL-LEX row          → SignDesc (handshape, location, orientation, movement)
+ASL-LEX row          → SignDesc **features** (selected fingers, flexion, spread, thumb,
+                       major/minor location, path movement, Battison type);
+                       named handshape only via v0_library_map or unmapped
 SignPuddle FSW       → optional notation features / coverage check
 3D-LEX FBX/GLB       → MarionetClip (gold motion)     [deferred]
 Wikisigns / WLASL    → MediaPipe pose → clip residual [deferred; WLASL research-only]
 Global Signbank NGT  → same pipeline for NGT once ASL lexicon compiles
 ```
 
-Join keys: ASL-LEX Entry ID ↔ ASL Signbank ID-gloss ↔ 3D-LEX alignment (they already aligned to existing benchmarks) ↔ WLASL gloss (lossy; many-to-many).
+Join keys: ASL-LEX **EntryID** (phonological variant; E2 unit) ↔ **LemmaID** (lexicon/retrieval unit) ↔ ASL Signbank ID-gloss ↔ 3D-LEX alignment (they already aligned to existing benchmarks) ↔ WLASL gloss (lossy; many-to-many). Do not collapse EntryIDs when evaluating the decoder.
 
 Compiler constraint: the v0 expertise library only solves fingerspelling handshapes and a few locations (`rest`, `fs-station`, `neutral-space`). ASL-LEX rows that map onto those primitives can compile today; the rest stay in the lexicon as `SignDesc` with `source` phonology attached until the location/handshape catalogs grow.
 
@@ -136,7 +151,10 @@ That yields a licensed isolated lexicon with phonology, which is what Marionet n
 
 ## Citations to keep with the data
 
-- Sehyr, Caselli, Cohen-Goldberg, Emmorey. ASL-LEX 2.0. OSF `osf.io/zpha4`. Files: CC BY 4.0.
+- Sehyr, Caselli, Cohen-Goldberg, Emmorey. ASL-LEX 2.0. OSF `osf.io/zpha4`. Spreadsheet files: public on OSF. Website visualization: CC BY-NC 4.0. **Reference videos: © ASL-LEX.org; permission required** (https://asl-lex.org/download.html).
+- Caselli, Sehyr, Cohen-Goldberg, Emmorey. ASL-LEX 1.0. *Behavior Research Methods* 2017. Inter-coder κ (use as E2 ceiling): movement 0.65, flexion 0.75, minor location 0.71, major location 0.83, selected fingers 0.90, sign type 0.82. Videos: authors’ permission.
+- Pavlakos et al. HaMeR. Code: MIT. Requires MANO (`MANO_RIGHT.pkl`).
+- MANO (Max Planck / MTC). Non-commercial scientific research; no redistribution of the model. Check before publishing derived poses.
 - Slevinski / Sutton. SignPuddle Online SPML dumps. SignWriting: CC BY-SA 3.0. Use official `sgn{ID}.spml` URLs.
 - Kopf, Schulder, Hanke. Sign Language Dataset Compendium. Catalog: CC BY 4.0. https://doi.org/10.25592/dgs.sldc
 - Rudra Sarker. SignLanguage-Dataset-Hub. Catalog: CC BY 4.0. Underlying datasets: their own licenses.

@@ -20,6 +20,10 @@ FAIL_BLUR = "blur"
 FAIL_OUT_OF_FRAME = "out_of_frame"
 FAIL_NO_VIDEO = "no_video"
 FAIL_EMPTY = "empty"
+FAIL_OCCLUDED = "occluded"
+
+# Below this, a hand frame does not vote for phonology (paper τ_pose).
+POSE_CONF_MIN = 0.35
 
 # Rest-relative eulers copied from src/library.js fs-station (right).
 FS_STATION_RIGHT = {
@@ -52,9 +56,20 @@ BODY_NAMES = (
     "rightHip",
 )
 
-# MediaPipe Pose landmark indices (BlazePose).
+# MediaPipe Pose landmark indices (BlazePose). Face subset is enough for coarse NMFs
+# when Face Mesh is absent; GPU contract adds a dedicated head-pose / AU estimator.
 MP_POSE_INDEX = {
     "nose": 0,
+    "leftEyeInner": 1,
+    "leftEye": 2,
+    "leftEyeOuter": 3,
+    "rightEyeInner": 4,
+    "rightEye": 5,
+    "rightEyeOuter": 6,
+    "leftEar": 7,
+    "rightEar": 8,
+    "mouthLeft": 9,
+    "mouthRight": 10,
     "leftShoulder": 11,
     "rightShoulder": 12,
     "leftElbow": 13,
@@ -115,6 +130,20 @@ def validate_pose(pose: dict) -> list[str]:
                 if _xyz(pt) is None:
                     errors.append(f"{hand}[{i}].xyz[{j}] must be [x,y,z]")
                     break
+            conf = frame.get("conf")
+            if conf is not None and (not _is_num(conf) or conf < 0 or conf > 1):
+                errors.append(f"{hand}[{i}].conf must be in [0,1]")
+    face = pose.get("face")
+    if face is not None and not isinstance(face, list):
+        errors.append("face must be an array of frames")
+    canonical = pose.get("canonical")
+    if canonical is not None:
+        if not isinstance(canonical, dict):
+            errors.append("canonical must be an object")
+        else:
+            for key in ("start", "end"):
+                if key in canonical and not isinstance(canonical[key], int):
+                    errors.append(f"canonical.{key} must be an int")
     return errors
 
 
@@ -149,6 +178,123 @@ def validate_clip(clip: dict) -> list[str]:
     if source is not None and source not in CLIP_SOURCES:
         errors.append(f"source must be one of {', '.join(CLIP_SOURCES)}")
     return errors
+
+
+def hand_confidence(frame) -> float:
+    """Per-frame hand confidence. Missing xyz → 0. Legacy frames without conf → 1."""
+    if not isinstance(frame, dict):
+        return 0.0
+    if frame.get("occluded") is True:
+        return 0.0
+    xyz = frame.get("xyz")
+    if not isinstance(xyz, list) or len(xyz) != 21:
+        return 0.0
+    conf = frame.get("conf")
+    if conf is None:
+        return 1.0
+    if not _is_num(conf):
+        return 0.0
+    return max(0.0, min(1.0, float(conf)))
+
+
+def _dominant_side(pose: dict) -> str:
+    right = pose.get("right") or []
+    left = pose.get("left") or []
+    n_r = sum(1 for fr in right if isinstance(fr, dict) and fr.get("xyz"))
+    n_l = sum(1 for fr in left if isinstance(fr, dict) and fr.get("xyz"))
+    return "left" if n_l > n_r else "right"
+
+
+def _wrist_series(pose: dict, side: str) -> list:
+    body = pose.get("body") or []
+    hands = pose.get(side) or []
+    n = int(pose.get("n_frames") or 0)
+    pts = []
+    for i in range(n):
+        w = None
+        if i < len(body) and isinstance(body[i], dict):
+            w = _xyz((body[i].get("keypoints") or {}).get(f"{side}Wrist"))
+        if w is None and i < len(hands) and isinstance(hands[i], dict):
+            xyz = hands[i].get("xyz")
+            if isinstance(xyz, list) and xyz:
+                w = _xyz(xyz[0])
+        pts.append(w)
+    return pts
+
+
+def canonical_span(pose: dict) -> dict:
+    """Prep | nucleus | retract. Phonology reads [start, end); retarget keeps the full clip.
+
+    Velocity-energy heuristic: rest from edge-frame wrist height; nucleus is the active
+    span with a 12% trim on each end. No rest contrast → edge-trim the whole clip.
+    """
+    existing = pose.get("canonical")
+    n = int(pose.get("n_frames") or 0)
+    if (
+        isinstance(existing, dict)
+        and isinstance(existing.get("start"), int)
+        and isinstance(existing.get("end"), int)
+        and 0 <= existing["start"] < existing["end"] <= n
+    ):
+        out = dict(existing)
+        out["n"] = out["end"] - out["start"]
+        return out
+    if n <= 0:
+        return {"start": 0, "end": 0, "method": "empty", "n": 0}
+    if n < 6:
+        return {"start": 0, "end": n, "method": "short", "n": n}
+
+    side = _dominant_side(pose)
+    wrists = _wrist_series(pose, side)
+    body = pose.get("body") or []
+    heights: list[float | None] = []
+    for i, w in enumerate(wrists):
+        if not w:
+            heights.append(None)
+            continue
+        kps = {}
+        if i < len(body) and isinstance(body[i], dict):
+            kps = body[i].get("keypoints") or {}
+        sh = _xyz(kps.get(f"{side}Shoulder")) or [0.0, 0.0, 0.0]
+        hip = _xyz(kps.get(f"{side}Hip")) or _xyz(kps.get("rightHip")) or _xyz(kps.get("leftHip"))
+        if hip:
+            span = max(1e-4, abs(sh[1] - hip[1]))
+            heights.append((w[1] - sh[1]) / span)
+        else:
+            heights.append(w[1])
+
+    valid_h = [h for h in heights if h is not None]
+    if len(valid_h) < 3:
+        pad = max(1, int(round(n * 0.12)))
+        if 2 * pad >= n:
+            return {"start": 0, "end": n, "method": "full", "n": n}
+        return {"start": pad, "end": n - pad, "method": "edge-trim", "n": n - 2 * pad}
+
+    edge = max(1, n // 8)
+    edge_h = [heights[i] for i in list(range(edge)) + list(range(n - edge, n)) if heights[i] is not None]
+    rest_h = sorted(edge_h)[len(edge_h) // 2] if edge_h else min(valid_h)
+    margin = 0.12
+    active = [(h is not None and h > rest_h + margin) for h in heights]
+    if sum(active) < 3:
+        pad = max(1, int(round(n * 0.12)))
+        return {"start": pad, "end": n - pad, "method": "edge-trim", "n": n - 2 * pad}
+
+    i0 = next(i for i, a in enumerate(active) if a)
+    i1 = n - next(i for i, a in enumerate(reversed(active)) if a)
+    span_len = i1 - i0
+    if span_len >= 8:
+        trim = max(1, int(round(span_len * 0.12)))
+        i0 += trim
+        i1 -= trim
+    if i1 - i0 < 3:
+        i0 = next(i for i, a in enumerate(active) if a)
+        i1 = n - next(i for i, a in enumerate(reversed(active)) if a)
+    return {"start": int(i0), "end": int(i1), "method": "velocity-energy", "n": int(i1 - i0)}
+
+
+def attach_canonical(pose: dict) -> dict:
+    pose["canonical"] = canonical_span(pose)
+    return pose
 
 
 def _sub(a, b):
@@ -385,14 +531,37 @@ def dummy_hand_xyz(
     return pts
 
 
+def dummy_face_frame(t: float, *, yaw: float = 0.0, pitch: float = 0.0, roll: float = 0.0) -> dict:
+    """Rest face whose NMF decoder must stay neutral (brow gap / IOD ≈ 0.5)."""
+    return {
+        "t": round(t, 4),
+        "keypoints": {
+            "nose": [0.0, 0.28, 0.04],
+            "leftEye": [-0.03, 0.30, 0.04],
+            "rightEye": [0.03, 0.30, 0.04],
+            "leftBrow": [-0.03, 0.33, 0.04],
+            "rightBrow": [0.03, 0.33, 0.04],
+            "mouthLeft": [-0.02, 0.24, 0.04],
+            "mouthRight": [0.02, 0.24, 0.04],
+            "upperLip": [0.0, 0.255, 0.045],
+            "lowerLip": [0.0, 0.235, 0.045],
+            "leftEar": [-0.08, 0.28, 0.0],
+            "rightEar": [0.08, 0.28, 0.0],
+        },
+        "head": {"yaw": yaw, "pitch": pitch, "roll": roll},
+        "conf": 1.0,
+    }
+
+
 def dummy_pose(*, fps: float = 30.0, seconds: float = 1.2, language: str | None = None, gloss: str | None = None) -> dict:
     n = max(1, int(round(fps * seconds)))
     right = []
     body = []
+    face = []
     for i in range(n):
         t = i / fps
         openness = 0.15 * (1 - abs((i / max(n - 1, 1)) * 2 - 1))
-        right.append({"t": round(t, 4), "xyz": dummy_hand_xyz(openness)})
+        right.append({"t": round(t, 4), "xyz": dummy_hand_xyz(openness), "conf": 1.0})
         body.append(
             {
                 "t": round(t, 4),
@@ -404,10 +573,17 @@ def dummy_pose(*, fps: float = 30.0, seconds: float = 1.2, language: str | None 
                     "leftHip": [-0.12, -0.45, 0.0],
                     "rightHip": [0.12, -0.45, 0.0],
                     "nose": [0.0, 0.28, 0.04],
+                    "leftEye": [-0.03, 0.30, 0.04],
+                    "rightEye": [0.03, 0.30, 0.04],
+                    "leftEar": [-0.08, 0.28, 0.0],
+                    "rightEar": [0.08, 0.28, 0.0],
+                    "mouthLeft": [-0.02, 0.24, 0.04],
+                    "mouthRight": [0.02, 0.24, 0.04],
                 },
             }
         )
-    return {
+        face.append(dummy_face_frame(t))
+    pose = {
         "schema": POSE_SCHEMA,
         "fps": fps,
         "n_frames": n,
@@ -417,9 +593,11 @@ def dummy_pose(*, fps: float = 30.0, seconds: float = 1.2, language: str | None 
         "body": body,
         "right": right,
         "left": [],
+        "face": face,
         "camera": {"frame": "signer", "up": "y"},
         "backend": "dummy",
     }
+    return attach_canonical(pose)
 
 
 def write_json(path: Path, obj: dict) -> None:

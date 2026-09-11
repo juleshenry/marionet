@@ -1,6 +1,21 @@
-"""Label spaces aligned with src/ir.js + src/library.js. Named shapes are atoms (ILY, horns)."""
+"""Label spaces aligned with src/ir.js + src/library.js. Named shapes are atoms (ILY, horns).
+
+marionet.phonology/v0 is a language-agnostic articulatory subset (selected fingers,
+major location, palm facing, path type, coarse NMFs). It is not an ASL phoneme
+inventory. Language-specific leftovers are the reject tokens unmapped / occluded,
+never a forced nearest L1 label.
+"""
 
 from __future__ import annotations
+
+INVENTORY = "marionet.phonology/v0"
+UNMAPPED = "unmapped"
+OCCLUDED = "occluded"
+# Below this, a hand frame does not vote. Matches paper τ_pose.
+POSE_CONF_MIN = 0.35
+# Class max-prob reject. L2/L3 uses the stricter value.
+CLS_MIN_L1 = 0.45
+CLS_MIN_L2 = 0.55
 
 HANDSHAPE_IDS = [
     "A", "B", "C", "D", "E", "F", "G", "H", "I", "K", "L", "M", "N", "O", "P",
@@ -58,6 +73,15 @@ LOCATIONS = [
 ORIENTATIONS = ["palm-out", "palm-in", "palm-down", "palm-up", "palm-side"]
 MOVEMENTS = ["hold", "linear", "arc", "circle", "whisker", "hook", "present", "trace"]
 HANDED = ["1h", "2h-symmetric", "2h-asymmetric", "2h-alternating"]
+
+NMF_EYEBROWS = ["neutral", "raised", "furrowed"]
+NMF_MOUTH = ["neutral", "open", "spread", "pursed"]
+NMF_EYEGAZE = ["neutral", "left", "right", "up", "down"]
+NMF_HEAD = ["neutral", "tilt-left", "tilt-right", "turn-left", "turn-right", "nod"]
+NMF_DEFAULT = {"eyebrows": "neutral", "mouth": "neutral", "eyegaze": "neutral", "head": "neutral"}
+
+# Languages with L1 phonological spreadsheets. Others are L2/L3 transfer-with-reject.
+L1_LANGUAGES = frozenset({"ase"})
 
 # Signer-space wrist y (shoulder at 0, hip at -0.45) for synthetic body tracks.
 LOCATION_WRIST_Y = {

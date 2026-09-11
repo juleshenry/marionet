@@ -13,7 +13,7 @@ _SCRIPTS = str(_ROOT / "scripts")
 if _SCRIPTS not in sys.path:
     sys.path.insert(0, _SCRIPTS)
 
-from marionet_pose import FAIL_OK, POSE_SCHEMA, dummy_hand_xyz  # noqa: E402
+from marionet_pose import FAIL_OK, POSE_SCHEMA, attach_canonical, dummy_face_frame, dummy_hand_xyz  # noqa: E402
 
 from .catalogs import (
     HANDSHAPE_SPECS,
@@ -44,6 +44,7 @@ def pose_from_desc(desc: dict, *, fps: float = 24.0, seconds: float = 0.8, rng: 
     mt = movement_type(art.get("movement"))
     n = max(8, int(round(fps * seconds)))
     fingers = {k: spec["fingers"][k] for k in ("index", "middle", "ring", "little")}
+    face: list = []
     # tiny noise so the linear model cannot memorize a single cloud
     for k in fingers:
         fingers[k] = float(np.clip(fingers[k] + rng.normal(0, 0.03), 0, 1))
@@ -67,7 +68,7 @@ def pose_from_desc(desc: dict, *, fps: float = 24.0, seconds: float = 0.8, rng: 
             dy = -0.03 * (i / max(n - 1, 1))
         xyz = dummy_hand_xyz(fingers=fingers, spread=spread, thumb=thumb)
         xyz = [[p[0] + dx, p[1] + dy, p[2] + dz] for p in xyz]
-        right.append({"t": round(t, 4), "xyz": xyz})
+        right.append({"t": round(t, 4), "xyz": xyz, "conf": 1.0})
         body.append(
             {
                 "t": round(t, 4),
@@ -79,10 +80,17 @@ def pose_from_desc(desc: dict, *, fps: float = 24.0, seconds: float = 0.8, rng: 
                     "leftHip": [-0.12, -0.45, 0.0],
                     "rightHip": [0.12, -0.45, 0.0],
                     "nose": [0.0, 0.28, 0.04],
+                    "leftEye": [-0.03, 0.30, 0.04],
+                    "rightEye": [0.03, 0.30, 0.04],
+                    "leftEar": [-0.08, 0.28, 0.0],
+                    "rightEar": [0.08, 0.28, 0.0],
+                    "mouthLeft": [-0.02, 0.24, 0.04],
+                    "mouthRight": [0.02, 0.24, 0.04],
                 },
             }
         )
-    return {
+        face.append(dummy_face_frame(t))
+    pose = {
         "schema": POSE_SCHEMA,
         "fps": fps,
         "n_frames": n,
@@ -93,9 +101,11 @@ def pose_from_desc(desc: dict, *, fps: float = 24.0, seconds: float = 0.8, rng: 
         "body": body,
         "right": right,
         "left": [],
+        "face": face,
         "camera": {"frame": "signer", "up": "y"},
         "backend": "synth",
     }
+    return attach_canonical(pose)
 
 
 def load_lexicon_descs(root: Path | None = None) -> list[dict]:
