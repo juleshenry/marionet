@@ -6,7 +6,21 @@ export const CLIP_SCHEMA = "marionet.clip/v0";
 export const LANGUAGES = Object.freeze({
   ase: "American Sign Language",
   gsm: "Guatemalan Sign Language (LENSEGUA)",
+  eso: "Estonian Sign Language (EVK)",
+  dse: "Sign Language of the Netherlands (NGT)",
+  mfs: "Mexican Sign Language (LSM)",
+  tsc: "Thai Sign Language",
+  bfi: "British Sign Language",
+  gsg: "German Sign Language (DGS)",
+  fsl: "French Sign Language",
+  ins: "Indian Sign Language",
+  jsl: "Japanese Sign Language",
 });
+
+export function languageName(code) {
+  if (!code) return "unknown";
+  return LANGUAGES[code] || code;
+}
 
 export const HANDED = Object.freeze(["1h", "2h-symmetric", "2h-asymmetric", "2h-alternating"]);
 
@@ -24,8 +38,23 @@ export const LOCATIONS = Object.freeze([
   "neutral-space",
   "neutral-space-high",
   "chest-front",
+  "belly",
+  "shoulder",
+  "neck",
+  "head",
+  "forehead",
+  "eye",
+  "nose",
   "cheek",
+  "mouth",
+  "chin",
+  "ear",
+  "forearm",
+  "weak-hand",
 ]);
+
+export const POSE_SCHEMA = "marionet.pose/v0";
+export const CLIP_SOURCES = Object.freeze(["authored", "retargeted", "compiled+residual"]);
 
 /** Solver catalogs. Lexicon rows may use unmapped ASL-LEX codes; only these compile. */
 
@@ -75,7 +104,8 @@ export function isCompilable(desc) {
   const lib = desc?.library;
   if (lib) return Boolean(lib.handshape && lib.location && LOCATIONS.includes(lib.location));
   const art = desc?.dominant;
-  return Boolean(art?.handshape && art?.location && LOCATIONS.includes(art.location));
+  const loc = art?.location;
+  return Boolean(art?.handshape && loc && LOCATIONS.includes(loc));
 }
 
 export function validateClip(clip) {
@@ -88,6 +118,45 @@ export function validateClip(clip) {
     for (const [bone, track] of Object.entries(clip.bones)) {
       if (!Array.isArray(track) || track.some((k) => !Array.isArray(k) || k.length !== 2)) {
         errors.push(`bones.${bone} must be [[t, [x,y,z]], ...]`);
+      }
+    }
+  }
+  if (clip.source != null && !CLIP_SOURCES.includes(clip.source)) {
+    errors.push(`source must be one of ${CLIP_SOURCES.join(", ")}`);
+  }
+  if (clip.expressions != null && !isObj(clip.expressions)) {
+    errors.push("expressions must be an object of tracks");
+  }
+  return errors;
+}
+
+function isKeypoint(v) {
+  return Array.isArray(v) && v.length >= 3 && v.every((n) => typeof n === "number");
+}
+
+export function validatePose(pose) {
+  const errors = [];
+  if (!isObj(pose)) return ["pose must be an object"];
+  if (pose.schema !== POSE_SCHEMA) errors.push(`schema must be ${POSE_SCHEMA}`);
+  if (typeof pose.fps !== "number" || pose.fps <= 0) errors.push("fps must be > 0");
+  if (!Number.isInteger(pose.n_frames) || pose.n_frames < 0) errors.push("n_frames must be >= 0");
+  if (pose.status != null && typeof pose.status !== "string") errors.push("status must be a string");
+  for (const hand of ["left", "right"]) {
+    if (pose[hand] == null) continue;
+    if (!Array.isArray(pose[hand])) {
+      errors.push(`${hand} must be an array of frames`);
+      continue;
+    }
+    for (let i = 0; i < pose[hand].length; i++) {
+      const frame = pose[hand][i];
+      if (!isObj(frame)) {
+        errors.push(`${hand}[${i}] must be an object`);
+        continue;
+      }
+      if (frame.xyz != null) {
+        if (!Array.isArray(frame.xyz) || frame.xyz.length !== 21 || frame.xyz.some((p) => !isKeypoint(p))) {
+          errors.push(`${hand}[${i}].xyz must be 21 × [x,y,z]`);
+        }
       }
     }
   }

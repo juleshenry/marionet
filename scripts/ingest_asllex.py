@@ -60,6 +60,8 @@ def load_rows() -> list[dict]:
 def convert(rows: list[dict], mapping: dict) -> list[dict]:
     hs_map = {k.lower(): v for k, v in mapping["handshape"].items()}
     loc_map = mapping["majorLocation"]
+    minor_map = mapping.get("minorLocation") or {}
+    move_map = mapping.get("movement") or {}
     type_map = mapping["signType"]
     seen_ids: dict[str, int] = {}
     signs = []
@@ -68,8 +70,12 @@ def convert(rows: list[dict], mapping: dict) -> list[dict]:
         lemma = (row.get("LemmaID") or "").strip()
         hs_raw = (row.get("Handshape.2.0") or "").strip()
         loc_raw = (row.get("MajorLocation.2.0") or "").strip()
+        minor_raw = (row.get("MinorLocation.2.0") or "").strip()
+        move_raw = (row.get("Movement.2.0") or "").strip()
         type_raw = (row.get("SignType.2.0") or "").strip()
-        gloss = (row.get("SignBankLemmaID") or lemma or entry).strip() or "UNKNOWN"
+        bank = (row.get("SignBankLemmaID") or "").strip()
+        lemma_gloss = mapping.get("lemmaGloss") or {}
+        gloss = (lemma_gloss.get(entry) or lemma_gloss.get(lemma) or bank or lemma or entry).strip() or "UNKNOWN"
         sid = f"ase/asllex/{slug(entry)}"
         if sid in seen_ids:
             seen_ids[sid] += 1
@@ -78,22 +84,29 @@ def convert(rows: list[dict], mapping: dict) -> list[dict]:
             seen_ids[sid] = 1
 
         lib_hs = hs_map.get(hs_raw.lower()) if hs_raw else None
-        lib_loc = loc_map.get(loc_raw)
+        lib_loc = minor_map.get(minor_raw) or loc_map.get(loc_raw)
         handed = type_map.get(type_raw, "1h")
+        movement = [dict(m) for m in move_map.get(move_raw, [])]
+        if movement and (row.get("RepeatedMovement.2.0") or "").strip() == "1":
+            movement[0]["reps"] = max(2, int(movement[0].get("reps") or 1))
         phonology = {col: (row.get(col) or "").strip() or None for col in PHON_COLS}
         nd = (row.get("NonDominantHandshape.2.0") or "").strip()
+        spoken = []
+        for alias in (entry, lemma, bank, entry.replace("_", " ") if entry else ""):
+            if alias and alias not in spoken:
+                spoken.append(alias)
         desc = {
             "schema": "marionet.signdesc/v0",
             "id": sid,
             "language": "ase",
             "gloss": gloss,
-            "spoken": [entry] if entry else [],
+            "spoken": spoken,
             "handed": handed,
             "lexicalClass": (row.get("LexicalClass") or "").strip() or None,
             "dominant": {
                 "handshape": lib_hs or hs_raw or "unknown",
                 "location": lib_loc or loc_raw or "unknown",
-                "movement": [],
+                "movement": movement,
             },
             "library": {"handshape": lib_hs, "location": lib_loc},
             "compileReady": bool(lib_hs and lib_loc),
@@ -111,6 +124,7 @@ def convert(rows: list[dict], mapping: dict) -> list[dict]:
             nd_lib = hs_map.get(nd.lower())
             desc["nondominant"] = {
                 "handshape": nd_lib or nd,
+                "location": "weak-hand",
                 "role": "base",
             }
         signs.append(desc)

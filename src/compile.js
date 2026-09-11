@@ -1,4 +1,4 @@
-import { CLIP_SCHEMA, validateSignDesc } from "./ir.js";
+import { CLIP_SCHEMA, isCompilable, validateSignDesc } from "./ir.js";
 import { mergePoses, solveHandshape, solveLocation, solveOrientation } from "./library.js";
 
 const HOLD = 0.9;
@@ -99,25 +99,101 @@ function movementKeyframes(basePose, movements, side) {
     return { bones, duration: RISE + 1.05 };
   }
 
+  if (first.type === "linear") {
+    const reps = Math.max(1, first.reps ?? 1);
+    const fwd = mergePoses(basePose, { [`${side}UpperArm`]: { x: -0.22, y: 0, z: 0 } });
+    let t = RISE;
+    apply(basePose, t, t + 0.12);
+    t += 0.12;
+    for (let i = 0; i < reps; i++) {
+      apply(fwd, t + 0.22);
+      apply(basePose, t + 0.44);
+      t += 0.44;
+    }
+    apply(basePose, t + 0.2);
+    return { bones, duration: t + 0.2 };
+  }
+
+  if (first.type === "arc") {
+    const s = side === "right" ? 1 : -1;
+    const a = mergePoses(basePose, wristOffset(side, { y: 0.45 * s, x: -0.1 }));
+    const b = mergePoses(basePose, wristOffset(side, { y: -0.45 * s, x: 0.15 }));
+    apply(basePose, RISE, RISE + 0.1);
+    apply(a, RISE + 0.4);
+    apply(b, RISE + 0.75, RISE + 0.95);
+    return { bones, duration: RISE + 0.95 };
+  }
+
+  if (first.type === "circle") {
+    const s = side === "right" ? 1 : -1;
+    const n = Math.max(1, first.reps ?? 1);
+    const pts = [
+      wristOffset(side, { y: 0.35 * s, x: 0 }),
+      wristOffset(side, { y: 0, x: 0.35 }),
+      wristOffset(side, { y: -0.35 * s, x: 0 }),
+      wristOffset(side, { y: 0, x: -0.2 }),
+    ];
+    let t = RISE;
+    apply(basePose, t, t + 0.08);
+    t += 0.08;
+    for (let r = 0; r < n; r++) {
+      for (const off of pts) {
+        apply(mergePoses(basePose, off), t + 0.16);
+        t += 0.16;
+      }
+    }
+    apply(basePose, t + 0.18);
+    return { bones, duration: t + 0.18 };
+  }
+
   apply(basePose, RISE, RISE + HOLD);
   return { bones, duration: RISE + HOLD };
+}
+
+function poseForArticulator(art, side) {
+  const hand = solveHandshape(art.handshape, side);
+  const loc = solveLocation(art.location ?? "fs-station", side);
+  const ori = solveOrientation(art.orientation ?? "palm-out", side);
+  return mergePoses(loc, ori, hand);
 }
 
 export function compileSignDesc(desc, { side = "right" } = {}) {
   const errors = validateSignDesc(desc);
   if (errors.length) throw new Error(`invalid SignDesc (${desc.id}): ${errors.join("; ")}`);
+  if (!isCompilable(desc)) {
+    throw new Error(`SignDesc ${desc.id} is lexicon-only (not compile-ready)`);
+  }
 
   const art = desc.dominant;
-  const hand = solveHandshape(art.handshape, side);
-  const loc = solveLocation(art.location ?? "fs-station", side);
-  const ori = solveOrientation(art.orientation ?? "palm-out", side);
-  const pose = mergePoses(loc, ori, hand);
-  const { bones, duration } = movementKeyframes(pose, art.movement ?? [], side);
+  const pose = poseForArticulator(art, side);
+  const twoHanded =
+    desc.handed === "2h-symmetric" || desc.handed === "2h-alternating";
+  let base = pose;
+  if (twoHanded) {
+    const other = side === "right" ? "left" : "right";
+    base = mergePoses(pose, poseForArticulator(art, other));
+  } else if (desc.handed === "2h-asymmetric" && desc.nondominant?.handshape) {
+    const other = side === "right" ? "left" : "right";
+    const nd = {
+      handshape: desc.nondominant.handshape,
+      location: desc.nondominant.location ?? "weak-hand",
+      orientation: desc.nondominant.orientation ?? "palm-in",
+      movement: [],
+    };
+    try {
+      base = mergePoses(pose, poseForArticulator(nd, other));
+    } catch {
+      base = pose;
+    }
+  }
+  const { bones, duration } = movementKeyframes(base, art.movement ?? [], side);
 
   return {
     schema: CLIP_SCHEMA,
     signDescId: desc.id,
+    language: desc.language,
     source: "authored",
+    vrmHumanoid: "vrm1",
     duration,
     bones,
     expressions: {},

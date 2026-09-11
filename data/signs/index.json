@@ -1,0 +1,8 @@
+{
+  "packs": [
+    { "language": "ase", "path": "./data/signs/ase/fingerspelling.json", "kind": "fingerspelling" },
+    { "language": "ase", "path": "./data/signs/ase/i-love-you.json", "kind": "lemma" },
+    { "language": "gsm", "path": "./data/signs/gsm/gato.json", "kind": "lemma" },
+    { "language": "ase", "path": "./data/signs/ase/asllex_signdesc.json", "kind": "lexicon", "defer": true }
+  ]
+}

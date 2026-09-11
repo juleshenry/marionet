@@ -139,10 +139,79 @@ export const HANDSHAPES = {
     fingers: { index: 1, middle: 1, ring: 1, little: 0, spread: 0.35 },
     thumb: { curl: 0.05, opposition: 0.1, abduction: 0.95 },
   },
+  ILY: {
+    id: "ILY",
+    // Named ASL handshape (ASL-LEX `ily`). Not a chord of letter signs.
+    fingers: { index: 0, middle: 1, ring: 1, little: 0, spread: 0.35 },
+    thumb: { curl: 0.05, opposition: 0.05, abduction: 0.95 },
+  },
+  horns: {
+    id: "horns",
+    // Index + pinky extended, thumb in. Not I+Y (I curls the index).
+    fingers: { index: 0, middle: 1, ring: 1, little: 0, spread: 0.4 },
+    thumb: { curl: 0.45, opposition: 0.45, abduction: 0.15 },
+  },
   1: {
     id: "1",
     fingers: { index: 0, middle: 1, ring: 1, little: 1, spread: 0 },
     thumb: { curl: 0.45, opposition: 0.45, abduction: 0.1 },
+  },
+  3: {
+    id: "3",
+    fingers: { index: 0, middle: 0, ring: 1, little: 1, spread: 0.45 },
+    thumb: { curl: 0.05, opposition: 0.1, abduction: 0.9 },
+  },
+  4: {
+    id: "4",
+    fingers: { index: 0, middle: 0, ring: 0, little: 1, spread: 0.45 },
+    thumb: { curl: 0.7, opposition: 0.7, abduction: 0.1 },
+  },
+  5: {
+    id: "5",
+    fingers: { index: 0, middle: 0, ring: 0, little: 0, spread: 0.7 },
+    thumb: { curl: 0.05, opposition: 0.1, abduction: 0.9 },
+  },
+  open_b: {
+    id: "open_b",
+    fingers: { index: 0, middle: 0, ring: 0, little: 0, spread: -0.05 },
+    thumb: { curl: 0.08, opposition: 0.12, abduction: 0.55 },
+  },
+  flat_b: {
+    id: "flat_b",
+    fingers: { index: 0, middle: 0, ring: 0, little: 0, spread: -0.08 },
+    thumb: { curl: 0.2, opposition: 0.15, abduction: 0.12 },
+  },
+  curved_5: {
+    id: "curved_5",
+    fingers: { index: 0.38, middle: 0.4, ring: 0.42, little: 0.45, spread: 0.55 },
+    thumb: { curl: 0.25, opposition: 0.2, abduction: 0.7 },
+  },
+  baby_o: {
+    id: "baby_o",
+    fingers: { index: 0.42, middle: 1, ring: 1, little: 1, spread: 0 },
+    thumb: { curl: 0.4, opposition: 0.85, abduction: 0.25 },
+  },
+  flat_o: {
+    id: "flat_o",
+    fingers: { index: 0.32, middle: 0.34, ring: 0.36, little: 0.38, spread: 0.08 },
+    thumb: { curl: 0.35, opposition: 0.75, abduction: 0.35 },
+  },
+  open_8: {
+    id: "open_8",
+    fingers: { index: 0, middle: 0.58, ring: 0, little: 0, spread: 0.35 },
+    thumb: { curl: 0.15, opposition: 0.25, abduction: 0.55 },
+    profile: "hook",
+  },
+  8: {
+    id: "8",
+    fingers: { index: 0.05, middle: 0.55, ring: 0.05, little: 0.05, spread: 0.2 },
+    thumb: { curl: 0.35, opposition: 0.7, abduction: 0.25 },
+    profile: "hook",
+  },
+  P: {
+    id: "P",
+    fingers: { index: 0, middle: 0.22, ring: 1, little: 1, spread: 0.35 },
+    thumb: { curl: 0.25, opposition: 0.6, abduction: 0.2 },
   },
 };
 
@@ -156,8 +225,8 @@ function curlJoints(curl, profile) {
 }
 
 /**
- * Simultaneous handshapes: most-extended finger wins, thumb abduction
- * wins over opposition. I+L+Y is I-LOVE-YOU; I+Y is horns.
+ * Unnamed simultaneous selections: most-extended finger wins, thumb abduction
+ * wins over opposition. Named shapes (ILY, horns) are their own catalog ids.
  */
 export function composeHandshapes(ids) {
   const specs = ids.map((id) => {
@@ -187,6 +256,11 @@ function shapeSpec(shapeId) {
   const shape = HANDSHAPES[shapeId];
   if (!shape) throw new Error(`unknown handshape: ${shapeId}`);
   return shape;
+}
+
+export function isKnownHandshape(ref) {
+  if (typeof ref === "string") return Boolean(HANDSHAPES[ref]);
+  return Array.isArray(ref) && ref.length > 0 && ref.every((id) => Boolean(HANDSHAPES[id]));
 }
 
 /**
@@ -241,49 +315,60 @@ export function solveHandshape(shapeId, side = "right") {
  * Rest already hangs the upper arms; fs-station lifts the dominant hand
  * to ipsilateral shoulder height.
  */
+function arm(side, s, upper, lower, hand, shoulder = [0.06, 0.08, 0.05]) {
+  return {
+    [`${side}Shoulder`]: euler(shoulder[0], shoulder[1] * s, shoulder[2] * s),
+    [`${side}UpperArm`]: euler(upper[0], upper[1] * s, upper[2] * s),
+    [`${side}LowerArm`]: euler(lower[0], lower[1] * s, lower[2] * s),
+    [`${side}Hand`]: euler(hand[0], hand[1] * s, hand[2] * s),
+  };
+}
+
+/** Rest-relative arm stations. Existing keys keep their original eulers. */
+const LOCATION_POSES = {
+  rest: () => ({}),
+  "fs-station": (side, s) =>
+    arm(side, s, [-0.95, 0.12, -0.35], [0.2, 1.45, 0.05], [-0.15, 0.25, 0.08]),
+  "neutral-space-high": (side, s) => LOCATION_POSES["fs-station"](side, s),
+  "neutral-space": (side, s) =>
+    arm(side, s, [0.75, 0.18, 0.12], [0.35, 0.9, 0.05], [0.1, 0.05, 0], [0.02, 0.04, 0.05]),
+  "chest-front": (side, s) =>
+    arm(side, s, [-0.85, 0.28, -0.22], [0.15, 1.05, 0.1], [0.15, 0.45, 0.05], [0.06, 0.12, 0.08]),
+  belly: (side, s) =>
+    arm(side, s, [-0.45, 0.22, -0.12], [0.35, 0.75, 0.08], [0.2, 0.25, 0.05], [0.04, 0.08, 0.04]),
+  shoulder: (side, s) =>
+    arm(side, s, [-0.7, -0.15, -0.55], [0.2, 1.6, 0.15], [0.1, 0.1, 0.1], [0.08, 0.05, 0.12]),
+  neck: (side, s) =>
+    arm(side, s, [-0.92, 0.08, -0.4], [0.12, 1.85, 0.12], [0.2, 0.05, 0.15], [0.08, 0.1, 0.08]),
+  head: (side, s) =>
+    arm(side, s, [-1.02, 0.08, -0.42], [0.12, 2.0, 0.1], [0.2, -0.05, 0.2], [0.1, 0.1, 0.08]),
+  forehead: (side, s) =>
+    arm(side, s, [-1.12, 0.05, -0.38], [0.08, 2.15, 0.08], [0.15, -0.1, 0.18], [0.12, 0.1, 0.08]),
+  eye: (side, s) =>
+    arm(side, s, [-1.05, 0.02, -0.48], [0.1, 2.12, 0.1], [0.22, -0.15, 0.22], [0.1, 0.1, 0.1]),
+  nose: (side, s) =>
+    arm(side, s, [-1.0, 0.0, -0.45], [0.12, 2.05, 0.12], [0.28, -0.08, 0.2], [0.1, 0.08, 0.1]),
+  cheek: (side, s) =>
+    arm(side, s, [-1.0, 0.05, -0.5], [0.1, 2.1, 0.1], [0.25, -0.2, 0.25], [0.1, 0.12, 0.1]),
+  mouth: (side, s) =>
+    arm(side, s, [-0.95, 0.06, -0.48], [0.14, 2.0, 0.12], [0.3, -0.12, 0.22], [0.1, 0.1, 0.1]),
+  chin: (side, s) =>
+    arm(side, s, [-0.88, 0.08, -0.45], [0.18, 1.9, 0.12], [0.32, -0.05, 0.18], [0.08, 0.1, 0.08]),
+  ear: (side, s) =>
+    arm(side, s, [-1.0, 0.18, -0.62], [0.05, 2.2, 0.05], [0.15, -0.25, 0.15], [0.12, 0.16, 0.12]),
+  forearm: (side, s) =>
+    arm(side, s, [-0.55, 0.35, -0.05], [0.25, 0.85, 0.12], [0.15, 0.35, 0.08], [0.04, 0.1, 0.06]),
+  "weak-hand": (side, s) =>
+    arm(side, s, [-0.7, 0.42, -0.08], [0.2, 0.95, 0.1], [0.12, 0.4, 0.06], [0.05, 0.14, 0.08]),
+};
+
+export const SOLVED_LOCATIONS = Object.freeze(Object.keys(LOCATION_POSES));
+
 export function solveLocation(locationId, side = "right") {
-  if (locationId === "rest") return {};
+  const fn = LOCATION_POSES[locationId];
+  if (!fn) throw new Error(`unknown location: ${locationId}`);
   const s = side === "right" ? 1 : -1;
-
-  if (locationId === "fs-station" || locationId === "neutral-space-high") {
-    return {
-      [`${side}Shoulder`]: euler(0.06, 0.08 * s, 0.05 * s),
-      [`${side}UpperArm`]: euler(-0.95, 0.12 * s, -0.35 * s),
-      [`${side}LowerArm`]: euler(0.2, 1.45 * s, 0.05 * s),
-      [`${side}Hand`]: euler(-0.15, 0.25 * s, 0.08 * s),
-    };
-  }
-
-  if (locationId === "neutral-space") {
-    return {
-      [`${side}Shoulder`]: euler(0.02, 0.04 * s, 0.05 * s),
-      [`${side}UpperArm`]: euler(0.75, 0.18 * s, 0.12 * s),
-      [`${side}LowerArm`]: euler(0.35, 0.9 * s, 0.05 * s),
-      [`${side}Hand`]: euler(0.1, 0.05 * s, 0),
-    };
-  }
-
-  if (locationId === "chest-front") {
-    // Elbow forward of the ribs so the forearm mesh reaches the hand (no sleeve gap).
-    return {
-      [`${side}Shoulder`]: euler(0.06, 0.12 * s, 0.08 * s),
-      [`${side}UpperArm`]: euler(-0.85, 0.28 * s, -0.22 * s),
-      [`${side}LowerArm`]: euler(0.15, 1.05 * s, 0.1 * s),
-      [`${side}Hand`]: euler(0.15, 0.45 * s, 0.05 * s),
-    };
-  }
-
-  // Citation-form cheek/nose: ipsilateral hand beside the face (near head height).
-  if (locationId === "cheek") {
-    return {
-      [`${side}Shoulder`]: euler(0.1, 0.12 * s, 0.1 * s),
-      [`${side}UpperArm`]: euler(-1.0, 0.05 * s, -0.5 * s),
-      [`${side}LowerArm`]: euler(0.1, 2.1 * s, 0.1 * s),
-      [`${side}Hand`]: euler(0.25, -0.2 * s, 0.25 * s),
-    };
-  }
-
-  return {};
+  return fn(side, s);
 }
 
 export function solveOrientation(orientation, side = "right") {

@@ -1,18 +1,19 @@
 {
   "schema": "marionet.signdesc/v0",
-  "id": "ase/i-love-you",
+  "id": "ase/ily",
   "language": "ase",
-  "gloss": "I-LOVE-YOU",
+  "gloss": "ILY",
   "spoken": ["I love you"],
   "handed": "1h",
   "dominant": {
-    "handshape": ["I", "L", "Y"],
+    "handshape": "ILY",
     "orientation": "palm-out",
     "location": "chest-front",
     "movement": [{ "type": "present" }]
   },
-  "library": { "handshape": ["I", "L", "Y"], "location": "chest-front" },
+  "library": { "handshape": "ILY", "location": "chest-front" },
   "compileReady": true,
+  "notes": "One citation-form sign. English “I love you” is a translation, not three words and not three letters.",
   "source": {
     "dataset": "asl-lex-2.0",
     "entryId": "I_love_you",

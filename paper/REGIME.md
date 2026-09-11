@@ -12,7 +12,7 @@ Given a large corpus of isolated (citation-form) sign videos with whatever metad
 
 1. `marionet.pose/v0` — per-frame body + hands (not redistributed video)
 2. `MarionetClip` — VRM bone/expression tracks (`source: "retargeted"`)
-3. `SignDesc` — phonological syntax: compositional handshapes (`["I","L","Y"]` not `ILY`), location, orientation, movement, NMFs, language code
+3. `SignDesc` — phonological syntax: named handshapes (`ILY`, `horns`, `F`) plus location, orientation, movement, NMFs, language code. Lists of primitives are only for unnamed simultaneous selections.
 
 A VRM the model has never seen must play the clip. That is the portability test.
 
@@ -69,9 +69,9 @@ video ──► [A] pose extract ──► marionet.pose/v0
 
 **B — Geometric retarget** (no net). Landmarks / MANO → VRM eulers (arms + 15 finger bones × 2), rest-relative, same convention as `library.js`. Mandatory baseline. Already Marionet syntax.
 
-**C — Discrete motion tokens.** FSQ over pose/hand tracks. SignVIP showed continuous embeddings fail as a translation target. Prefer codebook entries that align to primitives (extended index) over an unreadable 625-way soup.
+**C — Pose features (v1) / FSQ later.** v1 is a wrist-relative 21×3 cloud plus arm station and motion energy (`python/marionet/features.py`). FSQ tokens are an ablation if the linear heads saturate. SignVIP needed discrete codes to *decode video*; we classify phonology.
 
-**D — Translator: tokens → `SignDesc`.** Multi-head decoder. Emit compositions, not lexical atoms: `"F"` or `["I","L","Y"]`. Language is a prefix (`ase`, `eso`, `gsm`). Shared handshape inventory; per-language lexicons. L1: supervised CE on ASL-LEX fields. L2: gloss-conditioned. L3: cluster centroids → nearest L1 primitive or `unmapped`.
+**D — Translator: features → `SignDesc`.** Linear multi-head decoder (`scripts/phonology.py`): handshape is a named catalog id (`ILY`, `F`, `open_b`); multi-label only for unnamed simultaneous selections. Plus location, orientation, movement, handed. Language is a prefix (`ase`, `eso`, `gsm`). L1: supervised on ASL-LEX-aligned (or synthetic-from-lexicon) poses. L2: extract clip always; phonology via nearest L1 primitive. L3: cluster or `unmapped`. A VLM that emits the same JSON is an ablation, not the spine.
 
 **E — Compiler** (already in repo). `compile.js` is the inductive bias. The claimed artifact goes through it. Raw pose clips are a baseline.
 
@@ -83,7 +83,7 @@ video ──► [A] pose extract ──► marionet.pose/v0
 |---|---|---|
 | **E0** | Extract the corpus; fail rates (no hand, two people, blur) | Appendix table |
 | **E1** | Geometric retarget on held-out signers | Hand MPJPE; VRM vs source figure |
-| **E2** | Pose/tokens → `SignDesc` on ASL-LEX-aligned clips | Per-field F1; composition exact-match. Ablate atomic `ILY` vs `["I","L","Y"]` — compositions must win on held-out combos (horns = `["I","Y"]`) |
+| **E2** | Pose/tokens → `SignDesc` on ASL-LEX-aligned clips | Per-field F1; named-shape exact-match (`ILY` ≠ I, ≠ L, ≠ Y). Lists only for unnamed combos |
 | **E3** | Same clip on ≥3 VRMs (stylized + realistic) | Pose DTW / MOS. Claim is the clip, not the mesh |
 | **E4** | One unwritten language (EVK if the lab shares; else INCLUDE / AUTSL / BY-SA Wikisigns) | Train phonology on L1, extract on L2. Gloss retrieval if labels exist; qualitative VRM |
 | **E5** | Compiler reconstruction ± residual; native signer MOS | BLEU is a dev metric, not the conclusion |
@@ -124,4 +124,4 @@ Mac plays clips and compiles `SignDesc`. It never trains.
 
 ## Success
 
-A held-out isolated video, possibly EVK, becomes a JSON clip that a **new** VRM performs, plus a `SignDesc` a linguist can read (`["I","L","Y"]` at `chest-front`, not a latent). If the only thing that works is HaMeR projected onto bones with an unreadable codebook, that is the baseline, not the paper.
+A held-out isolated video, possibly EVK, becomes a JSON clip that a **new** VRM performs, plus a `SignDesc` a linguist can read (`ILY` at `chest-front`, not a latent and not a chord of letter signs). **One lemma is one sign:** English “I love you” is a translation of `ILY`, not three words and not three letters. If the only thing that works is HaMeR projected onto bones with an unreadable codebook, that is the baseline, not the paper.

@@ -93,7 +93,9 @@
         color: var(--accent);
       }
 
-      #replay {
+      #replay,
+      #reset-avatar,
+      button.ghost {
         align-self: start;
         padding: 6px 10px;
         border: 1px solid var(--line);
@@ -102,6 +104,97 @@
         color: var(--muted);
         font: inherit;
         cursor: pointer;
+      }
+
+      .row {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+
+      #search,
+      #language {
+        flex: 1;
+        min-width: 0;
+        padding: 7px 9px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: rgba(0, 0, 0, 0.28);
+        color: var(--text);
+        font: inherit;
+      }
+
+      #language {
+        flex: 0 0 42%;
+      }
+
+      #results {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        max-height: 18vh;
+        overflow: auto;
+      }
+
+      .hit {
+        text-align: left;
+        padding: 6px 8px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: transparent;
+        color: var(--text);
+        font: inherit;
+        cursor: pointer;
+      }
+
+      .hit.active,
+      .hit:hover {
+        border-color: var(--accent);
+      }
+
+      .hit .meta {
+        display: block;
+        color: var(--muted);
+        font-size: 11px;
+      }
+
+      #badge {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 999px;
+        border: 1px solid var(--line);
+        font-size: 11px;
+        color: var(--muted);
+      }
+
+      #badge.ready {
+        color: var(--accent);
+        border-color: var(--accent);
+      }
+
+      #inspector {
+        margin: 0;
+        font-size: 12px;
+        line-height: 1.45;
+        color: var(--muted);
+      }
+
+      #inspector b {
+        color: var(--text);
+        font-weight: 400;
+      }
+
+      label.ctrl {
+        display: flex;
+        gap: 6px;
+        align-items: center;
+        font-size: 12px;
+        color: var(--muted);
+      }
+
+      #speed {
+        width: 88px;
       }
 
       #signdesc {
@@ -113,7 +206,7 @@
         font: 11px/1.4 ui-monospace, "SF Mono", Menlo, monospace;
         white-space: pre-wrap;
         overflow: auto;
-        max-height: 42vh;
+        max-height: 22vh;
       }
 
       body.demo #hud {
@@ -144,11 +237,25 @@
     <div id="app"></div>
     <aside id="hud">
       <h1>marionet</h1>
-      <p class="lede">Phonology → VRM gesture code. Type A–Z or drop a custom .vrm.</p>
+      <p class="lede">Polyglot citation dictionary. One sign is one lemma — English word count is not the parse. Drop a .vrm or a .json clip. Type A–Z to fingerspell.</p>
       <p id="status">marionet / loading…</p>
+      <div class="row">
+        <input id="search" type="search" placeholder="search gloss or spoken word" autocomplete="off" />
+        <select id="language" aria-label="sign language">
+          <option value="all">all languages</option>
+        </select>
+      </div>
+      <div id="results"></div>
       <p id="gloss">—</p>
+      <span id="badge">—</span>
+      <p id="inspector"></p>
       <div id="alphabet"></div>
-      <button id="replay" type="button">replay</button>
+      <div class="row">
+        <button id="replay" type="button">replay</button>
+        <label class="ctrl"><input id="mirror" type="checkbox" /> mirror</label>
+        <label class="ctrl">speed <input id="speed" type="range" min="0.25" max="1.5" step="0.25" value="1" /></label>
+        <button id="reset-avatar" class="ghost" type="button">sample avatar</button>
+      </div>
       <pre id="signdesc">{}</pre>
     </aside>
     <div id="caption"></div>

@@ -20,7 +20,7 @@ const SIGNS = [
   {
     id: "ily",
     path: "./data/signs/ase/i-love-you.json",
-    caption: "ASL  ·  I-LOVE-YOU",
+    caption: "ASL  ·  ILY",
     out: "demo-ily.gif",
     holdTail: 0.55,
   },
