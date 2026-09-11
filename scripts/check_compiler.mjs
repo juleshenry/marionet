@@ -50,6 +50,53 @@ const openB = {
 };
 mustCompile(openB, "open_b");
 
+const yesNod = {
+  schema: "marionet.signdesc/v0",
+  id: "ase/test/yes-nod",
+  language: "ase",
+  gloss: "YES",
+  spoken: ["yes"],
+  handed: "1h",
+  dominant: { handshape: "S", location: "neutral-space", movement: [{ type: "linear" }] },
+  body: { head: "nod", torso: "neutral" },
+};
+const yesClip = mustCompile(yesNod, "yes-nod");
+if (!yesClip.bones.head || !yesClip.bones.neck) {
+  throw new Error("nod must compile head and neck tracks");
+}
+if (!yesClip.bones.rightIndexProximal) throw new Error("nod must still compile the hand");
+
+const lean = {
+  schema: "marionet.signdesc/v0",
+  id: "ase/test/lean",
+  language: "ase",
+  gloss: "LEAN",
+  spoken: [],
+  handed: "1h",
+  dominant: { handshape: "5", location: "chest-front", movement: [] },
+  body: { head: "neutral", torso: "lean-left" },
+};
+const leanClip = mustCompile(lean, "lean");
+if (!leanClip.bones.spine || !leanClip.bones.chest) {
+  throw new Error("torso lean must compile spine and chest");
+}
+
+const brow = {
+  schema: "marionet.signdesc/v0",
+  id: "ase/test/brow",
+  language: "ase",
+  gloss: "SURPRISE",
+  spoken: [],
+  handed: "1h",
+  dominant: { handshape: "5", location: "neutral-space", movement: [] },
+  body: { head: "neutral", torso: "neutral" },
+  nmf: { eyebrows: "raised", mouth: "open", eyegaze: "neutral" },
+};
+const browClip = mustCompile(brow, "brow");
+if (!browClip.expressions?.surprised || !browClip.expressions?.aa) {
+  throw new Error("face nmf must compile VRM expression tracks");
+}
+
 const blocked = {
   schema: "marionet.signdesc/v0",
   id: "ase/test/unmapped",

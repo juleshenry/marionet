@@ -7,14 +7,23 @@ from pathlib import Path
 import numpy as np
 
 from .catalogs import (
+    CLS_MIN_L1,
+    CLS_MIN_L2,
     HANDED,
     HANDSHAPE_IDS,
+    HANDSHAPE_SPECS,
+    INVENTORY,
+    L1_LANGUAGES,
     LOCATIONS,
     MOVEMENTS,
+    OCCLUDED,
     ORIENTATIONS,
+    POSE_CONF_MIN,
+    UNMAPPED,
     primitive_ids,
 )
-from .features import FEAT_DIM, pose_vector
+from .features import FEAT_DIM, pose_quality, pose_vector
+from .nmf import nmf_from_face, posture_from_pose
 
 
 def _softmax(z: np.ndarray) -> np.ndarray:
@@ -141,58 +150,98 @@ def labels_from_desc(desc: dict) -> dict[str, np.ndarray]:
 _NAMED_OVER_LETTERS = {"ILY": {"I", "L", "Y"}, "horns": {"I", "Y"}}
 
 
-def decode_heads(probs: dict[str, np.ndarray], thresh: float = 0.45):
+def cls_thresh(lang: str | None) -> float:
+    if (lang or "") in L1_LANGUAGES:
+        return CLS_MIN_L1
+    return CLS_MIN_L2
+
+
+def decode_heads(
+    probs: dict[str, np.ndarray],
+    thresh: float = CLS_MIN_L1,
+    *,
+    pose_conf: float = 1.0,
+    occluded: bool = False,
+):
+    """Never argmax-force a label. Low pose conf → occluded; low class conf → unmapped."""
+    if occluded or pose_conf < POSE_CONF_MIN:
+        # Handshape/location carry the reject token; handed/orientation stay in-vocab for schema.
+        return OCCLUDED, OCCLUDED, "palm-out", "hold", "1h"
     hs_p = probs["hs"]
     ids = [HANDSHAPE_IDS[i] for i, p in enumerate(hs_p) if p >= thresh]
     if not ids:
-        ids = [HANDSHAPE_IDS[int(hs_p.argmax())]]
-    for name, parts in _NAMED_OVER_LETTERS.items():
-        if name in ids:
-            ids = [i for i in ids if i == name or i not in parts]
-    handshape: str | list[str] = ids[0] if len(ids) == 1 else ids
-    loc = LOCATIONS[int(probs["loc"].argmax())]
-    ori = ORIENTATIONS[int(probs["ori"].argmax())]
-    mov = MOVEMENTS[int(probs["mov"].argmax())]
-    han = HANDED[int(probs["han"].argmax())]
+        # Reject, do not pick argmax — a wrong discrete handshape is worse than unmapped.
+        handshape: str | list[str] = UNMAPPED
+    else:
+        for name, parts in _NAMED_OVER_LETTERS.items():
+            if name in ids:
+                ids = [i for i in ids if i == name or i not in parts]
+        handshape = ids[0] if len(ids) == 1 else ids
+    loc_p = float(probs["loc"].max())
+    loc = LOCATIONS[int(probs["loc"].argmax())] if loc_p >= thresh else UNMAPPED
+    ori_p = float(probs["ori"].max())
+    ori = ORIENTATIONS[int(probs["ori"].argmax())] if ori_p >= thresh else UNMAPPED
+    mov_p = float(probs["mov"].max())
+    mov = MOVEMENTS[int(probs["mov"].argmax())] if mov_p >= thresh else UNMAPPED
+    han_p = float(probs["han"].max())
+    han = HANDED[int(probs["han"].argmax())] if han_p >= thresh else UNMAPPED
     return handshape, loc, ori, mov, han
 
 
 def predict_signdesc(pose: dict, model: PhonologyHeads, *, lang: str | None = None, gloss: str | None = None) -> dict:
+    language = lang or pose.get("language") or "und"
+    gloss = gloss or pose.get("gloss") or "UNKNOWN"
+    quality = pose_quality(pose)
     x = pose_vector(pose)[None, :]
     p = model.forward(x)
     p1 = {k: v[0] for k, v in p.items()}
-    handshape, loc, ori, mov, han = decode_heads(p1)
-    language = lang or pose.get("language") or "und"
-    gloss = gloss or pose.get("gloss") or "UNKNOWN"
-    movement = [] if mov == "hold" else [{"type": mov}]
+    handshape, loc, ori, mov, han = decode_heads(
+        p1,
+        thresh=cls_thresh(language),
+        pose_conf=quality["mean_conf"],
+        occluded=quality["occluded"],
+    )
+    movement = [] if mov in {"hold", UNMAPPED, OCCLUDED} else [{"type": mov}]
     sid = f"{language}/pred/{gloss}".lower().replace(" ", "-")
-    from .catalogs import HANDSHAPE_SPECS, LOCATIONS as LOCS
-
     known_hs = (
         all(i in HANDSHAPE_SPECS for i in handshape)
         if isinstance(handshape, list)
         else handshape in HANDSHAPE_SPECS
     )
-    compile_ready = bool(known_hs and loc in LOCS)
+    compile_ready = bool(known_hs and loc in LOCATIONS and han in HANDED)
+    nmf = nmf_from_face(pose)
+    body = posture_from_pose(pose)
     return {
         "schema": "marionet.signdesc/v0",
         "id": sid,
         "language": language,
         "gloss": gloss,
         "spoken": [gloss] if gloss else [],
-        "handed": han,
+        "handed": han if han in HANDED else "1h",
         "dominant": {
             "handshape": handshape,
-            "orientation": ori,
+            "orientation": ori if ori in ORIENTATIONS else "palm-out",
             "location": loc,
             "movement": movement,
         },
-        "library": {"handshape": handshape if known_hs else None, "location": loc},
+        "nmf": nmf,
+        "body": body,
+        "inventory": INVENTORY,
+        "library": {
+            "handshape": handshape if known_hs else None,
+            "location": loc if loc in LOCATIONS else None,
+        },
         "compileReady": compile_ready,
-        "source": {"dataset": "pose-classifier", "backend": pose.get("backend")},
+        "source": {
+            "dataset": "pose-classifier",
+            "backend": pose.get("backend"),
+            "transfer": "supervised-l1" if language in L1_LANGUAGES else "articulatory-nn-reject",
+        },
         "scores": {
             "handshape": {HANDSHAPE_IDS[i]: round(float(p1["hs"][i]), 3) for i in np.argsort(-p1["hs"])[:5]},
             "location": loc,
             "location_p": round(float(p1["loc"].max()), 3),
+            "pose_conf": round(float(quality["mean_conf"]), 3),
+            "occluded_frac": round(float(quality["occluded_frac"]), 3),
         },
     }

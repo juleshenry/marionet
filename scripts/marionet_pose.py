@@ -444,6 +444,58 @@ ARM_STATIONS["head"]["left"] = _mirror_arm(ARM_STATIONS["head"]["right"])
 ARM_STATIONS["neutral-space"]["left"] = _mirror_arm(ARM_STATIONS["neutral-space"]["right"])
 
 
+def _mid(a, b):
+    return [(a[i] + b[i]) / 2.0 for i in range(3)]
+
+
+def _clamp(v: float, lo: float, hi: float) -> float:
+    return max(lo, min(hi, v))
+
+
+def axial_eulers(body_frame: dict | None, face_frame: dict | None = None) -> dict[str, tuple[float, float, float]]:
+    """Spine / chest / neck / head from torso landmarks + optional head pose.
+
+    Rest-relative, same additive convention as library.js. Hands-at-head is
+    classify_station; this is the body moving.
+    """
+    out: dict[str, tuple[float, float, float]] = {}
+    kps = (body_frame or {}).get("keypoints") or {}
+    ls, rs = _xyz(kps.get("leftShoulder")), _xyz(kps.get("rightShoulder"))
+    lh, rh = _xyz(kps.get("leftHip")), _xyz(kps.get("rightHip"))
+    if ls and rs and lh and rh:
+        sh, hip = _mid(ls, rs), _mid(lh, rh)
+        dx = sh[0] - hip[0]
+        dy = sh[1] - hip[1]
+        dz = sh[2] - hip[2]
+        span = max(0.15, abs(dy))
+        roll = _clamp(dx / span, -0.45, 0.45)
+        pitch = _clamp(dz / span, -0.45, 0.45)
+        sh_line = rs[0] - ls[0]
+        yaw = _clamp(-0.35 * (sh_line - 0.36), -0.35, 0.35) if abs(sh_line) > 1e-4 else 0.0
+        out["spine"] = (round(0.55 * pitch, 4), round(0.4 * yaw, 4), round(0.55 * roll, 4))
+        out["chest"] = (round(0.4 * pitch, 4), round(0.3 * yaw, 4), round(0.4 * roll, 4))
+    head = {}
+    if isinstance(face_frame, dict) and isinstance(face_frame.get("head"), dict):
+        head = face_frame["head"]
+    yaw = float(head.get("yaw") or 0.0)
+    pitch = float(head.get("pitch") or 0.0)
+    roll = float(head.get("roll") or 0.0)
+    if ls and rs:
+        nose = _xyz(kps.get("nose"))
+        if nose and not head:
+            sh = _mid(ls, rs)
+            yaw = nose[0] - sh[0]
+            pitch = -(nose[1] - sh[1] - 0.28)
+            roll = 0.0
+    if yaw or pitch or roll:
+        yaw = _clamp(yaw * 2.2, -0.6, 0.6)
+        pitch = _clamp(pitch * 2.2, -0.5, 0.5)
+        roll = _clamp(roll * 2.2, -0.45, 0.45)
+        out["neck"] = (round(0.45 * pitch, 4), round(0.7 * yaw, 4), round(0.7 * roll, 4))
+        out["head"] = (round(0.55 * pitch, 4), round(0.35 * yaw, 4), round(0.35 * roll, 4))
+    return out
+
+
 def retarget_pose(pose: dict, side_pref: str = "right") -> dict:
     errors = validate_pose(pose)
     if errors:
@@ -457,9 +509,13 @@ def retarget_pose(pose: dict, side_pref: str = "right") -> dict:
     def push(bone: str, t: float, eul):
         bones.setdefault(bone, []).append([round(t, 4), [round(eul[0], 4), round(eul[1], 4), round(eul[2], 4)]])
 
+    face = pose.get("face") or []
     for i in range(n):
         t = i / fps if fps else 0.0
         body_frame = body[i] if i < len(body) else None
+        face_frame = face[i] if i < len(face) else None
+        for bone, eul in axial_eulers(body_frame, face_frame).items():
+            push(bone, t, eul)
         for side in ("right", "left"):
             frames = pose.get(side) or []
             frame = frames[i] if i < len(frames) else None

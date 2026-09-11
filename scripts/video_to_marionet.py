@@ -12,7 +12,7 @@ This script never fetches. Acquisition is out of scope.
 Backends:
   dummy         synthetic pose (no model, no video required)
   mediapipe     local Pose+Hands if mediapipe + opencv are installed
-  dwpose_hamer  not in-process; prints the GPU contract and exits 2
+  dwpose_hamer  not in-process; prints the GPU contract (body+hands+face, conf) and exits 2
 """
 
 from __future__ import annotations
@@ -33,6 +33,7 @@ from marionet_pose import (  # noqa: E402
     FAIL_NO_VIDEO,
     FAIL_OK,
     FAIL_OUT_OF_FRAME,
+    attach_canonical,
     dummy_pose,
     retarget_pose,
     validate_clip,
@@ -70,6 +71,54 @@ def extract_dummy(video: Path | None, lang: str | None, gloss: str | None) -> di
 
 def _mp_xyz(landmark) -> list[float]:
     return [float(landmark.x), float(landmark.y), float(landmark.z)]
+
+
+def _hand_conf(handed, lms) -> float:
+    score = float(handed.classification[0].score)
+    vis = []
+    for lm in lms.landmark:
+        v = getattr(lm, "visibility", None)
+        if v is not None:
+            vis.append(float(v))
+    if vis:
+        score = min(score, sum(vis) / len(vis))
+    return max(0.0, min(1.0, score))
+
+
+def _head_from_kps(kps: dict) -> dict:
+    def g(name):
+        v = kps.get(name)
+        if not (isinstance(v, (list, tuple)) and len(v) >= 3):
+            return None
+        return [float(v[0]), float(v[1]), float(v[2])]
+
+    le, re, nose = g("leftEar"), g("rightEar"), g("nose")
+    ls, rs = g("leftShoulder"), g("rightShoulder")
+    roll = float(le[1] - re[1]) if le and re else 0.0
+    yaw = float(nose[0] - 0.5 * (ls[0] + rs[0])) if nose and ls and rs else 0.0
+    pitch = float(nose[1] - 0.5 * (le[1] + re[1])) if nose and le and re else 0.0
+    return {"yaw": round(yaw, 4), "pitch": round(pitch, 4), "roll": round(roll, 4)}
+
+
+# MediaPipe Face Mesh (468). Used when the module loads; Pose face is the fallback.
+_FM = {
+    "nose": 1,
+    "leftEye": 33,
+    "rightEye": 263,
+    "leftBrow": 105,
+    "rightBrow": 334,
+    "upperLip": 13,
+    "lowerLip": 14,
+    "mouthLeft": 61,
+    "mouthRight": 291,
+    "leftEar": 234,
+    "rightEar": 454,
+}
+
+
+def _face_from_mesh(lms) -> dict:
+    kps = {name: _mp_xyz(lms.landmark[idx]) for name, idx in _FM.items() if idx < len(lms.landmark)}
+    return kps
 
 
 def _blur_var(gray) -> float:
@@ -111,12 +160,20 @@ def extract_mediapipe(video: Path, lang: str | None, gloss: str | None) -> dict:
     fps = min(fps, 30.0)
     pose_mod = mp.solutions.pose
     hands_mod = mp.solutions.hands
+    face_mod = getattr(mp.solutions, "face_mesh", None)
     body_frames = []
     right_frames = []
     left_frames = []
+    face_frames = []
     blur_low = 0
     no_hand = 0
     n = 0
+    face_net = None
+    try:
+        if face_mod is not None:
+            face_net = face_mod.FaceMesh(static_image_mode=False, max_num_faces=1, refine_landmarks=False)
+    except Exception:
+        face_net = None
     with pose_mod.Pose(static_image_mode=False, model_complexity=1) as pose_net, hands_mod.Hands(
         static_image_mode=False, max_num_hands=2, model_complexity=1
     ) as hands_net:
@@ -138,27 +195,81 @@ def extract_mediapipe(video: Path, lang: str | None, gloss: str | None) -> dict:
             if pose_res.pose_world_landmarks:
                 lms = pose_res.pose_world_landmarks.landmark
                 for name, idx in MP_POSE_INDEX.items():
-                    kps[name] = _mp_xyz(lms[idx])
+                    if idx < len(lms):
+                        kps[name] = _mp_xyz(lms[idx])
             body_frames.append({"t": round(t, 4), "keypoints": kps})
+
+            face_kps = {}
+            if face_net is not None:
+                try:
+                    face_res = face_net.process(rgb)
+                    if face_res.multi_face_landmarks:
+                        face_kps = _face_from_mesh(face_res.multi_face_landmarks[0])
+                except Exception:
+                    face_kps = {}
+            if not face_kps:
+                for name in (
+                    "nose",
+                    "leftEye",
+                    "rightEye",
+                    "leftEar",
+                    "rightEar",
+                    "mouthLeft",
+                    "mouthRight",
+                ):
+                    if name in kps:
+                        face_kps[name] = kps[name]
+            face_frames.append(
+                {
+                    "t": round(t, 4),
+                    "keypoints": face_kps,
+                    "head": _head_from_kps({**kps, **face_kps}),
+                    "conf": 1.0 if face_kps else 0.0,
+                }
+            )
 
             left_xyz = None
             right_xyz = None
+            left_conf = 0.0
+            right_conf = 0.0
             if hand_res.multi_hand_landmarks and hand_res.multi_handedness:
                 for hand_lms, handed in zip(hand_res.multi_hand_landmarks, hand_res.multi_handedness):
                     label = handed.classification[0].label.lower()
                     xyz = [_mp_xyz(lm) for lm in hand_lms.landmark]
+                    conf = _hand_conf(handed, hand_lms)
                     # Selfie-camera labels are mirrored; we still store as labeled.
                     if label == "left":
-                        left_xyz = xyz
+                        left_xyz, left_conf = xyz, conf
                     else:
-                        right_xyz = xyz
+                        right_xyz, right_conf = xyz, conf
             if left_xyz is None and right_xyz is None:
                 no_hand += 1
-            left_frames.append({"t": round(t, 4), "xyz": left_xyz} if left_xyz else {"t": round(t, 4)})
-            right_frames.append({"t": round(t, 4), "xyz": right_xyz} if right_xyz else {"t": round(t, 4)})
+            left_occ = bool(left_xyz is not None and left_conf < 0.4)
+            right_occ = bool(right_xyz is not None and right_conf < 0.4)
+            if left_xyz and right_xyz:
+                dx = left_xyz[0][0] - right_xyz[0][0]
+                dy = left_xyz[0][1] - right_xyz[0][1]
+                if dx * dx + dy * dy < 0.08 * 0.08:
+                    if left_conf <= right_conf:
+                        left_occ = True
+                    else:
+                        right_occ = True
+            left_frames.append(
+                {"t": round(t, 4), "xyz": left_xyz, "conf": round(left_conf, 3), "occluded": left_occ}
+                if left_xyz
+                else {"t": round(t, 4), "conf": 0.0}
+            )
+            right_frames.append(
+                {"t": round(t, 4), "xyz": right_xyz, "conf": round(right_conf, 3), "occluded": right_occ}
+                if right_xyz
+                else {"t": round(t, 4), "conf": 0.0}
+            )
     cap.release()
+    if face_net is not None:
+        face_net.close()
 
     status = FAIL_OK
+    occ_n = sum(1 for fr in right_frames + left_frames if fr.get("occluded"))
     if n == 0:
         status = FAIL_EMPTY
     elif no_hand / max(n, 1) > 0.5:
@@ -177,8 +288,12 @@ def extract_mediapipe(video: Path, lang: str | None, gloss: str | None) -> dict:
                 edge += 1
         if edge / max(n, 1) > 0.4:
             status = FAIL_OUT_OF_FRAME
+        elif occ_n / max(n, 1) > 0.5:
+            from marionet_pose import FAIL_OCCLUDED
 
-    return {
+            status = FAIL_OCCLUDED
+
+    pose = {
         "schema": "marionet.pose/v0",
         "fps": fps,
         "n_frames": n,
@@ -189,10 +304,16 @@ def extract_mediapipe(video: Path, lang: str | None, gloss: str | None) -> dict:
         "body": body_frames,
         "right": right_frames,
         "left": left_frames,
-        "camera": {"frame": "mediapipe", "note": "image-normalized hands; world-landmarks body"},
+        "face": face_frames,
+        "camera": {"frame": "mediapipe", "note": "image-normalized hands; world-landmarks body; face mesh or pose face"},
         "backend": "mediapipe",
-        "e0": {"no_hand_frac": round(no_hand / max(n, 1), 3), "blur_frac": round(blur_low / max(n, 1), 3)},
+        "e0": {
+            "no_hand_frac": round(no_hand / max(n, 1), 3),
+            "blur_frac": round(blur_low / max(n, 1), 3),
+            "occluded_frac": round(occ_n / max(n, 1), 3),
+        },
     }
+    return attach_canonical(pose)
 
 
 def extract(backend: str, video: Path | None, lang: str | None, gloss: str | None) -> dict:
@@ -200,8 +321,10 @@ def extract(backend: str, video: Path | None, lang: str | None, gloss: str | Non
         return extract_dummy(video, lang, gloss)
     if backend == "dwpose_hamer":
         raise SystemExit(
-            "dwpose_hamer is the rented-GPU contract (batch 1, 48GB, isolated clips), "
-            "not an in-process backend yet. Emit the same marionet.pose/v0 schema. "
+            "dwpose_hamer is the rented-GPU contract (batch 1, 48GB, isolated clips): "
+            "DWPose body + HaMeR hands + face/head (DWPose face or a head-pose/AU estimator). "
+            "Per-hand conf/occluded; below τ_pose=0.35 the frame is occluded, not a guessed handshape. "
+            "Emit the same marionet.pose/v0 schema. Not an in-process backend yet. "
             "Use --backend mediapipe or dummy on this machine."
         )
     if backend == "mediapipe":
@@ -218,11 +341,18 @@ def default_output(video: Path | None, gloss: str | None, lang: str | None) -> P
 
 
 def run_one(args: argparse.Namespace, video: Path | None, lang: str | None, gloss: str | None, output: Path) -> dict:
-    pose = extract(args.backend, video, lang, gloss)
+    pose = attach_canonical(extract(args.backend, video, lang, gloss))
     perr = validate_pose(pose)
     if perr:
         raise SystemExit("invalid pose: " + "; ".join(perr))
     clip = retarget_pose(pose)
+    try:
+        sys.path.insert(0, str(ROOT / "python"))
+        from marionet.nmf import expression_tracks, nmf_from_face
+
+        clip["expressions"] = expression_tracks(nmf_from_face(pose), clip.get("duration") or 0.0)
+    except Exception:
+        clip.setdefault("expressions", {})
     cerr = validate_clip(clip)
     if cerr:
         raise SystemExit("invalid clip: " + "; ".join(cerr))
@@ -256,6 +386,9 @@ def self_test() -> int:
     pose = dummy_pose(language="eso", gloss="KASS")
     perr = validate_pose(pose)
     assert not perr, perr
+    assert pose.get("canonical") and pose["canonical"]["end"] > pose["canonical"]["start"]
+    assert pose["right"][0].get("conf") == 1.0
+    assert pose.get("face")
     clip = retarget_pose(pose)
     cerr = validate_clip(clip)
     assert not cerr, cerr
@@ -263,6 +396,8 @@ def self_test() -> int:
     assert clip["duration"] > 0
     assert "rightHand" in clip["bones"]
     assert any(k.startswith("rightIndex") for k in clip["bones"])
+    assert "spine" in clip["bones"] or "chest" in clip["bones"], "full-body retarget must emit axial bones"
+    assert "spine" in clip["bones"] and "chest" in clip["bones"]
     out = ROOT / "data" / "clips" / "self-test.json"
     write_json(out, clip)
     print(f"self-test ok  {out}  duration={clip['duration']} bones={len(clip['bones'])}")

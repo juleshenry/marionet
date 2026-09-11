@@ -116,7 +116,10 @@ def cmd_predict(args: argparse.Namespace) -> int:
 
 
 def cmd_self_test() -> int:
-    from marionet.catalogs import HANDSHAPE_SPECS
+    from marionet.catalogs import HANDSHAPE_SPECS, NMF_DEFAULT, OCCLUDED, UNMAPPED
+    from marionet.nmf import nmf_from_face, posture_from_pose, torso_from_body
+    from marionet.residual import apply_residual, macro_pose_unchanged
+    from marionet_pose import canonical_span, dummy_pose
 
     descs = []
     for hs in ("A", "5", "F", "I", "L", "Y", "ILY", "open_b"):
@@ -163,11 +166,92 @@ def cmd_self_test() -> int:
     ily = pose_from_desc(descs[-1], rng=np.random.default_rng(3))
     pred = predict_signdesc(ily, model, lang="ase", gloss="ILY")
     pred_hs = pred["dominant"]["handshape"]
-    print(json.dumps({"loc_acc": round(loc_acc, 3), "hs_acc": round(hs_acc, 3), "ily": pred_hs, "n": len(ids), "n_hs": len(HANDSHAPE_SPECS)}))
     if pred_hs != "ILY":
         raise SystemExit(f"ILY must decode as the named shape, got {pred_hs!r}")
     if loc_acc < 0.85 or hs_acc < 0.75:
         raise SystemExit(f"self-test too weak loc={loc_acc:.2f} hs={hs_acc:.2f}")
+
+    # Never argmax-force: a flat head must be unmapped, not a random catalog id.
+    flat = {
+        "hs": np.full(len(HANDSHAPE_IDS), 0.05),
+        "loc": np.full(len(P["loc"][0]), 1.0 / max(len(P["loc"][0]), 1)),
+        "ori": np.full(len(P["ori"][0]), 1.0 / max(len(P["ori"][0]), 1)),
+        "mov": np.full(len(P["mov"][0]), 1.0 / max(len(P["mov"][0]), 1)),
+        "han": np.full(len(P["han"][0]), 1.0 / max(len(P["han"][0]), 1)),
+    }
+    rejected, *_ = decode_heads(flat, thresh=0.45)
+    if rejected != UNMAPPED:
+        raise SystemExit(f"low-confidence decode must be unmapped, got {rejected!r}")
+
+    occ_pose = dummy_pose(language="ase", gloss="X")
+    for fr in occ_pose["right"]:
+        fr["conf"] = 0.05
+        fr["occluded"] = True
+    occ = predict_signdesc(occ_pose, model, lang="ase", gloss="X")
+    if occ["dominant"]["handshape"] != OCCLUDED:
+        raise SystemExit(f"occluded pose must decode as occluded, got {occ['dominant']['handshape']!r}")
+    if occ["compileReady"]:
+        raise SystemExit("occluded SignDesc must not compile")
+
+    dummy = dummy_pose(language="ase", gloss="REST")
+    nmf = nmf_from_face(dummy)
+    if nmf["eyebrows"] != NMF_DEFAULT["eyebrows"] or nmf["mouth"] != "neutral" or nmf["head"] != "neutral":
+        raise SystemExit(f"dummy rest face must be NMF-neutral, got {nmf}")
+    rest_body = posture_from_pose(dummy)
+    if rest_body["head"] != "neutral" or rest_body["torso"] != "neutral":
+        raise SystemExit(f"dummy rest posture must be neutral, got {rest_body}")
+    leaned = dummy_pose(language="ase", gloss="LEAN")
+    for bf in leaned["body"]:
+        kps = bf["keypoints"]
+        kps["leftShoulder"] = [kps["leftShoulder"][0] - 0.12, kps["leftShoulder"][1], kps["leftShoulder"][2]]
+        kps["rightShoulder"] = [kps["rightShoulder"][0] - 0.12, kps["rightShoulder"][1], kps["rightShoulder"][2]]
+    if torso_from_body(leaned) != "lean-left":
+        raise SystemExit(f"shifted shoulders must decode as lean-left, got {torso_from_body(leaned)}")
+
+    # Rest → hold at chest → retract. Nucleus must not include the lap frames.
+    hold = dummy_pose(language="ase", gloss="HOLD", seconds=1.0)
+    n = hold["n_frames"]
+    for i, bf in enumerate(hold["body"]):
+        kps = bf["keypoints"]
+        if i < 8 or i >= n - 8:
+            kps["rightWrist"] = [0.2, -0.35, 0.08]
+        else:
+            kps["rightWrist"] = [0.2, 0.12, 0.22]
+    hold.pop("canonical", None)
+    span = canonical_span(hold)
+    if span["start"] < 6 or span["end"] > n - 6:
+        raise SystemExit(f"nucleus window leaked prep/retract: {span}")
+    if span["n"] < 6:
+        raise SystemExit(f"nucleus window too short: {span}")
+
+    compiled = {
+        "schema": "marionet.clip/v0",
+        "source": "authored",
+        "duration": 1.0,
+        "bones": {
+            "rightUpperArm": [[0.0, [0.1, 0.2, 0.3]], [1.0, [0.1, 0.2, 0.3]]],
+            "rightIndexProximal": [[0.0, [0.0, 0.0, 0.4]], [1.0, [0.0, 0.0, 0.4]]],
+        },
+    }
+    retargeted = {
+        "schema": "marionet.clip/v0",
+        "source": "retargeted",
+        "duration": 1.0,
+        "bones": {
+            "rightUpperArm": [[0.0, [9.0, 9.0, 9.0]], [1.0, [9.0, 9.0, 9.0]]],
+            "rightIndexProximal": [[0.0, [0.0, 0.0, 1.2]], [1.0, [0.0, 0.0, 1.2]]],
+        },
+    }
+    mixed = apply_residual(compiled, retargeted, eps=0.12)
+    if mixed["source"] != "compiled+residual":
+        raise SystemExit("residual clip must be tagged compiled+residual")
+    if not macro_pose_unchanged(compiled, mixed):
+        raise SystemExit("residual must not move macro-pose")
+    finger = mixed["bones"]["rightIndexProximal"][0][1][2]
+    if abs(finger - 0.52) > 1e-6:  # 0.4 + clip(0.8, 0.12)
+        raise SystemExit(f"finger residual should clip to ε, got {finger}")
+
+    print(json.dumps({"loc_acc": round(loc_acc, 3), "hs_acc": round(hs_acc, 3), "ily": pred_hs, "n": len(ids), "n_hs": len(HANDSHAPE_SPECS), "reject": rejected, "nucleus": span}))
     return 0
 
 

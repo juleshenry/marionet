@@ -1,8 +1,9 @@
 """Label spaces aligned with src/ir.js + src/library.js. Named shapes are atoms (ILY, horns).
 
-marionet.phonology/v0 is a language-agnostic articulatory subset (selected fingers,
-major location, palm facing, path type, coarse NMFs). It is not an ASL phoneme
-inventory. Language-specific leftovers are the reject tokens unmapped / occluded,
+marionet.phonology/v0 is a language-agnostic articulatory subset over the whole
+body: selected fingers, major location, palm facing, path type, head, torso,
+coarse face. It is not an ASL phoneme inventory and not “manual phonology.”
+Language-specific leftovers are the reject tokens unmapped / occluded,
 never a forced nearest L1 label.
 """
 
@@ -76,9 +77,11 @@ HANDED = ["1h", "2h-symmetric", "2h-asymmetric", "2h-alternating"]
 
 NMF_EYEBROWS = ["neutral", "raised", "furrowed"]
 NMF_MOUTH = ["neutral", "open", "spread", "pursed"]
-NMF_EYEGAZE = ["neutral", "left", "right", "up", "down"]
-NMF_HEAD = ["neutral", "tilt-left", "tilt-right", "turn-left", "turn-right", "nod"]
+NMF_EYEGAZE = ["neutral", "left", "right", "up", "down", "hand"]
+NMF_HEAD = ["neutral", "tilt-left", "tilt-right", "turn-left", "turn-right", "nod", "shake"]
+TORSO = ["neutral", "lean-left", "lean-right", "forward"]
 NMF_DEFAULT = {"eyebrows": "neutral", "mouth": "neutral", "eyegaze": "neutral", "head": "neutral"}
+BODY_DEFAULT = {"head": "neutral", "torso": "neutral"}
 
 # Languages with L1 phonological spreadsheets. Others are L2/L3 transfer-with-reject.
 L1_LANGUAGES = frozenset({"ase"})

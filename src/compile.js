@@ -1,8 +1,40 @@
 import { CLIP_SCHEMA, isCompilable, validateSignDesc } from "./ir.js";
-import { mergePoses, solveHandshape, solveLocation, solveOrientation } from "./library.js";
+import {
+  mergePoses,
+  solveHandshape,
+  solveHead,
+  solveLocation,
+  solveOrientation,
+  solveTorso,
+} from "./library.js";
 
 const HOLD = 0.9;
 const RISE = 0.4;
+
+/** Coarse face labels → VRM 1.0 preset expression weights. Per-avatar names still vary. */
+const NMF_TO_EXPR = {
+  eyebrows: { raised: [["surprised", 0.7]], furrowed: [["angry", 0.55]] },
+  mouth: { open: [["aa", 0.65]], spread: [["ee", 0.45], ["happy", 0.25]], pursed: [["ou", 0.5]] },
+  eyegaze: { left: [["lookLeft", 1]], right: [["lookRight", 1]], up: [["lookUp", 1]], down: [["lookDown", 1]] },
+};
+
+function expressionsFromNmf(nmf, duration) {
+  const out = {};
+  if (!nmf || typeof nmf !== "object") return out;
+  const hold = (v) => [
+    [0, 0],
+    [RISE, v],
+    [duration, v],
+  ];
+  for (const [field, table] of Object.entries(NMF_TO_EXPR)) {
+    const rows = table[nmf[field]];
+    if (!rows) continue;
+    for (const [name, weight] of rows) {
+      out[name] = hold(weight);
+    }
+  }
+  return out;
+}
 
 function track(from, to, tHold = HOLD) {
   return [
@@ -186,7 +218,11 @@ export function compileSignDesc(desc, { side = "right" } = {}) {
       base = pose;
     }
   }
-  const { bones, duration } = movementKeyframes(base, art.movement ?? [], side);
+  const head = desc.body?.head || desc.nmf?.head || "neutral";
+  const torso = desc.body?.torso || desc.nmf?.torso || "neutral";
+  base = mergePoses(base, solveTorso(torso), solveHead(head === "nod" || head === "shake" ? "neutral" : head));
+  const { bones, duration: armDur } = movementKeyframes(base, art.movement ?? [], side);
+  const duration = Math.max(armDur, overlayAxial(bones, head, torso, armDur));
 
   return {
     schema: CLIP_SCHEMA,
@@ -196,6 +232,59 @@ export function compileSignDesc(desc, { side = "right" } = {}) {
     vrmHumanoid: "vrm1",
     duration,
     bones,
-    expressions: {},
+    expressions: expressionsFromNmf(desc.nmf, duration),
   };
+}
+
+function overlayAxial(bones, head, torso, duration) {
+  const hold = solveTorso(torso);
+  const staticHead = head === "nod" || head === "shake" ? {} : solveHead(head);
+  const pose = mergePoses(hold, staticHead);
+  const write = (bone, keys) => {
+    bones[bone] = keys;
+  };
+  let end = duration;
+  for (const bone of Object.keys(pose)) {
+    const to = pose[bone];
+    write(bone, [
+      [0, [0, 0, 0]],
+      [RISE, [to.x, to.y, to.z]],
+      [duration, [to.x, to.y, to.z]],
+    ]);
+  }
+  if (head === "nod") {
+    const keys = [[0, [0, 0, 0]]];
+    let t = RISE;
+    const down = [0.28, 0, 0];
+    const up = [0.04, 0, 0];
+    keys.push([t, up]);
+    for (let i = 0; i < 2; i++) {
+      t += 0.18;
+      keys.push([t, down]);
+      t += 0.18;
+      keys.push([t, up]);
+    }
+    end = Math.max(duration, t + 0.15);
+    keys.push([end, up]);
+    write("neck", keys.map(([tt, e]) => [tt, [e[0] * 0.45, 0, 0]]));
+    write("head", keys);
+  }
+  if (head === "shake") {
+    const keys = [[0, [0, 0, 0]]];
+    let t = RISE;
+    keys.push([t, [0, 0, 0]]);
+    for (let i = 0; i < 2; i++) {
+      t += 0.16;
+      keys.push([t, [0, 0.32, 0]]);
+      t += 0.16;
+      keys.push([t, [0, -0.32, 0]]);
+    }
+    t += 0.16;
+    keys.push([t, [0, 0, 0]]);
+    end = Math.max(duration, t + 0.12);
+    keys.push([end, [0, 0, 0]]);
+    write("neck", keys);
+    write("head", keys.map(([tt, e]) => [tt, [0, e[1] * 0.4, 0]]));
+  }
+  return end;
 }

@@ -55,6 +55,23 @@ export const LOCATIONS = Object.freeze([
 
 export const POSE_SCHEMA = "marionet.pose/v0";
 export const CLIP_SOURCES = Object.freeze(["authored", "retargeted", "compiled+residual"]);
+export const INVENTORY = "marionet.phonology/v0";
+export const UNMAPPED = "unmapped";
+export const OCCLUDED = "occluded";
+
+export const NMF_EYEBROWS = Object.freeze(["neutral", "raised", "furrowed"]);
+export const NMF_MOUTH = Object.freeze(["neutral", "open", "spread", "pursed"]);
+export const NMF_EYEGAZE = Object.freeze(["neutral", "left", "right", "up", "down", "hand"]);
+export const NMF_HEAD = Object.freeze([
+  "neutral",
+  "tilt-left",
+  "tilt-right",
+  "turn-left",
+  "turn-right",
+  "nod",
+  "shake",
+]);
+export const TORSO = Object.freeze(["neutral", "lean-left", "lean-right", "forward"]);
 
 /** Solver catalogs. Lexicon rows may use unmapped ASL-LEX codes; only these compile. */
 
@@ -75,7 +92,37 @@ export function validateSignDesc(desc) {
     if (!isObj(desc.nondominant)) errors.push("nondominant must be an object");
     else validateArticulator(desc.nondominant, "nondominant", errors);
   }
-  if (desc.nmf != null && !isObj(desc.nmf)) errors.push("nmf must be an object");
+  if (desc.nmf != null) {
+    if (!isObj(desc.nmf)) errors.push("nmf must be an object");
+    else {
+      if (desc.nmf.eyebrows != null && !NMF_EYEBROWS.includes(desc.nmf.eyebrows)) {
+        errors.push(`nmf.eyebrows unknown: ${desc.nmf.eyebrows}`);
+      }
+      if (desc.nmf.mouth != null && !NMF_MOUTH.includes(desc.nmf.mouth)) {
+        errors.push(`nmf.mouth unknown: ${desc.nmf.mouth}`);
+      }
+      if (desc.nmf.eyegaze != null && !NMF_EYEGAZE.includes(desc.nmf.eyegaze)) {
+        errors.push(`nmf.eyegaze unknown: ${desc.nmf.eyegaze}`);
+      }
+      if (desc.nmf.head != null && !NMF_HEAD.includes(desc.nmf.head)) {
+        errors.push(`nmf.head unknown: ${desc.nmf.head}`);
+      }
+      if (desc.nmf.torso != null && !TORSO.includes(desc.nmf.torso)) {
+        errors.push(`nmf.torso unknown: ${desc.nmf.torso}`);
+      }
+    }
+  }
+  if (desc.body != null) {
+    if (!isObj(desc.body)) errors.push("body must be an object");
+    else {
+      if (desc.body.head != null && !NMF_HEAD.includes(desc.body.head)) {
+        errors.push(`body.head unknown: ${desc.body.head}`);
+      }
+      if (desc.body.torso != null && !TORSO.includes(desc.body.torso)) {
+        errors.push(`body.torso unknown: ${desc.body.torso}`);
+      }
+    }
+  }
   return errors;
 }
 
@@ -102,10 +149,19 @@ function validateArticulator(art, label, errors) {
 export function isCompilable(desc) {
   if (typeof desc?.compileReady === "boolean") return desc.compileReady;
   const lib = desc?.library;
-  if (lib) return Boolean(lib.handshape && lib.location && LOCATIONS.includes(lib.location));
+  if (lib) {
+    const hs = lib.handshape;
+    const loc = lib.location;
+    if (!hs || !loc || loc === UNMAPPED || loc === OCCLUDED) return false;
+    if (hs === UNMAPPED || hs === OCCLUDED) return false;
+    return LOCATIONS.includes(loc);
+  }
   const art = desc?.dominant;
   const loc = art?.location;
-  return Boolean(art?.handshape && loc && LOCATIONS.includes(loc));
+  const hs = art?.handshape;
+  if (!hs || !loc || loc === UNMAPPED || loc === OCCLUDED) return false;
+  if (hs === UNMAPPED || hs === OCCLUDED) return false;
+  return LOCATIONS.includes(loc);
 }
 
 export function validateClip(clip) {
@@ -158,6 +214,21 @@ export function validatePose(pose) {
           errors.push(`${hand}[${i}].xyz must be 21 × [x,y,z]`);
         }
       }
+      if (frame.conf != null && (typeof frame.conf !== "number" || frame.conf < 0 || frame.conf > 1)) {
+        errors.push(`${hand}[${i}].conf must be in [0,1]`);
+      }
+    }
+  }
+  if (pose.face != null && !Array.isArray(pose.face)) errors.push("face must be an array");
+  if (pose.canonical != null) {
+    if (!isObj(pose.canonical)) errors.push("canonical must be an object");
+    else {
+      if (pose.canonical.start != null && !Number.isInteger(pose.canonical.start)) {
+        errors.push("canonical.start must be an integer");
+      }
+      if (pose.canonical.end != null && !Number.isInteger(pose.canonical.end)) {
+        errors.push("canonical.end must be an integer");
+      }
     }
   }
   return errors;
@@ -168,7 +239,8 @@ export function makeSignDesc(partial) {
     schema: SIGN_DESC_SCHEMA,
     handed: "1h",
     spoken: [],
-    nmf: { eyebrows: "neutral", mouth: "neutral", eyegaze: "neutral" },
+    nmf: { eyebrows: "neutral", mouth: "neutral", eyegaze: "neutral", head: "neutral" },
+    body: { head: "neutral", torso: "neutral" },
     ...partial,
   };
 }

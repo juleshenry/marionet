@@ -44,7 +44,7 @@ def pose_from_desc(desc: dict, *, fps: float = 24.0, seconds: float = 0.8, rng: 
     mt = movement_type(art.get("movement"))
     n = max(8, int(round(fps * seconds)))
     fingers = {k: spec["fingers"][k] for k in ("index", "middle", "ring", "little")}
-    face: list = []
+    face = []
     # tiny noise so the linear model cannot memorize a single cloud
     for k in fingers:
         fingers[k] = float(np.clip(fingers[k] + rng.normal(0, 0.03), 0, 1))

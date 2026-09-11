@@ -1,12 +1,12 @@
 # Marionet
 
-Compiling sign phonology onto portable VRM avatars.
+Compiling full-body sign (head, body, hands) onto portable VRM avatars.
 
 ## Abstract
 
-Sign language production systems typically either bake a particular signer into pixels or bind motion to a studio-specific character. Neither yields a sign that a user-chosen avatar can perform. **Marionet** is a framework for isolated sign production whose primary artifact is *VRM gesture code*: retargetable bone tracks that play on any VRM 1.0 humanoid, including a custom avatar dropped in at runtime. Portability is across VRM avatars, not arbitrary rigs.
+Sign language production systems typically either bake a particular signer into pixels or bind motion to a studio-specific character. Neither yields a sign that a user-chosen avatar can perform. **Marionet** is a framework for isolated sign production whose primary artifact is *VRM gesture code*: retargetable bone and expression tracks that play on any VRM 1.0 humanoid, including a custom avatar dropped in at runtime. Portability is across VRM avatars, not arbitrary rigs.
 
-Rather than regressing high-dimensional pose from text, Marionet compiles through a phonological intermediate representation (`SignDesc`) whose features — handshape, location, orientation, and movement — follow established sign phonology rather than a private latent. Non-manuals are a reserved schema field and are out of scope for the current paper. **A lemma is one sign.** Spoken English may take several words (`ILY` → “I love you”); that is a translation, not a parse of the gesture, not fingerspelling, and not three catalog entries. An expertise library of VRM-native primitives realizes those features as executable clips (`MarionetClip`). Learned models, when introduced, predict `SignDesc` and residual timing; they do not emit raw quaternions as a first language.
+The video task is **video → full body**, not video → manual phonology. A citation-form sign is head + torso + hands (and face). Geometric retarget always emits that whole humanoid. Discrete `SignDesc` labels the same three articulator groups. ASL-LEX’s spreadsheet is manual-heavy — that is a supervision gap, not the output. Hand-at-the-forehead is a place feature of the hand; it does not nod the neck. Both are required. Face (brows, mouth, gaze) compiles to VRM expression weights. Discourse grammar is out of scope because this paper is citation form, not because the body does not move. **A lemma is one sign.** Spoken English may take several words (`ILY` → “I love you”); that is a translation, not a parse of the gesture, not fingerspelling, and not three catalog entries. An expertise library of VRM-native primitives realizes those features as executable clips (`MarionetClip`). Learned models, when introduced, predict `SignDesc` and residual timing; they do not emit raw quaternions as a first language.
 
 This repository begins with the runtime, the compiler, and a licensed isolated lexicon. The first authored set is American Sign Language fingerspelling (A–Z). Lexical `SignDesc` rows come from ASL-LEX 2.0 (OSF, CC BY 4.0) and SignPuddle ASL notation (official SPML dump). Most sign languages (EVK and the rest) are not written down: **video is the corpus**, and the experiment is to emit Marionet syntax from those clips. Photoreal signer video is a different task; we do not train diffusion.
 
@@ -48,16 +48,20 @@ The experiment: a clip of a signer in, `MarionetClip` JSON out. That JSON is wha
 
 ```
 allowed isolated-sign video
-        → pose extract          (cloud GPU: DWPose + HaMeR)
-        → marionet.pose/v0      (landmarks / MANO — not mp4)
-        → geometric retarget
-        → MarionetClip          (bone euler tracks)
+        → pose extract          (head/face + body + hands; per-hand conf)
+        → marionet.pose/v0      (landmarks / MANO + conf — not mp4)
+        → nucleus window        (prep | citation-form | retract)
+        → geometric retarget    (full-body clip: spine, neck, head, arms, fingers, face)
+        → SignDesc              (same three groups; unmapped/occluded, never forced)
+        → MarionetClip          (compiler; optional finger residual)
         → drop onto index.html
 ```
 
 SignVIP is the **pose tokenizer** standard (DWPose + HaMeR → discrete motion). We take that front-end and stop. Their diffusion decoder is irrelevant. v1 classifies `SignDesc` from pose features (`scripts/phonology.py`); FSQ and a VLM that emits the same JSON are ablations.
 
-**Compute.** Mac = player, IR, compiler. Rented GPU = HaMeR/DWPose (one 48GB card, batch 1, isolated clips). MediaPipe is the local stand-in so the path exists before you rent a box.
+Video in is **head, body, and hands**. `SignDesc`’s hand layer is two-level: **features** (selected fingers, flexion, location, path) transfer; **names** (`ILY`, `open_b`) stay `unmapped` on L2/L3 until a linguist names the cluster. Head, torso, and face are induced from pose, not from ASL-LEX columns. HaMeR frames below confidence `τ_pose` become `occluded`; a weak class score becomes `unmapped` — never a forced nearest ASL label. Labels are read from the citation-form nucleus, not from preparation/retraction. Residual IK may correct finger bones only (`python/marionet/residual.py`); it must not rewrite the compiler’s arm, wrist, or axial pose.
+
+**Compute.** Extract (Step A) is a **one-time** corpus cost on a rented 48GB GPU (days, corpus-size bound). Lookup — nucleus window, retarget, `SignDesc`, compile — is **near-real-time on a Mac**. MediaPipe is the local stand-in so the path exists before you rent a box. Do not quote GPU-days as per-sign inference.
 
 **Two files.** Pose JSON is the intermediate (`marionet.pose/v0`: fps, per-frame body + 21×2 hands, optional MANO). `MarionetClip` is the syntax (`marionet.clip/v0`, same schema `compile.js` already emits, `source: "retargeted"`). Keep videos and large pose dumps out of git.
 
@@ -103,5 +107,9 @@ python3 scripts/ingest_signpuddle.py
 - [x] Video → pose → `MarionetClip` CLI (`dummy` + local MediaPipe; DWPose+HaMeR is the GPU contract)
 - [x] Player: search the polyglot lexicon, inspect `SignDesc`, drop a retargeted `.json` clip
 - [x] Pose → `SignDesc` linear heads (`scripts/phonology.py`; FSQ/VLM are later ablations)
-- [ ] Per-avatar NMF binding + finger-bone coverage check
-- [ ] DWPose+HaMeR in-process backend on rented GPU
+- [x] Pose confidence → `occluded` / class reject → `unmapped` (no forced argmax)
+- [x] Nucleus window (prep / citation-form / retract) before `SignDesc`
+- [x] Residual locked to finger IK (`python/marionet/residual.py`); macro-pose (including head/spine) stays compiled
+- [x] Head / torso / face on `SignDesc` and on clips (axial bones + VRM expression presets)
+- [ ] Per-avatar expression coverage check (missing presets stay silent)
+- [ ] DWPose+HaMeR in-process backend on rented GPU (full body + conf + occluded)

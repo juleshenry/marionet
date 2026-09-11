@@ -1,30 +1,28 @@
 # Paper regime: video corpus → Marionet syntax
 
-Working title: **Marionet: Compiling Isolated Sign Video into Portable VRM Gesture Code**
+Working title: **Marionet: Compiling Isolated Sign Video into Portable Full-Body VRM Gesture Code**
 
 ## Claim
 
-Isolated sign video can be compiled into **VRM-portable, inspectable gesture code** (`SignDesc` + `MarionetClip`) by tokenizing motion the way SignVIP tokenizes it — DWPose + HaMeR, then discrete codes — and **decoding those codes into phonology**, not into RGB. The paper is analysis + retarget, not sign-language video generation.
+The video task is **video → full body**, not video → manual phonology. A citation-form sign is a **head + body + hands** event. Isolated sign video is compiled into **VRM-portable, inspectable full-body gesture code** (`SignDesc` + `MarionetClip`) by tokenizing that whole humanoid — torso, head/face, and hands — and decoding those tracks into articulatory IR, not into RGB. The paper is analysis + retarget, not sign-language video generation.
 
-The induced object is **feature phonology** (selected fingers, flexion, spread, thumb, major/minor location, path movement, Battison type) — the layer ASL-LEX already codes, and the layer that transfers. Named shapes (`ILY`, `open_b`) are a **per-language lexicon** on top of that, not the decoder’s native output. L2/L3 work is computer-assisted phonological fieldwork: cluster features, let linguists name clusters.
+ASL-LEX’s coding manual is **manual-heavy** (selected fingers, flexion, location, path). That is a **supervision gap in L1**, not the definition of the output. Video, especially L2/L3, carries the axial skeleton and the face; we do not let a spreadsheet that mostly coded the hands decide what the system is allowed to see. Named handshapes (`ILY`, `open_b`) are a **per-language overlay on the hand layer**. Head-nod / head-shake / torso-lean are articulators, not “non-manual extras.” Hand-at-the-forehead is a place feature of the hand; it does not nod the neck. Both can be true of one sign.
 
-Portable means: a **VRM 1.0** humanoid the model has never seen must play the clip. That is not “avatar-agnostic.” SMPL-X, FBX, and proprietary studio rigs are out of scope.
+Portable means: a **VRM 1.0** humanoid the model has never seen must play the **full-body** clip (spine, chest, neck, head, arms, fingers, face weights). That is not “avatar-agnostic.” SMPL-X, FBX, and proprietary studio rigs are out of scope.
 
-This paper claims **manual phonology only**. Non-manual features (NMFs) are a reserved `SignDesc` field and are not extracted, compiled, or evaluated here.
-
-B (geometric retarget) is the safest work and the mandatory baseline. The paper’s claim lives in D. If D fails, the paper reports B + the IR and does not pretend a phonology decoder.
+B (geometric retarget of head + body + hands) is the safest work and the mandatory baseline. A B clip that only moves fingers has failed the task. Discrete D labels the same three articulator groups. If D fails, the paper reports B + the IR and does not pretend a phonology decoder. Grammatical NMFs in *conversation* (y/n questions, topicalization, role shift as discourse) are out because this paper is isolated citation form — not because the body does not move.
 
 ## Task
 
 Given a large corpus of isolated (citation-form) sign videos with whatever metadata exists (gloss, language ID, nothing), emit:
 
-1. `marionet.pose/v0` — per-frame body + hands (not redistributed video)
-2. `MarionetClip` — VRM bone tracks (`source: "retargeted"` or `"authored"` from the compiler). Expression tracks exist on the schema and stay empty in this paper.
-3. `SignDesc` — **two-level** phonological syntax (below). `nmf` is schema-reserved and unused.
+1. `marionet.pose/v0` — per-frame **head/face + body + hands** (not redistributed video)
+2. `MarionetClip` — VRM bone tracks for spine / chest / neck / head / arms / fingers **and** expression tracks (`source: "retargeted"` or `"authored"`)
+3. `SignDesc` — articulatory syntax over the same three groups. The **hand** layer is two-level (features + names, below). Head and torso are `body.*`. Face is `nmf` (brows, mouth, gaze), compiled to expression weights — not a reserved empty field.
 
 A VRM the model has never seen must play the clip. That is the portability test. Portability is necessary, not sufficient: the clip must also be **correct** against the source sign (E1 + E3), and the discrete IR must **buy something** over the raw B clip (E6).
 
-Out of the paper: diffusion, SignVIP Stage I/II video models, continuous discourse, unlicensed crawls, NMF extraction, conversation-level grammar.
+Out of the paper: diffusion, SignVIP Stage I/II video models, continuous discourse, unlicensed crawls, conversation-level grammar. **Not** out: head, torso, face.
 
 ## Why this is a paper
 
@@ -91,7 +89,8 @@ ASL-LEX 2.0 coded 23 properties of the **initial morpheme at onset**, plus chang
 
 | Level | Fields | Whose inventory | Role |
 |---|---|---|---|
-| **Features** (decoder-native) | Selected fingers, flexion, flexion-change, spread, spread-change, thumb position, thumb contact; major / minor / second-minor location; contact; path movement; repeated movement; ulnar rotation; Battison sign type | ASL-LEX 2.0 coding manual, frozen | Supervised on L1; clustered on L2/L3; cross-linguistically the transfer layer |
+| **Body** (video-native) | Head: tilt / turn / nod / shake; torso: lean / forward; face: brows, mouth, gaze | Induced from pose (`body`, `nmf`). Not an ASL-LEX column set | Always extracted. L1 spreadsheet does not supervise these; video does |
+| **Hand features** (decoder-native) | Selected fingers, flexion, flexion-change, spread, spread-change, thumb position, thumb contact; major / minor / second-minor location; contact; path movement; repeated movement; ulnar rotation; Battison sign type | ASL-LEX 2.0 coding manual, frozen | Supervised on L1; clustered on L2/L3; the *hand* transfer layer |
 | **Names** (per-language) | Solver id (`ILY`, `open_b`, `F`, …) and source code (`Handshape.2.0`, future EVK tags) | Per-language lexicon + `data/sources/v0_library_map.json` | L1: derived from the feature tuple or a lookup. L2/L3: linguist-named cluster, else `unmapped` |
 
 Schema sketch (additive; compiler still consumes solver ids):
@@ -106,6 +105,9 @@ dominant: {
   handshape: "ILY" | null                        // name level; null if unmapped
 }
 signType: "OneHanded" | "SymmetricalOrAlternating" | ...   // Battison, incl. violations
+body: { head: "nod" | "shake" | "tilt-left" | ... | "neutral",
+        torso: "lean-left" | "lean-right" | "forward" | "neutral" }
+nmf:  { eyebrows, mouth, eyegaze }                         // face; not a substitute for body
 ```
 
 L1 cardinalities (n=2,723), so majority baselines are not a mystery:
@@ -126,7 +128,7 @@ A linear head that always predicts `imrp` / Straight / Neutral will look like a 
 
 L2/L3 policy:
 
-1. Always emit a `MarionetClip` from geometric retarget (B). Phonology is optional.
+1. Always emit a **full-body** `MarionetClip` from geometric retarget (B): spine, chest, neck, head, arms, fingers, face weights. Discrete labels are optional.
 2. Decode **features**. Cluster in feature space. A name is assigned only if a linguist named the cluster, or (L1 lookup) the feature tuple maps onto a solver id.
 3. Nearest named L1 shape is **not** the default. Distance ≤ τ may *propose* a name; the published L2 row stays `unmapped` until accepted.
 4. **Unmapped rate is a finding.** Report it per language in E4, with the nearest-L1 distance distribution.
@@ -155,20 +157,33 @@ video ──► [A] pose extract ──► marionet.pose/v0
                                [F] residual (optional): Clip' + pose → Clip
 ```
 
-**A — Pose extract** (SignVIP *front-end architecture*, cloud GPU). DWPose body + HaMeR hands. Isolated clips, 30 fps cap, batch 1 on one 48GB card. Local stand-in: MediaPipe, same pose schema. Do not train SignVIP video diffusion. Output pose JSON; do not commit mp4.
+**A — Pose extract** (full body, cloud GPU). Three streams, same clip, same schema:
+
+| Stream | GPU contract | Local stand-in | Writes |
+|---|---|---|---|
+| Body / torso | DWPose (or equivalent whole-body) | MediaPipe Pose | `body[].keypoints` — shoulders, hips, spine proxy |
+| Head / face | DWPose face + head-pose / AU estimator | MediaPipe Pose face; Face Mesh when present | `face[].keypoints`, `face[].head` {yaw, pitch, roll} |
+| Hands | HaMeR (MANO → 21 joints) | MediaPipe Hands | `left` / `right` 21×3 + `conf` + `occluded` |
+
+Isolated clips, 30 fps cap, batch 1 on one 48GB card. Do not train SignVIP video diffusion. Output pose JSON; do not commit mp4. Body is not a wrist-station helper. Head is not an NMF footnote. A clip with no usable torso/head is a **partial extract**, reported in E0, not a successful A.
+
+**Pose uncertainty.** HaMeR hallucinates fingers under self-occlusion (two-handed signs, crossing the body). Every hand frame carries `conf ∈ [0,1]` (HaMeR per-joint confidence or 2D–3D reprojection error, mapped to `[0,1]`; MediaPipe uses handedness score) and an `occluded` flag. Below `τ_pose = 0.35` the frame is `occluded: true` and **does not vote** for a handshape. D must emit `occluded`, not a discrete label. E0 reports occlusion / no-hand / blur; those frames are not silent training data.
+
+**What D is trained on.** Handshape / configuration heads consume the **wrist-relative 21×3 joint cloud plus finger curls** (`python/marionet/features.py`), never raw MANO PCA (`β`, pose coeffs). Train and infer share that vector. MANO stays an extract-time parameterization; the decoder never sees it.
 
 Tokenizer / leakage: v1 does **not** use a pretrained SignVIP FSQ codebook. Features are computed here. If an FSQ ablation runs, train the quantizer **only** on the training split of extracted poses; never on eval signs, never on SignVIP’s video-decoder training set.
 
-**Do not run corpus-scale A until the D pilot (E2a) has frozen the label space and shown that trajectory features move path-movement F1.** A is the expensive, days-long stage. Discovering that clip-pooled energy cannot tell Circular from Straight after extracting thousands of clips is the failure this document exists to prevent.
+**Do not run corpus-scale A until the D pilot (E2a) has frozen the label space and shown that trajectory features move path-movement F1.** A is the expensive, **one-time** corpus-processing stage (days, size-bound) — not a per-inference cost. Discovering that clip-pooled energy cannot tell Circular from Straight after extracting thousands of clips is the failure this document exists to prevent.
 
 HaMeR is MIT code but **MANO is non-commercial scientific-research only** and forbids distributing the model. Verify, in writing, whether publishing derived 21-joint pose JSON (no mesh, no β) is permitted under the MANO license and the HaMeR weight terms before any pose dump is a paper artifact. If not, keep poses local and publish only `SignDesc` + compiled clips.
 
-**B — Geometric retarget** (no net). Landmarks / MANO joints → VRM eulers (arms + 15 finger bones × 2), rest-relative, same convention as `library.js`. Mandatory baseline. Already Marionet syntax. Safest result in the paper; not the claim.
+**B — Geometric retarget** (no net). Landmarks / MANO joints → VRM eulers: arms + 15 finger bones × 2 **and** spine / chest / neck / head from shoulder–hip geometry plus head pose (`axial_eulers` in `scripts/marionet_pose.py`), plus face → expression weights. Rest-relative, same convention as `library.js`. A clip that only moves fingers is a puppet, not a sign. Mandatory baseline. Already Marionet syntax. Safest result in the paper; not the discrete claim.
 
-**C — Features.** Two blocks, both clip-level (or onset-windowed; see Temporal structure). Freeze this vector before E2a.
+**C — Features.** Three blocks, clip-level or onset-windowed (see Temporal structure). Freeze this vector before E2a.
 
-1. **Configuration** (onset / pooled): wrist-relative 21×3 cloud, finger curls, spread, thumb, arm station (`python/marionet/features.py` today). This can in principle support selected fingers, flexion, thumb, location.
-2. **Trajectory** (missing today; required for the movement field): wrist path as a 3D polyline on the onset–offset window.
+1. **Axial / face** (video-native; not in ASL-LEX columns): head yaw/pitch/roll, torso lean/pitch, brow–eye and mouth geometry → `body` + `nmf`.
+2. **Hand configuration** (onset / pooled): wrist-relative 21×3 cloud, finger curls, spread, thumb, arm station (`python/marionet/features.py` today). This can in principle support selected fingers, flexion, thumb, location.
+3. **Hand trajectory** (missing today; required for the movement field): wrist path as a 3D polyline on the onset–offset window.
    - direction: start-to-end unit vector (signer space)
    - curvature: max deviation from the chord, over path length
    - plane: normal of the best-fit plane
@@ -198,6 +213,8 @@ FSQ tokens remain an ablation if the linear feature heads saturate. SignVIP need
 
 Named-over-letters (`ILY` wins over `{I,L,Y}`) stays as a **name-level** decode rule, not as the thing L2 inherits.
 
+**Reject, do not force.** Class max-prob `< τ_cls` (0.45 on L1, **0.55 on L2/L3**) → `unmapped`, not argmax. Pose `conf < τ_pose` or `occluded` → field `occluded`, `compileReady: false`. A wrong discrete handshape is worse than no name. The v0 named-head code already does this (`decode_heads` in `python/marionet/model.py`); feature heads inherit the same reject rule.
+
 L1: supervised on ASL-LEX-aligned video poses if permission arrives; otherwise synthetic-from-lexicon, and E2 is labeled as such. L2: extract clip always; cluster features; names only as above. L3: cluster or `unmapped`. A VLM that emits the same JSON is an ablation, not the spine.
 
 Why linear is the first model, not the claim:
@@ -216,10 +233,22 @@ If (1)–(3) all fail on L1 feature macro-F1 vs majority, the paper reports that
 
 **E — Compiler** (`src/compile.js`). This is the inductive bias. The claimed reconstructed artifact is `compile(SignDesc)`, not the retargeted clip. Semantics below. Compiler input remains solver ids + location + movement type; the feature→solver map is explicit and lossy (`v0_library_map.json`). Feature rows with no solver id do not compile.
 
-**F — Residual.** Optional bone residual if the library is stiff. Ablate it. Must not become “copy HaMeR into VRM.” Regularization:
+**F — Residual.** Optional bone residual if the library is stiff. Ablate it. Must not become “copy HaMeR into VRM.”
 
-- Residual is predicted in the **same euler convention** as the compiler, added to compiled bones, not to raw HaMeR.
-- Bottleneck: residual MLP hidden size ≤ 32; output is per-bone delta, not a full pose.
+Let `θ_phon(t)` be the compiler eulers and `θ_pose(t)` the geometric-retarget eulers. Split bones into **macro** (shoulder, upper arm, lower arm, wrist) and **finger**.
+
+```
+θ_macro(t)  :=  θ_phon(t)                                 # locked; residual is identically 0
+r_finger(t) :=  clip( θ_pose(t) − θ_phon(t), −ε, ε )      # ε = 0.12 rad
+θ_finger(t) :=  θ_phon(t) + r_finger(t)
+```
+
+Forbidden: applying `θ_pose` to any macro bone; a residual that would change the `SignDesc` features re-extracted from the result; using residual as a latent pose code. Implementation of the hard cap: `python/marionet/residual.py`. Clip `source` becomes `compiled+residual`.
+
+If a learned residual is used on top of that cap:
+
+- Predicted in the **same euler convention** as the compiler, added to compiled **finger** bones only, not to raw HaMeR, not to macro-pose.
+- Bottleneck: residual MLP hidden size ≤ 32; output is per-finger delta, not a full pose.
 - L2 penalty on delta magnitude; train with a reconstruction term **and** a term that keeps `SignDesc` **features** recoverable from the residualized clip.
 - Cheat metric (must be in the E5 table): mean bone-angle ‖Clip − Clip'‖ / ‖Clip'‖; E1 numbers for Clip' alone, Clip'+residual, and B. If residual ≈ B − Clip', it is copying HaMeR.
 - Hard cap: if ablating the residual drops named-shape / feature recoverability by less than the drop in MPJPE, keep the residual out of the claimed system.
@@ -230,7 +259,7 @@ If (1)–(3) all fail on L1 feature macro-F1 vs majority, the paper reports that
 
 **Input.** A `marionet.signdesc/v0` object that `validateSignDesc` accepts and `isCompilable` returns true for. Compilable iff `compileReady === true`, or (legacy) both handshape and location are in the solver catalog.
 
-**Defaults (underspecification).** Missing `orientation` → `palm-out`. Missing `location` → `fs-station`. Missing `movement` → hold. Unknown movement `type` → hold. `nmf` / `expressions` → empty tracks. The compiler does not guess a handshape; unknown solver ids throw.
+**Defaults (underspecification).** Missing `orientation` → `palm-out`. Missing `location` → `fs-station`. Missing `movement` → hold. Unknown movement `type` → hold. Missing `body.head` / `body.torso` → `neutral` (no extra axial motion). Face `nmf` compiles to VRM expression tracks; `nmf.head` is a fallback for `body.head`. The compiler does not guess a handshape; unknown solver ids throw.
 
 **Pose.** For an articulator `{handshape, location, orientation}` and a side:
 
@@ -256,7 +285,9 @@ base = merge(solveLocation(loc, side), solveOrientation(ori, side), solveHandsha
 
 Only the **first** movement segment is compiled. Sequential compounds are out of v0 (see Lemma boundary). Interpolation between keyframes is linear in euler space at playback (`src/vrm.js`).
 
-**Output.** `marionet.clip/v0` with `source: "authored"`, `vrmHumanoid: "vrm1"`, bone tracks `[[t, [x,y,z]], ...]`, `expressions: {}`.
+**Axial overlay.** After the manual solver, `body.head` / `body.torso` write `spine`, `chest`, `neck`, `head`. `nod` and `shake` are cyclic keyframes, not a frozen tilt. `lean-left` / `lean-right` / `forward` are holds. Place `location: head` never substitutes for this overlay — that only raises the arm.
+
+**Output.** `marionet.clip/v0` with `source: "authored"`, `vrmHumanoid: "vrm1"`, bone tracks `[[t, [x,y,z]], ...]` including axial bones when `body` is non-neutral, and `expressions` from `nmf` (VRM preset names: `surprised`, `angry`, `aa`, `ee`, `ou`, `lookLeft`, …).
 
 **Refusal.** Lexicon-only rows (`compileReady: false`) throw. The player must not invent a pose.
 
@@ -271,10 +302,10 @@ ASL-LEX already publishes `SignOnset(ms)` / `SignOffset(ms)` / `SignDuration(ms)
 | Path | What it uses | Risk |
 |---|---|---|
 | B retarget | The whole clip | Signer-specific prep/recovery ride along; hurts “lexical sign” purity, helps naturalness |
-| D translator | Onset–offset if aligned; else middle-third energy | Prep/recovery can smear flexion (`open_b` vs `B`) if the window is wrong |
+| D translator | Onset–offset if aligned; else velocity–energy nucleus | Prep/recovery can smear flexion (`open_b` vs `B`) if the window is wrong |
 | E compiler | Canonical rise + stroke + hold | No signer-specific prep; more portable, less natural |
 
-Default assumption: **dictionary clips are already trimmed to the citation**, not to a conversational utterance. We do not claim stroke-only isolation. E2a reports D on (i) full clip, (ii) ASL-LEX onset–offset, (iii) middle-third energy. If (ii) or (iii) wins, that window becomes the translator input and we say so.
+Default assumption: **dictionary clips are already trimmed to the citation**, not to a conversational utterance. We do not claim stroke-only isolation. E2a reports D on (i) full clip, (ii) ASL-LEX onset–offset, (iii) velocity–energy nucleus (`canonical_span` in `scripts/marionet_pose.py`: rest from edge-frame wrist height, active span, 12% trim of prep/retract). If (ii) or (iii) wins, that window becomes the translator input and we say so. **SignDesc features use only the nucleus.** B keeps the full clip so playback still eases in and out. E already eases from rest.
 
 ## Experiments (rented GPU)
 
@@ -292,10 +323,10 @@ All of E0–E6 are **proposed**. D exists as code on **named** heads over synthe
 
 | ID | What | Success |
 |---|---|---|
-| **E0** | Extract the corpus; fail rates (no hand, two people, blur). **Breakdown by skin tone and lighting** (even a coarse Fitzpatrick bin + indoor/outdoor/uniform-backdrop). Pose estimators fail unevenly | Appendix table; a skin-tone gap is an ethics finding, not a footnote |
+| **E0** | Extract the corpus; fail rates (no hand, two people, blur, **occlusion**). **Breakdown by skin tone and lighting** (even a coarse Fitzpatrick bin + indoor/outdoor/uniform-backdrop). Pose estimators fail unevenly | Appendix table; a skin-tone gap is an ethics finding, not a footnote |
 | **E1** | Geometric retarget on held-out **signers** (L2/L3; not ASL-LEX) | See Metrics. Not raw HaMeR-vs-VRM MPJPE |
 | **E2a** | **Go/no-go, before A.** Linear heads on a labeled subset. Report per-feature F1 vs **chance and majority**, pathMovement F1 with vs without trajectory features, named-shape exact-match as secondary | Linear must beat majority on **feature macro-F1** **or** we switch to fallback (1)–(3) **or** we drop D as a claim. If pathMovement does not beat majority without trajectory features, that is a spec bug — fix C, do not add a net |
-| **E2** | Pose → feature `SignDesc` on ASL-LEX-aligned clips, **sign-held-out**. Signer-held-out lives on L2 if ASL-LEX stays one model | Per-field F1; named-shape exact-match secondary (`ILY` ≠ I, ≠ L, ≠ Y). Ceiling = published kappas, not 1.0 |
+| **E2** | Pose → feature `SignDesc` on ASL-LEX-aligned clips, **sign-held-out**. Signer-held-out lives on L2 if ASL-LEX stays one model | Per-field F1 on **accepted** labels; named-shape exact-match secondary (`ILY` ≠ I, ≠ L, ≠ Y). **Report `unmapped` / `occluded` rates** — do not compute F1 on forced argmax. Ceiling = published kappas, not 1.0 |
 | **E2r** | Annotation reliability. 3 annotators, 50 signs, **feature** labels (not free text). Report pairwise κ / exact-match per field | F1 is interpreted against this ceiling **and** against ASL-LEX’s own κ |
 | **E2c** | Consistency: same EntryID, different signers → same **features** (ignore orientation jitter) | Secondary; only defined on multi-signer data |
 | **E3** | Same **compiled** clip on ≥3 VRMs, **including one stylized non-human-proportioned** mesh | Human: “is avatar 2 doing the same sign as avatar 1?” Binary, native raters. Automatic: **rotation-space** DTW / mean euler error, not position DTW. Position DTW is ill-defined across limb lengths |
@@ -311,7 +342,7 @@ ASL-LEX labels are **sign-level, onset-coded, not frame-aligned**. E2 is “does
 
 | Layer | Metric |
 |---|---|
-| Pose extract | detection rate; **by skin tone and lighting** (E0) |
+| Pose extract | detection rate; occlusion rate; **by skin tone and lighting** (E0) |
 | Clip (E1) | After a stated canonical frame: shoulders+hips Procrustes (or bone-length normalize to the VRM rest). **Wrist-trajectory error** (time-aligned) + **finger joint-angle error**. Raw position MPJPE between HaMeR and a differently-proportioned VRM is scale-ambiguous and is not the headline |
 | `SignDesc` (E2) | Per-field F1 vs **uniform chance** and vs **majority-class**; feature macro-F1; named-shape exact-match (L1, secondary); unmapped rate (L2) |
 | Ceiling | ASL-LEX 1.0 κ (Caselli et al. 2017): movement **0.65**, flexion 0.75, minor location 0.71, major location 0.83, selected fingers **0.90**, sign type 0.82. ASL-LEX 2.0: all κ > .6 on 50 double-coded signs (Sehyr et al. 2021). Cite these as the realistic ceiling. E2r is our own 50-sign check on the solver/feature labels |
@@ -329,6 +360,7 @@ MOS on 2-second citation signs is noisy and expensive. Primary human numbers are
 - **E5 reconstruction:** 3AFC — original citation video vs compiler reconstruction vs a phonological distractor (minimal-pair neighbor where possible). Chance = 1/3. Also ABX on minimal pairs (e.g. `I` vs `ILY` vs `Y` at the same location) so named-shape errors are visible to humans, not only to F1.
 - **E3 portability:** “Is avatar 2 doing the same sign as avatar 1?” Binary. Source video not on screen. One stylized non-human-proportioned VRM in the set.
 - **E4 “is this EVK CAT?”:** 2AFC (this clip vs a same-language distractor) plus an explicit **“not a sign I know”** key. Items with that key are dropped from the rater’s mean and counted in a coverage table. Probe: 20 signs. Native yes-rate / 2AFC accuracy reported separately. No source video on the same screen as the avatar for the identification question.
+- **E4 phonological fields (same native raters, same 20-sign probe):** after identification, a second screen with the source citation (not simultaneous with the first question) asks yes / no / unsure per field: “Did the avatar use the correct **handshape** for this lemma?” Same items for location, path movement. Headline is per-field accuracy, not MOS. This is the number that tests whether L1 features transferred, vs whether the avatar merely looks fluent.
 - **MOS:** 5-point naturalness only, as a diagnostic appendix, not the success criterion.
 - **Items:** randomized, one VRM visible at a time.
 - **Compensation:** paid at or above the lab’s standard Deaf-consultant rate; written in the ethics appendix. No unpaid “community review.”
@@ -337,34 +369,39 @@ E4 success, restated: retrieval > chance if labels exist, **and** native 2AFC �
 
 ## Compute
 
-| Job | Box | Order |
-|---|---|---|
-| E2a D-pilot | Mac / small GPU | **first**; hundreds of clips |
-| A extract | 1× 48GB | days, corpus-size bound; **after** E2a |
-| C FSQ (ablation only) | same | 1–2 days |
-| D translator | same | 1–2 days; linear v1 also runs on Mac |
-| Diffusion | — | do not rent |
+Extract is a **one-time corpus cost**. Lookup (nucleus window, B, D infer, E, optional F) is **near-real-time on a Mac**. Do not quote GPU-days as if they were per-sign inference. That split is a selling point.
 
-Mac plays clips and compiles `SignDesc`. It never trains (except the numpy linear heads, which are laptop-scale).
+| Job | When | Box | Order |
+|---|---|---|---|
+| E2a D-pilot | once, first | Mac / small GPU | hundreds of clips |
+| A extract | **once per corpus** | 1× 48GB | days, corpus-size bound; **after** E2a |
+| C FSQ (ablation only) | optional, once | same GPU | 1–2 days |
+| D translator train | once (L1) | Mac or GPU | minutes (linear); 1–2 days if FSQ |
+| B + D infer + E compile | **every lookup** | Mac | real-time / near-real-time |
+| F residual | optional lookup | Mac | real-time |
+| Diffusion | — | — | do not rent |
+
+Mac plays clips and compiles `SignDesc`. It never trains a video model (the numpy linear heads are laptop-scale).
 
 The compiler is JavaScript (`src/compile.js`), runs in the browser and under Node (`scripts/check_compiler.mjs`). It is a closed-form bone solver: no IK loop, no network. Interactive use is a single `compileSignDesc` call per lemma (sub-millisecond on a laptop). The player already does this on search. That is the “JavaScript avatar” claim: playback and compilation are client-side; training is not.
 
 ## Skeleton
 
-1. Intro — VRM-portable syntax; video is the corpus for unwritten SLs; feature phonology transfers, names do not
+1. Intro — video → full body (head / body / hands); VRM-portable syntax; video is the corpus for unwritten SLs
 2. Related — SLVG vs SLP vs avatar compilers vs mocap
-3. IR — two-level `SignDesc`, `MarionetClip`, compiler semantics
-4. Method — A–F; trajectory features; SignVIP front-end architecture only; no pretrained codebook
+3. IR — full-body `MarionetClip`; `SignDesc` with body + face + two-level hands
+4. Method — A–F; axial + hand features; SignVIP front-end architecture only
 5. Data — L1/L2/L3; video permission; single-signer limit; license table; unmapped rate
 6. Experiments — E2a before A; E1–E6; kappas as ceiling; discrimination not MOS
-7. Limitations — isolated ≠ conversation; NMFs out of scope; occlusion; residual cheating; sequential compounds; VRM-only; ASL-shaped solver catalog
+7. Limitations — isolated ≠ conversation; discourse grammar out; occlusion; residual cheating; sequential compounds; VRM-only
 8. Ethics — consent, sovereignty, compensation, not an interpreter, pose-estimator disparity
 
 ## Limitations (explicit)
 
-- **Manual phonology only.** `SignDesc.nmf` is reserved (`eyebrows`, `mouth`, `eyegaze`) and `MarionetClip.expressions` is empty. Grammatical NMFs (y/n questions, topicalization, role shift, mouthings) are not represented. A later paper can add face landmarks → ARKit blendshapes → NMF fields; this one will not smuggle that claim.
+- **Citation form, not grammar.** Head, torso, and face **are the video task** (B retargets them; E compiles `body` + `nmf` → bones and expression tracks). ASL-LEX 2.0 does **not** code those columns — supervision is pose-induced, not spreadsheet-supervised. Report them separately from hand-feature F1. Grammatical NMFs as *utterance type* (y/n questions, topicalization, role shift) and a full mouthing inventory are out of scope. Coarse brows/mouth/gaze in a citation clip are in.
+- **Place ≠ articulator.** `location: head` means the hand is at the head. It does not nod the neck. Both can be true of one sign.
 - Isolated citation form ≠ conversation.
-- Occlusion and two-signer frames fail at A (E0). Detection will vary by skin tone and lighting; that is measured, not assumed away.
+- Occlusion and two-signer frames fail at A (E0). Frames below `τ_pose` are `occluded`, not a guessed handshape. Detection will vary by skin tone and lighting; that is measured, not assumed away.
 - Residual can cheat; F’s bottleneck + recoverability term + cheat metric are the guardrail.
 - Compiler v0 compiles one movement segment; compounds and depicting signs are excluded.
 - Portability is across **VRM 1.0** humanoids, not arbitrary avatars. glTF / SMPL retarget is future work.
@@ -385,7 +422,7 @@ The compiler is JavaScript (`src/compile.js`), runs in the browser and under Nod
 
 ## Success
 
-A held-out isolated video, possibly EVK, becomes a JSON clip that a **new VRM 1.0** performs, plus a `SignDesc` a linguist can read — **features first** (`selectedFingers=imrp`, flexion FullyOpen, major Head, path Straight), and a name only where the language has one (`ILY` at `chest-front`, not a latent and not a chord of letter signs). **One lemma is one sign:** English “I love you” is a translation of `ILY`, not three words and not three letters.
+A held-out isolated video, possibly EVK, becomes a JSON clip that a **new VRM 1.0** performs **with head, body, and hands**, plus a `SignDesc` a linguist can read — body (`head=nod`, `torso=lean-left`), face, then hand features (`selectedFingers=imrp`, flexion FullyOpen, major Head, path Straight), and a name only where the language has one (`ILY` at `chest-front`, not a latent and not a chord of letter signs). **One lemma is one sign:** English “I love you” is a translation of `ILY`, not three words and not three letters. A clip that only wiggles fingers is the failure mode, not the paper.
 
 Off ASL, that claim is only as strong as the refuse-to-name rule: a forced nearest primitive is not a lemma. The interesting L2 result is a cluster a linguist can name.
 

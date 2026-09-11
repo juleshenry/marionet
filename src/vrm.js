@@ -168,6 +168,40 @@ function sampleTrack(keys, time) {
  * Apply a MarionetClip at time `t` as Euler offsets on top of a rest snapshot.
  * Re-sync quaternion after euler writes so humanoid.update() cannot ignore them.
  */
+const EXPR_RESET = [
+  "happy",
+  "angry",
+  "sad",
+  "relaxed",
+  "surprised",
+  "aa",
+  "ih",
+  "ou",
+  "ee",
+  "oh",
+  "blink",
+  "lookUp",
+  "lookDown",
+  "lookLeft",
+  "lookRight",
+];
+
+function sampleScalar(keys, time) {
+  if (!keys?.length) return 0;
+  if (time <= keys[0][0]) return Number(keys[0][1]) || 0;
+  const last = keys[keys.length - 1];
+  if (time >= last[0]) return Number(last[1]) || 0;
+  for (let i = 0; i < keys.length - 1; i++) {
+    const [t0, v0] = keys[i];
+    const [t1, v1] = keys[i + 1];
+    if (time >= t0 && time <= t1) {
+      const u = (time - t0) / Math.max(t1 - t0, 1e-6);
+      return (Number(v0) || 0) + ((Number(v1) || 0) - (Number(v0) || 0)) * u;
+    }
+  }
+  return Number(last[1]) || 0;
+}
+
 export function applyClip(vrm, clip, rest, t) {
   restorePose(vrm, rest);
   const time = clip.duration > 0 ? Math.min(Math.max(t, 0), clip.duration) : 0;
@@ -179,6 +213,17 @@ export function applyClip(vrm, clip, rest, t) {
     node.rotation.y += y;
     node.rotation.z += z;
     node.quaternion.setFromEuler(node.rotation);
+  }
+  const em = vrm.expressionManager;
+  if (em?.setValue) {
+    for (const name of EXPR_RESET) em.setValue(name, 0);
+    for (const [name, keys] of Object.entries(clip.expressions || {})) {
+      try {
+        em.setValue(name, sampleScalar(keys, time));
+      } catch {
+        /* preset missing on this avatar */
+      }
+    }
   }
 }
 

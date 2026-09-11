@@ -394,3 +394,37 @@ export function mergePoses(...poses) {
   }
   return out;
 }
+
+/** Head/neck as articulators — not “hand at the head” (that is solveLocation). */
+export function solveHead(label = "neutral") {
+  switch (label) {
+    case "tilt-left":
+      return { neck: euler(0, 0, 0.28), head: euler(0, 0, 0.12) };
+    case "tilt-right":
+      return { neck: euler(0, 0, -0.28), head: euler(0, 0, -0.12) };
+    case "turn-left":
+      return { neck: euler(0, 0.4, 0), head: euler(0, 0.12, 0) };
+    case "turn-right":
+      return { neck: euler(0, -0.4, 0), head: euler(0, -0.12, 0) };
+    case "nod":
+      return { neck: euler(0.12, 0, 0), head: euler(0.22, 0, 0) };
+    case "shake":
+      return { neck: euler(0, 0.18, 0), head: euler(0, 0.08, 0) };
+    default:
+      return {};
+  }
+}
+
+/** Spine/chest lean. Independent of arm station. */
+export function solveTorso(label = "neutral") {
+  switch (label) {
+    case "lean-left":
+      return { spine: euler(0, 0, 0.18), chest: euler(0, 0, 0.12) };
+    case "lean-right":
+      return { spine: euler(0, 0, -0.18), chest: euler(0, 0, -0.12) };
+    case "forward":
+      return { spine: euler(0.22, 0, 0), chest: euler(0.12, 0, 0) };
+    default:
+      return {};
+  }
+}
