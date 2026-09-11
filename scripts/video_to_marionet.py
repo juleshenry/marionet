@@ -12,7 +12,9 @@ This script never fetches. Acquisition is out of scope.
 Backends:
   dummy         synthetic pose (no model, no video required)
   mediapipe     local Pose+Hands if mediapipe + opencv are installed
-  dwpose_hamer  not in-process; prints the GPU contract (body+hands+face, conf) and exits 2
+  rtmlib        production GPU/CPU wholebody via ONNX Runtime → marionet.pose/v0
+  dwpose_hamer  rtmlib or MMPose wholebody + optional HaMeR hands
+                prints the GPU contract and exits 2 if those packages are missing
 """
 
 from __future__ import annotations
@@ -45,7 +47,13 @@ from marionet_pose import (  # noqa: E402
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("video", nargs="?", help="isolated-sign video on disk")
-    p.add_argument("--backend", default="dummy", choices=("dummy", "mediapipe", "dwpose_hamer"))
+    p.add_argument("--backend", default="dummy", choices=("dummy", "mediapipe", "rtmlib", "dwpose_hamer"))
+    p.add_argument(
+        "--hands",
+        default="auto",
+        choices=("auto", "hamer", "none"),
+        help="hand plugin for rtmlib/dwpose_hamer: auto tries HaMeR, none keeps wholebody 2D",
+    )
     p.add_argument("-o", "--output", help="MarionetClip JSON path")
     p.add_argument("--pose-out", help="optional marionet.pose/v0 JSON path")
     p.add_argument("--lang", default=None, help="ISO 639-3 language code")
@@ -57,6 +65,12 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         const=str(ROOT / "data/runs/phonology.npz"),
         default=None,
         help="run pose→SignDesc heads; optional ckpt path (default data/runs/phonology.npz)",
+    )
+    p.add_argument(
+        "--smooth",
+        default="none",
+        choices=("none", "savgol", "oneeuro", "both"),
+        help="savgol = pose xyz before features; oneeuro = finger eulers after retarget; both = both",
     )
     p.add_argument("--self-test", action="store_true")
     return p.parse_args(argv)
@@ -316,17 +330,33 @@ def extract_mediapipe(video: Path, lang: str | None, gloss: str | None) -> dict:
     return attach_canonical(pose)
 
 
-def extract(backend: str, video: Path | None, lang: str | None, gloss: str | None) -> dict:
+def extract(
+    backend: str,
+    video: Path | None,
+    lang: str | None,
+    gloss: str | None,
+    hands: str = "auto",
+) -> dict:
     if backend == "dummy":
         return extract_dummy(video, lang, gloss)
-    if backend == "dwpose_hamer":
-        raise SystemExit(
-            "dwpose_hamer is the rented-GPU contract (batch 1, 48GB, isolated clips): "
-            "DWPose body + HaMeR hands + face/head (DWPose face or a head-pose/AU estimator). "
-            "Per-hand conf/occluded; below τ_pose=0.35 the frame is occluded, not a guessed handshape. "
-            "Emit the same marionet.pose/v0 schema. Not an in-process backend yet. "
-            "Use --backend mediapipe or dummy on this machine."
+    if backend in ("dwpose_hamer", "rtmlib"):
+        sys.path.insert(0, str(ROOT / "python"))
+        from marionet.extract_gpu import (
+            contract_message,
+            extract_dwpose_hamer,
+            extract_rtmlib,
+            missing_body_backend,
         )
+
+        prefer = "rtmlib" if backend == "rtmlib" else "auto"
+        if missing_body_backend(prefer):
+            print(contract_message(f"requested --backend {backend}", prefer=prefer), file=sys.stderr)
+            raise SystemExit(2)
+        if video is None:
+            raise SystemExit(f"{backend} backend requires a video path")
+        if backend == "rtmlib":
+            return extract_rtmlib(video, lang, gloss, hands=hands)
+        return extract_dwpose_hamer(video, lang, gloss, hands=hands)
     if backend == "mediapipe":
         if video is None:
             raise SystemExit("mediapipe backend requires a video path")
@@ -341,11 +371,21 @@ def default_output(video: Path | None, gloss: str | None, lang: str | None) -> P
 
 
 def run_one(args: argparse.Namespace, video: Path | None, lang: str | None, gloss: str | None, output: Path) -> dict:
-    pose = attach_canonical(extract(args.backend, video, lang, gloss))
+    pose = attach_canonical(extract(args.backend, video, lang, gloss, hands=getattr(args, "hands", "auto")))
+    if getattr(args, "smooth", "none") in ("savgol", "both"):
+        sys.path.insert(0, str(ROOT / "python"))
+        from marionet.smooth import smooth_pose_xyz
+
+        pose = attach_canonical(smooth_pose_xyz(pose))
     perr = validate_pose(pose)
     if perr:
         raise SystemExit("invalid pose: " + "; ".join(perr))
     clip = retarget_pose(pose)
+    if getattr(args, "smooth", "none") in ("oneeuro", "both"):
+        sys.path.insert(0, str(ROOT / "python"))
+        from marionet.smooth import smooth_clip_fingers
+
+        clip = smooth_clip_fingers(clip)
     try:
         sys.path.insert(0, str(ROOT / "python"))
         from marionet.nmf import expression_tracks, nmf_from_face
@@ -400,6 +440,76 @@ def self_test() -> int:
     assert "spine" in clip["bones"] and "chest" in clip["bones"]
     out = ROOT / "data" / "clips" / "self-test.json"
     write_json(out, clip)
+
+    sys.path.insert(0, str(ROOT / "python"))
+    from marionet.extract_gpu import missing_body_backend, pick_instance, wholebody_to_frame
+    from marionet.features import trajectory_vector
+    from marionet.fsq import PoseFSQ, codebook_size, quantize
+    from marionet.pose_interop import from_pose_json, to_pose_json
+    from marionet.smooth import savgol_1d, smooth_clip_fingers, smooth_pose_xyz
+    from marionet.video import _sample_indices
+
+    assert missing_body_backend("rtmlib") == ["rtmlib"] or __import__("importlib").util.find_spec("rtmlib")
+    idx, fps = _sample_indices(60, 60.0, 30.0)
+    assert fps == 30.0 and len(idx) == 30 and idx[0] == 0 and idx[-1] == 59
+
+    kpts = [[0.0, 0.0, 0.0] for _ in range(133)]
+    scores = [0.9] * 133
+    kpts[0] = [320.0, 80.0, 0.0]  # nose, image y-down
+    kpts[6] = [400.0, 160.0, 0.0]  # right shoulder
+    kpts[112] = [410.0, 200.0, 0.0]  # right wrist (hand 0)
+    for j in range(21):
+        kpts[112 + j] = [410.0 + j, 200.0, 0.0]
+    fr = wholebody_to_frame(kpts, scores, (640, 480), 0.1)
+    nose = fr["body"]["keypoints"]["nose"]
+    assert abs(nose[0] - 0.5) < 1e-6
+    assert abs(nose[1] - (1.0 - 80 / 480)) < 1e-6  # y-up
+    assert fr["right"] and len(fr["right"]["xyz"]) == 21
+    inst, two = pick_instance(
+        [
+            {"bbox_score": 0.9, "keypoints": kpts, "keypoint_scores": scores},
+            {"bbox_score": 0.2, "keypoints": kpts, "keypoint_scores": scores},
+        ]
+    )
+    assert inst is not None and two is False
+
+    spike = [0.0] * 9
+    spike[4] = 10.0
+    sm = savgol_1d(spike, window=5, poly=2)
+    assert sm[4] is not None and sm[4] < 10.0
+    smoothed = smooth_pose_xyz(pose)
+    assert smoothed["right"][0].get("smoothed") == "savgol"
+    clipped = smooth_clip_fingers(clip)
+    assert "rightUpperArm" in clipped["bones"]
+    assert clipped["bones"]["rightUpperArm"] == clip["bones"]["rightUpperArm"]
+    assert clipped.get("residual", {}).get("oneeuro", {}).get("macro") == "locked"
+
+    codes, recon = quantize([[0.0, 0.0, 0.0, 0.0]])
+    assert codes.shape == (1, 4) and recon.shape == (1, 4)
+    fsq = PoseFSQ()
+    tok = fsq.tokens([[0.1] * 16])
+    assert tok.shape == (1, 4) and codebook_size() == 8 * 5 * 5 * 5
+
+    import math as _math
+
+    n = pose["n_frames"]
+    pose["canonical"] = {"start": 0, "end": n, "method": "test"}
+    straight = json.loads(json.dumps(pose))
+    circle = json.loads(json.dumps(pose))
+    for i in range(n):
+        straight["body"][i]["keypoints"]["rightWrist"] = [0.05 + 0.4 * i / max(n - 1, 1), 0.12, 0.22]
+        ang = 2 * _math.pi * i / max(n, 1)
+        circle["body"][i]["keypoints"]["rightWrist"] = [0.2 + 0.12 * _math.cos(ang), 0.12 + 0.12 * _math.sin(ang), 0.22]
+    ts, tc = trajectory_vector(straight), trajectory_vector(circle)
+    assert tc[3] > ts[3], "circle curvature should exceed a straight chord"
+    assert ts[11] < tc[11], "straight path/displacement ratio should be nearer 1"
+
+    packed = to_pose_json(pose)
+    back = from_pose_json(packed)
+    assert back["schema"] == "marionet.pose/v0"
+    assert back["n_frames"] == pose["n_frames"]
+    assert back["right"][0].get("xyz") and len(back["right"][0]["xyz"]) == 21
+
     print(f"self-test ok  {out}  duration={clip['duration']} bones={len(clip['bones'])}")
     return 0
 

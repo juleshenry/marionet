@@ -14,9 +14,20 @@ The clips, if granted, are **one signer, fixed background**. They will not give 
 
 **2. Check HaMeR / DWPose / MANO terms before publishing derived poses.** HaMeR code is MIT; it requires `MANO_RIGHT.pkl`, and MANO is **non-commercial scientific research only** (no distribution of the model, no commercial derivatives). Do not assume research weights permit redistributing extracted 21-joint pose JSON. Get a written reading: poses-without-mesh local-only vs publishable. Until that is yes, keep `marionet.pose/v0` dumps out of any public artifact; `SignDesc` and compiled VRM clips are the releasable layer.
 
+**3. Tooling licenses that fail the gate (do not import).** These look like pose extractors and then fail redistribution:
+
+| Skip | Why |
+|---|---|
+| **WiLoR** | Models CC-BY-NC-ND; depends on Ultralytics (**AGPL**). Faster than HaMeR is not worth the gate. |
+| **OpenPose** | Non-commercial. Do not pull it in via `controlnet-aux` OpenPose configs. DWPose/rtmlib wholebody is the workhorse. |
+| **Ultralytics YOLO** | AGPL. Two-person detection uses DWPose/rtmlib instance count (`pick_instance`), not YOLO+ByteTrack. |
+| **`dtw-python`** | GPLv3. E1/E3 DTW uses `tslearn` / `dtaidistance` (BSD) or `pose-evaluation` when we get there. |
+
 These two checks are order-0 in the paper regime. Corpus-scale pose extract waits on them and on the D-pilot.
 
 Keep disk small: metadata, spreadsheets, and XML dumps only until a later step explicitly asks for motion or video. No 3D-LEX FBX/GLB packs, no WLASL mp4 cache, no Wikisigns crawl, no site mirrors.
+
+Corpus QA (later, not the runtime): **FiftyOne** for visual inspection of extract failures (blur / occlusion / two people); **Label Studio** for nucleus windows and gloss/occlusion tags. Do not grow `index.html` into a labeling tool. External tools produce measurements and tags; Marionet still owns `SignDesc`.
 
 ## License gate (only ingest through this)
 
@@ -25,7 +36,7 @@ Keep disk small: metadata, spreadsheets, and XML dumps only until a later step e
 | **A — CC BY / BY-SA dumps** | Download, derive `SignDesc`, retarget, redistribute derived artifacts with attribution (SA if the source is SA) | ASL-LEX 2.0 **OSF files**, 3D-LEX v1.0 (deferred: mocap is large), Global Signbank **NGT public**, Wikisigns (LSM, Malagasy, West Bengal: BY-SA 4.0), Wikisign LSC (BY-SA 2.0 ES), SignPuddle **SPML/FSW notation**, BdSL47 |
 | **B — NC / C-UDA / research** | Local research, pose extraction, **no commercial, no video redistrib** | WLASL (C-UDA; annotations only are theirs), How2Sign (BY-NC), OpenASL (BY-NC), ASL Signbank (BY-NC-SA), ASL-LEX **website** (BY-NC — use OSF instead) |
 | **C — register / contract** | After they say yes | **ASL-LEX reference videos**, DGS Corpus, BSL Corpus / SignBank, ASLLVD, BOBSL, most Signbank forks |
-| **D — skip** | — | SpreadTheSign, YouTube-SL-25 videos (IDs are BY, footage is YouTube ToS), anything with no stated license, Internet Archive captures used as a licence |
+| **D — skip** | — | SpreadTheSign, YouTube-SL-25 videos (IDs are BY, footage is YouTube ToS), Internet Archive captures used as a licence, **WiLoR**, **OpenPose** (incl. controlnet-aux OpenPose), **Ultralytics YOLO**, anything with no stated license |
 
 Marionet’s README already says training data is public isolated corpora and pose is not redistributed video. That maps onto **A for the lexicon IR, B only if we stay non-commercial**.
 

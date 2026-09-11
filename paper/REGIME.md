@@ -30,9 +30,12 @@ Out of the paper: diffusion, SignVIP Stage I/II video models, continuous discour
 |---|---|---|
 | SignVIP / SignGAN / SignGen | RGB of a captured signer | Not retargetable; identity baked in |
 | Neural Sign Actors / SignAvatars | SMPL-X | Strong motion, weak “bring your own avatar” |
-| JASigning / SiGML / HamNoSys | Avatar from **hand-authored** phonology | No video induction |
+| JASigning / SiGML / HamNoSys / MMS-Player | Avatar from **hand-authored** phonology or MMS | No video induction |
 | SignCLIP | Video–text embedding | Retrieval, not production syntax |
-| Kalidokit / MediaPipe-VRM mocap | Live bones | No lexicon, no phonology, no multilingual eval |
+| Kalidokit / MediaPipe-VRM mocap | Live VRM bones from **MediaPipe** landmarks | MediaPipe-only kinematics; no lexicon, no phonology, no DWPose/HaMeR solver |
+| M3T / SignMask / SeRV | Discrete motion tokens → video or SMPL | Tokenizers for generation, not `SignDesc` |
+| SLP-AA / Signbank coding manuals | Human phonetic transcription | Annotation GUI / conventions, not pose → features |
+| pose-format / pose-evaluation | `.pose` container + DTW/keypoint metrics | Measurements, not `SignDesc`; we convert, we do not replace the IR |
 
 Marionet’s contribution is the **syntax**: a discrete, compositional IR that a compiler already executes on VRM, induced from video at corpus scale. Without E6, a reviewer is entitled to say “Kalidokit + a classifier.” E6 is what makes the syntax the contribution rather than an assertion.
 
@@ -161,23 +164,28 @@ video ──► [A] pose extract ──► marionet.pose/v0
 
 | Stream | GPU contract | Local stand-in | Writes |
 |---|---|---|---|
-| Body / torso | DWPose (or equivalent whole-body) | MediaPipe Pose | `body[].keypoints` — shoulders, hips, spine proxy |
-| Head / face | DWPose face + head-pose / AU estimator | MediaPipe Pose face; Face Mesh when present | `face[].keypoints`, `face[].head` {yaw, pitch, roll} |
-| Hands | HaMeR (MANO → 21 joints) | MediaPipe Hands | `left` / `right` 21×3 + `conf` + `occluded` |
+| Frames | **Decord** (OpenCV fallback) | OpenCV | RGB @ ≤30 fps; no whole-video decode when seeking |
+| Body / torso | **MMPose** wholebody (`dwpose` alias, else `wholebody`). **rtmlib** Wholebody is the ONNX stand-in | MediaPipe Pose | `body[].keypoints` — shoulders, hips, spine proxy |
+| Head / face | Same wholebody face 68 + head-pose from landmarks | MediaPipe Pose face; Face Mesh when present. **Face Landmarker blendshapes** (~52 ARKit) map onto VRM presets via `nmf_from_blendshapes` when the backend writes `face[].blendshapes` | `face[].keypoints`, `face[].head` {yaw, pitch, roll}; optional `blendshapes` |
+| Hands | **HaMeR** official (`geopavlakos/hamer`) MANO → 21 joints. Combine with MMPose body; do not write β or mesh | MediaPipe Hands | `left` / `right` 21×3 + `conf` + `occluded` |
 
-Isolated clips, 30 fps cap, batch 1 on one 48GB card. Do not train SignVIP video diffusion. Output pose JSON; do not commit mp4. Body is not a wrist-station helper. Head is not an NMF footnote. A clip with no usable torso/head is a **partial extract**, reported in E0, not a successful A.
+Isolated clips, 30 fps cap, batch 1 on one 48GB card. In-process backend: `python/marionet/extract_gpu.py` (`--backend dwpose_hamer`). Missing MMPose/rtmlib prints the contract and exits 2. Missing HaMeR still emits pose from wholebody 2D hands and records `camera.hands`. **Fast-HaMeR** (`hunainahmedj/Fast-HaMeR`, MobileNet student, same 21 joints) is an allowed drop-in on the 48GB box; it is not a second schema. OpenPose is not a backend. Do not train SignVIP video diffusion. Output pose JSON; do not commit mp4. Body is not a wrist-station helper. Head is not an NMF footnote. A clip with no usable torso/head is a **partial extract**, reported in E0, not a successful A.
+
+`marionet.pose/v0` is the **swap layer**. Dummy, MediaPipe, and DWPose+HaMeR all write named body keypoints + 21×2 hands + face/head + `conf`/`occluded`. Downstream (B, C, D) never sees raw DWPose 133, MediaPipe 543, or MANO β. `camera.frame` records the convention (`mediapipe` vs `y-up-normalized`); features are wrist-relative so the decoder does not care which backend filled the 21 joints.
 
 **Pose uncertainty.** HaMeR hallucinates fingers under self-occlusion (two-handed signs, crossing the body). Every hand frame carries `conf ∈ [0,1]` (HaMeR per-joint confidence or 2D–3D reprojection error, mapped to `[0,1]`; MediaPipe uses handedness score) and an `occluded` flag. Below `τ_pose = 0.35` the frame is `occluded: true` and **does not vote** for a handshape. D must emit `occluded`, not a discrete label. E0 reports occlusion / no-hand / blur; those frames are not silent training data.
 
 **What D is trained on.** Handshape / configuration heads consume the **wrist-relative 21×3 joint cloud plus finger curls** (`python/marionet/features.py`), never raw MANO PCA (`β`, pose coeffs). Train and infer share that vector. MANO stays an extract-time parameterization; the decoder never sees it.
 
-Tokenizer / leakage: v1 does **not** use a pretrained SignVIP FSQ codebook. Features are computed here. If an FSQ ablation runs, train the quantizer **only** on the training split of extracted poses; never on eval signs, never on SignVIP’s video-decoder training set.
+Tokenizer / leakage: v1 does **not** use a pretrained SignVIP FSQ codebook. Features are computed here (`python/marionet/features.py`). If an FSQ ablation runs, use **lucidrains `vector_quantize_pytorch.FSQ`** on the GPU (numpy `python/marionet/fsq.py` is the Mac drop-in) and train the quantizer **only** on the training split of extracted poses; never on eval signs, never on SignVIP’s video-decoder training set. Do not tokenize MANO PCA. Wrist-relative 21×3 + curls only.
 
 **Do not run corpus-scale A until the D pilot (E2a) has frozen the label space and shown that trajectory features move path-movement F1.** A is the expensive, **one-time** corpus-processing stage (days, size-bound) — not a per-inference cost. Discovering that clip-pooled energy cannot tell Circular from Straight after extracting thousands of clips is the failure this document exists to prevent.
 
 HaMeR is MIT code but **MANO is non-commercial scientific-research only** and forbids distributing the model. Verify, in writing, whether publishing derived 21-joint pose JSON (no mesh, no β) is permitted under the MANO license and the HaMeR weight terms before any pose dump is a paper artifact. If not, keep poses local and publish only `SignDesc` + compiled clips.
 
 **B — Geometric retarget** (no net). Landmarks / MANO joints → VRM eulers: arms + 15 finger bones × 2 **and** spine / chest / neck / head from shoulder–hip geometry plus head pose (`axial_eulers` in `scripts/marionet_pose.py`), plus face → expression weights. Rest-relative, same convention as `library.js`. A clip that only moves fingers is a puppet, not a sign. Mandatory baseline. Already Marionet syntax. Safest result in the paper; not the discrete claim.
+
+This solver is custom because the JS retargeting ecosystem assumes **skeletal clips**, not landmarks. Kalidokit is MediaPipe Holistic → VRM (the live-mocap baseline a reviewer will name). `@three-ws/retarget` / Mixamo-VRM tools map Mixamo/VRM/Avaturn bone names onto another humanoid. None of them consume DWPose 133 or HaMeR 21. Do not wrap Kalidokit around GPU extract; convert into `marionet.pose/v0` and run `retarget_pose`.
 
 **C — Features.** Three blocks, clip-level or onset-windowed (see Temporal structure). Freeze this vector before E2a.
 
@@ -191,9 +199,9 @@ HaMeR is MIT code but **MANO is non-commercial scientific-research only** and fo
    - ulnar-rotation proxy: integrated forearm roll / wrist twist energy
    - path length vs displacement (BackAndForth vs Straight)
 
-v1 motion energy (mean |Δwrist|) **cannot** distinguish Circular / Curved / Straight / Z-shaped / X-shaped / BackAndForth — they can share similar energy. A linear head on that vector cannot produce `Movement.2.0`. Do not pretend otherwise.
+v1 motion energy (mean |Δwrist|) **cannot** distinguish Circular / Curved / Straight / Z-shaped / X-shaped / BackAndForth — they can share similar energy. A linear head on that vector cannot produce `Movement.2.0`. Do not pretend otherwise. `trajectory_vector` in `python/marionet/features.py` (`TRAJ_DIM=12`: direction, curvature, plane, repetition, ulnar proxy, path length vs displacement) is the D-pilot input for `pathMovement`. Named-shape heads stay on `pose_vector` (`FEAT_DIM` unchanged). Do not pull in `tsfresh` until that 12-D vector saturates.
 
-FSQ tokens remain an ablation if the linear feature heads saturate. SignVIP needed discrete codes to *decode video*; we classify phonology.
+FSQ tokens remain an ablation if the linear feature heads saturate. SignVIP needed discrete codes to *decode video*; we classify phonology. M3T (FSQ-VAE, no learned codebook / commitment loss) is the closest sign-token paper — that is evidence FSQ does not need to be the spine, not a library to import. SignMask / SeRV are SMPL-X / RVQ generators. Adapt `vector_quantize_pytorch.FSQ` on **our** train-split pose features; do not load a 64k motion codebook trained on someone else’s skeleton.
 
 **D — Translator: features → `SignDesc`.** Linear multi-head decoder (`scripts/phonology.py`), **re-headed onto the ASL-LEX coding manual** before the pilot:
 
@@ -217,6 +225,8 @@ Named-over-letters (`ILY` wins over `{I,L,Y}`) stays as a **name-level** decode 
 
 L1: supervised on ASL-LEX-aligned video poses if permission arrives; otherwise synthetic-from-lexicon, and E2 is labeled as such. L2: extract clip always; cluster features; names only as above. L3: cluster or `unmapped`. A VLM that emits the same JSON is an ablation, not the spine.
 
+There is no library that maps pose features → named handshape IDs. ASL-LEX 2.0 OSF CSVs are the L1 **labels** (spreadsheet files: CC BY 4.0; the website visualization is BY-NC; reference videos are ©). SLP-AA / SLPAnnotator are phonetic **annotation GUIs** — useful for E2r (three annotators, 50 signs), not a `predict_signdesc` API. That is why D is the contribution.
+
 Why linear is the first model, not the claim:
 
 - Configuration features are already phonological (curls, spread, station). A linear head is a named readout, not a bet that pose→phonology is linearly separable in RGB.
@@ -233,7 +243,10 @@ If (1)–(3) all fail on L1 feature macro-F1 vs majority, the paper reports that
 
 **E — Compiler** (`src/compile.js`). This is the inductive bias. The claimed reconstructed artifact is `compile(SignDesc)`, not the retargeted clip. Semantics below. Compiler input remains solver ids + location + movement type; the feature→solver map is explicit and lossy (`v0_library_map.json`). Feature rows with no solver id do not compile.
 
-**F — Residual.** Optional bone residual if the library is stiff. Ablate it. Must not become “copy HaMeR into VRM.”
+**F — Residual + temporal smooth.** Optional bone residual if the library is stiff. Ablate it. Must not become “copy HaMeR into VRM.” Temporal filters are allowed *around* that cap, not instead of it:
+
+- **Savitzky–Golay** (`python/marionet/smooth.py`, SciPy-style, numpy) on extracted xyz **before** features / FSQ. Offline only.
+- **One-Euro** on **finger** eulers **after** compile (and after the residual clip). Macro bones stay compiled. JS playback does not re-filter; the player interpolates linearly in euler space (`src/vrm.js`).
 
 Let `θ_phon(t)` be the compiler eulers and `θ_pose(t)` the geometric-retarget eulers. Split bones into **macro** (shoulder, upper arm, lower arm, wrist) and **finger**.
 
@@ -342,11 +355,11 @@ ASL-LEX labels are **sign-level, onset-coded, not frame-aligned**. E2 is “does
 
 | Layer | Metric |
 |---|---|
-| Pose extract | detection rate; occlusion rate; **by skin tone and lighting** (E0) |
-| Clip (E1) | After a stated canonical frame: shoulders+hips Procrustes (or bone-length normalize to the VRM rest). **Wrist-trajectory error** (time-aligned) + **finger joint-angle error**. Raw position MPJPE between HaMeR and a differently-proportioned VRM is scale-ambiguous and is not the headline |
+| Pose extract | detection rate; occlusion rate; **by skin tone and lighting** (E0). FairFace (or a stated Fitzpatrick bin) is the skin-tone column, not a runtime dep |
+| Clip (E1) | After a stated canonical frame: shoulders+hips Procrustes (or bone-length normalize to the VRM rest). **Wrist-trajectory error** (time-aligned) + **finger joint-angle error**. `pose-evaluation` DTW/keypoint-distance is the automatic half. Raw position MPJPE between HaMeR and a differently-proportioned VRM is scale-ambiguous and is not the headline |
 | `SignDesc` (E2) | Per-field F1 vs **uniform chance** and vs **majority-class**; feature macro-F1; named-shape exact-match (L1, secondary); unmapped rate (L2) |
 | Ceiling | ASL-LEX 1.0 κ (Caselli et al. 2017): movement **0.65**, flexion 0.75, minor location 0.71, major location 0.83, selected fingers **0.90**, sign type 0.82. ASL-LEX 2.0: all κ > .6 on 50 double-coded signs (Sehyr et al. 2021). Cite these as the realistic ceiling. E2r is our own 50-sign check on the solver/feature labels |
-| Portability (E3) | Rotation-space DTW / mean euler error across VRMs; native “same sign as avatar 1?” |
+| Portability (E3) | Rotation-space DTW / mean euler error across VRMs (`tslearn` / `dtaidistance`, not GPLv3 `dtw-python`); native “same sign as avatar 1?” |
 | Residual (F, E5) | ‖Clip − Clip'‖ / ‖Clip'‖ in euler; E1 numbers for Clip', Clip'+residual, B |
 | IR utility (E6) | Edit success (field changed, others held); search precision@k; cross-VRM euler error of Clip' vs B |
 | Human | Protocol below. MOS is diagnostic, not the conclusion |
@@ -384,6 +397,30 @@ Extract is a **one-time corpus cost**. Lookup (nucleus window, B, D infer, E, op
 Mac plays clips and compiles `SignDesc`. It never trains a video model (the numpy linear heads are laptop-scale).
 
 The compiler is JavaScript (`src/compile.js`), runs in the browser and under Node (`scripts/check_compiler.mjs`). It is a closed-form bone solver: no IK loop, no network. Interactive use is a single `compileSignDesc` call per lemma (sub-millisecond on a laptop). The player already does this on search. That is the “JavaScript avatar” claim: playback and compilation are client-side; training is not.
+
+### Open-source stack (pinned)
+
+Heavy ML stays in Python. Compilation and playback stay in JS. That is the portability test: a VRM the model has never seen plays `MarionetClip` JSON in the browser (`index.html` + `src/vrm.js`). Do not move D or E into ONNX Runtime Web.
+
+| Stage | Pin | Not |
+|---|---|---|
+| A extract | **rtmlib** Wholebody (ONNX Runtime) production front-end; MMPose research lab; HaMeR pluggable hands (`--hands auto\|hamer\|none`); MediaPipe Mac stand-in (Face Landmarker blendshapes → NMF when present); Decord frames | **WiLoR** (NC-ND + Ultralytics AGPL); **OpenPose** / controlnet-aux OpenPose; YOLO+ByteTrack; ONNX Runtime **Web** in the player; publishing MANO β/mesh |
+| B retarget | `scripts/marionet_pose.py` (landmarks/MANO → rest-relative VRM eulers). FairMotion / `bpy` only as visual debug | **KalidoKit is deprecated** — MediaPipe-only live mocap; use as retarget-math reference, not a dependency. `@three-ws/retarget` / Mixamo-VRM (clip→clip). Generic CCD IK. SMPL-X as the output rig |
+| C features | `pose_vector` + `trajectory_vector` (`python/marionet/features.py`). FSQ = **lucidrains** ablation on the train split. M3T is related work, not a dependency | `tsfresh` as a required dep; SignVIP / 64k motion codebooks; FSQ as the claimed tokenizer; `dtw-python` (GPLv3) |
+| D translator | Numpy linear heads (`scripts/phonology.py`). ASL-LEX OSF CSVs already ingested. SLP-AA is E2r, not an API. sklearn / FAISS when L2 clustering exists | HuggingFace `transformers` as the spine; a VLM that emits JSON is an ablation |
+| E compile | `src/compile.js` + `src/library.js` (closed-form). Player: **`three@0.171.0` + `@pixiv/three-vrm@3.4.2`** (npm pins; import map must match) | Making **VRMA** the IR (`MarionetClip` stays; VRMA is a later export). MMS-Player as the compiler. ONNX Runtime Web. Replacing `SignDesc` with generic IK |
+| IR contract | JSON Schema in `schemas/*.v0.schema.json`; Ajv in `scripts/check_compiler.mjs`; `src/ir.js` in the browser. **pose-format** via `python/marionet/pose_interop.py` (converter + cite, not the on-disk IR) | Replacing `marionet.pose/v0` with `.pose`; letting rtmlib/HaMeR/MediaPipe types leak into `SignDesc` |
+| Corpus QA | FiftyOne (visual QA) and Label Studio (nucleus / occlusion / gloss) **later**, not in the runtime | Turning `index.html` into a labeling tool |
+| F residual | `python/marionet/residual.py` (fingers, ε=0.12). Savitzky–Golay then One-Euro as temporal F | One-Euro on shoulders/spine; residual that copies HaMeR onto macro bones |
+
+`three-vrm-animation` loads VRMA tracks. Our portable object is `marionet.clip/v0` applied with `applyClip` onto `vrm.humanoid` normalized bones. A later VRMA *export* is optional interoperability, not the claim. Hosting `MarionetClip` + `SignDesc` on GitHub Pages and dropping a random VRM is the demo; converting to VRMA is not required for E3.
+
+**Four gaps the ecosystem does not fill** (this is the custom work, not a shopping list):
+
+1. **DWPose/HaMeR → VRM eulers.** KalidoKit (deprecated) does MediaPipe → VRM. Clip-retarget libraries assume BVH/FBX/Three clips. B is `retarget_pose`. Do not replace the handshape solver with Three.js CCD IK.
+2. **Pose features → `SignDesc`.** ASL-LEX is labels; SLP-AA is a transcription GUI. D is the translator.
+3. **Sign-specific FSQ.** M3T is a paper with code, not a maintained library. FSQ stays an ablation on our train split.
+4. **NMF.** Citation-form brows / mouth / gaze / head are `python/marionet/nmf.py` plus `body` on `SignDesc`. Discourse grammar (y/n questions, role shift) stays out of the paper.
 
 ## Skeleton
 

@@ -1,0 +1,12 @@
+# Laptop path. GPU extract is not installed from this file.
+numpy>=1.24
+
+# Local MediaPipe stand-in (optional):
+#   pip install mediapipe opencv-python
+
+# Rented 48GB extract — follow OpenMMLab + HaMeR install docs, then:
+#   pip install decord
+#   pip install rtmlib onnxruntime-gpu          # ONNX DWPose if mmcv is too heavy
+#   pip install vector-quantize-pytorch         # FSQ ablation only
+# HaMeR: git clone --recursive https://github.com/geopavlakos/hamer
+# MANO_RIGHT.pkl → $HAMER_ROOT/_DATA/data/mano/

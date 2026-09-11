@@ -1,4 +1,8 @@
-/** SignDesc + MarionetClip v0 — phonological IR and executable gesture code. */
+/** SignDesc + MarionetClip v0 — phonological IR and executable gesture code.
+
+JSON Schema (shared with Python fixtures / Ajv): schemas/*.v0.schema.json
+These functions stay the browser validator so the player has no Ajv dependency.
+*/
 
 export const SIGN_DESC_SCHEMA = "marionet.signdesc/v0";
 export const CLIP_SCHEMA = "marionet.clip/v0";

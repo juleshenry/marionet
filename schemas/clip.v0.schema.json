@@ -1,0 +1,53 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://marionet.local/schemas/clip.v0.schema.json",
+  "title": "marionet.clip/v0",
+  "description": "Executable VRM gesture code. Bone tracks are rest-relative eulers [[t, [x,y,z]], ...].",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["schema", "duration", "bones"],
+  "properties": {
+    "schema": { "const": "marionet.clip/v0" },
+    "duration": { "type": "number", "minimum": 0 },
+    "source": { "type": "string", "enum": ["authored", "retargeted", "compiled+residual"] },
+    "vrmHumanoid": { "type": "string" },
+    "language": { "type": ["string", "null"] },
+    "signDescId": { "type": ["string", "null"] },
+    "bones": {
+      "type": "object",
+      "additionalProperties": { "$ref": "#/definitions/eulerTrack" }
+    },
+    "expressions": {
+      "type": "object",
+      "additionalProperties": { "$ref": "#/definitions/scalarTrack" }
+    }
+  },
+  "definitions": {
+    "eulerTrack": {
+      "type": "array",
+      "items": {
+        "type": "array",
+        "minItems": 2,
+        "maxItems": 2,
+        "items": [
+          { "type": "number" },
+          {
+            "type": "array",
+            "minItems": 3,
+            "maxItems": 3,
+            "items": { "type": "number" }
+          }
+        ]
+      }
+    },
+    "scalarTrack": {
+      "type": "array",
+      "items": {
+        "type": "array",
+        "minItems": 2,
+        "maxItems": 2,
+        "items": [{ "type": "number" }, { "type": "number" }]
+      }
+    }
+  }
+}

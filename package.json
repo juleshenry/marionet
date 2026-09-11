@@ -5,9 +5,14 @@
   "description": "Compiling sign phonology onto portable VRM avatars.",
   "scripts": {
     "capture-demos": "node scripts/capture_demo_gifs.mjs http://127.0.0.1:8765",
-    "check": "node scripts/check_compiler.mjs && python3 scripts/phonology.py self-test"
+    "check": "node scripts/check_compiler.mjs && python3 scripts/phonology.py self-test && python3 scripts/video_to_marionet.py --self-test"
+  },
+  "dependencies": {
+    "@pixiv/three-vrm": "3.4.2",
+    "three": "0.171.0"
   },
   "devDependencies": {
+    "ajv": "8.17.1",
     "playwright": "1.58.2"
   }
 }

@@ -1,4 +1,5 @@
 /** Compile a handful of lemmas; fail if the library invents a pose it cannot name. */
+import Ajv from "ajv";
 import { compileSignDesc } from "../src/compile.js";
 import { isCompilable, validateClip, validateSignDesc } from "../src/ir.js";
 import { readFileSync } from "node:fs";
@@ -119,4 +120,39 @@ if (!threw) throw new Error("compiler must refuse lexicon-only rows");
 const ready = asllex.signs.filter((s) => s.compileReady).length;
 if (ready < 1500) throw new Error(`expected compileReady well past 462, got ${ready}/${asllex.n}`);
 
-console.log(`check_compiler ok  asllex compileReady=${ready}/${asllex.n}`);
+const ajv = new Ajv({ allErrors: true, strict: false });
+const schemaOf = (name) => JSON.parse(readFileSync(join(root, "schemas", name), "utf8"));
+const checkSchema = (validate, obj, label) => {
+  if (!validate(obj)) {
+    const msg = (validate.errors || []).map((e) => `${e.instancePath} ${e.message}`).join("; ");
+    throw new Error(`${label} schema: ${msg}`);
+  }
+};
+const vDesc = ajv.compile(schemaOf("signdesc.v0.schema.json"));
+const vClip = ajv.compile(schemaOf("clip.v0.schema.json"));
+const vPose = ajv.compile(schemaOf("pose.v0.schema.json"));
+checkSchema(vDesc, ily, "ily");
+checkSchema(vDesc, gato, "gato");
+checkSchema(vClip, yesClip, "yes-nod clip");
+const poseExample = {
+  schema: "marionet.pose/v0",
+  fps: 30,
+  n_frames: 1,
+  status: "ok",
+  right: [{ t: 0, xyz: Array.from({ length: 21 }, () => [0, 0, 0]), conf: 1, occluded: false }],
+};
+checkSchema(vPose, poseExample, "pose example");
+for (const row of asllex.signs) checkSchema(vDesc, row, row.id);
+
+const pkg = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
+const html = readFileSync(join(root, "index.html"), "utf8");
+const threeVer = pkg.dependencies?.three;
+const vrmVer = pkg.dependencies?.["@pixiv/three-vrm"];
+if (!threeVer || !html.includes(`three@${threeVer}/`)) {
+  throw new Error(`index.html import map must pin three@${threeVer}`);
+}
+if (!vrmVer || !html.includes(`three-vrm@${vrmVer}/`)) {
+  throw new Error(`index.html import map must pin @pixiv/three-vrm@${vrmVer}`);
+}
+
+console.log(`check_compiler ok  asllex compileReady=${ready}/${asllex.n}  schemas=ok`);

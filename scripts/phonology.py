@@ -251,6 +251,27 @@ def cmd_self_test() -> int:
     if abs(finger - 0.52) > 1e-6:  # 0.4 + clip(0.8, 0.12)
         raise SystemExit(f"finger residual should clip to ε, got {finger}")
 
+    from marionet.residual import macro_pose_unchanged as _macro
+    from marionet.smooth import smooth_clip_fingers
+
+    euro = smooth_clip_fingers(mixed)
+    if not _macro(compiled, euro):
+        raise SystemExit("one-euro must not move macro-pose")
+
+    from marionet.features import FEAT_DIM, TRAJ_DIM, pose_vector, trajectory_vector
+    from marionet.fsq import PoseFSQ
+
+    fsq = PoseFSQ()
+    rec = fsq.reconstruct(X[0])
+    if rec.shape != X[0].shape:
+        raise SystemExit(f"FSQ reconstruct dim {rec.shape} != {X[0].shape}")
+    pv = pose_vector(dummy)
+    if pv.shape != (FEAT_DIM,):
+        raise SystemExit(f"pose_vector dim {pv.shape} != {FEAT_DIM}")
+    tv = trajectory_vector(dummy)
+    if tv.shape != (TRAJ_DIM,):
+        raise SystemExit(f"trajectory_vector dim {tv.shape} != {TRAJ_DIM}")
+
     print(json.dumps({"loc_acc": round(loc_acc, 3), "hs_acc": round(hs_acc, 3), "ily": pred_hs, "n": len(ids), "n_hs": len(HANDSHAPE_SPECS), "reject": rejected, "nucleus": span}))
     return 0
 

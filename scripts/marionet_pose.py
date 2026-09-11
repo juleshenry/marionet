@@ -1,6 +1,12 @@
 """marionet.pose/v0 + geometric retarget → marionet.clip/v0.
 
 Videos are an axiom: this module reads paths on disk. It does not fetch.
+
+`marionet.pose/v0` is the swap layer between extract backends (dummy,
+MediaPipe, DWPose+HaMeR). `retarget_pose` is the Stage B solver
+Kalidokit does not provide: landmarks / MANO 21 → rest-relative VRM
+eulers, including spine/chest/neck/head. Clip-to-clip retargeters
+(@three-ws/retarget, Mixamo-VRM) are out of scope here.
 """
 
 from __future__ import annotations

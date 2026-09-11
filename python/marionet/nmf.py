@@ -83,8 +83,65 @@ def _iod(kps: dict) -> float:
     return d if d > 1e-6 else 0.0
 
 
+def nmf_from_blendshapes(weights: dict) -> dict | None:
+    """MediaPipe Face Landmarker / ARKit-style blendshapes → coarse NMF.
+
+    Cheapest NMF path when a Tasks Face Landmarker is on the extract backend.
+    Geometry (`nmf_from_face`) remains the default; this wins if weights exist.
+    """
+    if not isinstance(weights, dict) or not weights:
+        return None
+    def g(*names):
+        return max((float(weights[n]) for n in names if isinstance(weights.get(n), (int, float))), default=0.0)
+
+    nmf = dict(NMF_DEFAULT)
+    brow_up = g("browInnerUp", "browOuterUpLeft", "browOuterUpRight")
+    brow_down = g("browDownLeft", "browDownRight")
+    if brow_up >= 0.35:
+        nmf["eyebrows"] = "raised"
+    elif brow_down >= 0.35:
+        nmf["eyebrows"] = "furrowed"
+    jaw = g("jawOpen")
+    smile = g("mouthSmileLeft", "mouthSmileRight")
+    pucker = g("mouthPucker", "mouthFunnel")
+    if jaw >= 0.35:
+        nmf["mouth"] = "open"
+    elif smile >= 0.4:
+        nmf["mouth"] = "spread"
+    elif pucker >= 0.4:
+        nmf["mouth"] = "pursed"
+    look_l, look_r = g("eyeLookOutLeft", "eyeLookInRight"), g("eyeLookOutRight", "eyeLookInLeft")
+    look_up, look_dn = g("eyeLookUpLeft", "eyeLookUpRight"), g("eyeLookDownLeft", "eyeLookDownRight")
+    if look_l >= 0.4:
+        nmf["eyegaze"] = "left"
+    elif look_r >= 0.4:
+        nmf["eyegaze"] = "right"
+    elif look_up >= 0.4:
+        nmf["eyegaze"] = "up"
+    elif look_dn >= 0.4:
+        nmf["eyegaze"] = "down"
+    return nmf
+
+
+def _blendshape_mean(pose: dict) -> dict:
+    acc: dict[str, list] = {}
+    for fr in pose.get("face") or []:
+        if not isinstance(fr, dict):
+            continue
+        w = fr.get("blendshapes")
+        if not isinstance(w, dict):
+            continue
+        for k, v in w.items():
+            if isinstance(v, (int, float)):
+                acc.setdefault(k, []).append(float(v))
+    return {k: sum(vs) / len(vs) for k, vs in acc.items() if vs}
+
+
 def nmf_from_face(pose: dict) -> dict:
     """Map 2D/3D face+head tracks onto discrete NMF labels. Missing face → all neutral."""
+    blended = nmf_from_blendshapes(_blendshape_mean(pose))
+    if blended:
+        return blended
     nmf = dict(NMF_DEFAULT)
     kps, head = _mean_face(pose)
     iod = _iod(kps)

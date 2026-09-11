@@ -57,7 +57,7 @@ allowed isolated-sign video
         → drop onto index.html
 ```
 
-SignVIP is the **pose tokenizer** standard (DWPose + HaMeR → discrete motion). We take that front-end and stop. Their diffusion decoder is irrelevant. v1 classifies `SignDesc` from pose features (`scripts/phonology.py`); FSQ and a VLM that emits the same JSON are ablations.
+SignVIP is the **pose tokenizer** standard (DWPose + HaMeR → discrete motion). We take that front-end and stop. Their diffusion decoder is irrelevant. GPU extract: **rtmlib Wholebody (ONNX Runtime) as the production front-end**, MMPose as the research lab, **HaMeR as a pluggable hand backend** (`--hands auto|hamer|none`; MANO is not MIT). WiLoR / OpenPose / Ultralytics YOLO fail the license gate. `python/marionet/pose_interop.py` converts to pose-format JSON for SL-processing reviewers; `.pose` is not the IR. `trajectory_vector` is the path-movement feature the D-pilot needs (curvature / plane / repetition), not mean wrist energy. Decord loads frames. Fast-HaMeR is an allowed 21-joint drop-in. `marionet.pose/v0` is the swap layer — rtmlib/HaMeR/MediaPipe produce measurements, Marionet produces semantics. JSON Schema lives in `schemas/`; Ajv checks it in Node; `src/ir.js` stays the browser validator. Geometric retarget (`retarget_pose`) is the DWPose/HaMeR → VRM euler solver Kalidokit does not provide (Kalidokit is MediaPipe live mocap). v1 classifies `SignDesc` from pose features (`scripts/phonology.py`); there is no pose→phonology library — ASL-LEX is labels, SLP-AA is an annotation GUI. FSQ (lucidrains / M3T-style, train-split only) and a VLM that emits the same JSON are ablations. Playback is `@pixiv/three-vrm` applying `MarionetClip` JSON — not VRMA, not MMS-Player, not ONNX in the browser. Citation-form face/head/torso are `python/marionet/nmf.py`; discourse NMFs are out.
 
 Video in is **head, body, and hands**. `SignDesc`’s hand layer is two-level: **features** (selected fingers, flexion, location, path) transfer; **names** (`ILY`, `open_b`) stay `unmapped` on L2/L3 until a linguist names the cluster. Head, torso, and face are induced from pose, not from ASL-LEX columns. HaMeR frames below confidence `τ_pose` become `occluded`; a weak class score becomes `unmapped` — never a forced nearest ASL label. Labels are read from the citation-form nucleus, not from preparation/retraction. Residual IK may correct finger bones only (`python/marionet/residual.py`); it must not rewrite the compiler’s arm, wrist, or axial pose.
 
@@ -71,10 +71,12 @@ Video in is **head, body, and hands**. `SignDesc`’s hand layer is two-level: *
 python scripts/phonology.py setup
 python scripts/video_to_marionet.py --backend dummy --lang eso --gloss KASS --phonology
 python scripts/video_to_marionet.py clip.mp4 --backend mediapipe --lang eso --gloss KASS --phonology
+python scripts/video_to_marionet.py clip.mp4 --backend rtmlib --hands auto --smooth savgol --lang eso --gloss KASS --phonology
+python scripts/video_to_marionet.py clip.mp4 --backend dwpose_hamer --hands hamer --lang eso --gloss KASS --phonology
 python scripts/video_to_marionet.py --self-test
 ```
 
-`setup` trains a linear pose→`SignDesc` classifier on synthetic L1 (ASL-LEX rows + fingerspelling). No torch. `--phonology` writes a sibling `.signdesc.json`; the player compiles it when `compileReady` is true. Geometric retarget always writes the clip. `dwpose_hamer` is the rented-GPU contract (same `marionet.pose/v0` schema), not an in-process backend yet. Drop the clip JSON on the player the same way you drop a `.vrm`. Pose JSON is not playable. Unmapped lemmas stay lexicon-only — the player will not invent a pose.
+`setup` trains a linear pose→`SignDesc` classifier on synthetic L1 (ASL-LEX rows + fingerspelling). No torch. `--phonology` writes a sibling `.signdesc.json`; the player compiles it when `compileReady` is true. Geometric retarget always writes the clip. `rtmlib` is the production GPU/CPU backend (ONNX Runtime wholebody → `marionet.pose/v0`). `dwpose_hamer` is the same path plus optional HaMeR hands. On a machine without those packages it prints the contract and exits 2. `--hands auto|hamer|none` keeps the hand plugin pluggable because MANO is not MIT. `--smooth savgol` filters pose xyz before features; `--smooth oneeuro` filters finger eulers after retarget (macro bones stay put). Drop the clip JSON on the player the same way you drop a `.vrm`. Pose JSON is not playable. Unmapped lemmas stay lexicon-only — the player will not invent a pose.
 
 For languages without a spreadsheet (Estonian Sign Language / EVK / `eso`, and most of the world), this is the lexicon: video you are allowed to pose-extract, then syntax. No SpreadTheSign scrape in the job script.
 
@@ -104,7 +106,7 @@ python3 scripts/ingest_signpuddle.py
 - [x] ASL fingerspelling expertise-library proof
 - [x] License allowlist + ASL-LEX / SignPuddle dumps
 - [x] Location / handshape catalogs past fingerspelling (`5`, `open_b`, Head, …); unmapped rows stay lexicon-only
-- [x] Video → pose → `MarionetClip` CLI (`dummy` + local MediaPipe; DWPose+HaMeR is the GPU contract)
+- [x] Video → pose → `MarionetClip` CLI (`dummy` + MediaPipe + `rtmlib` / `dwpose_hamer`)
 - [x] Player: search the polyglot lexicon, inspect `SignDesc`, drop a retargeted `.json` clip
 - [x] Pose → `SignDesc` linear heads (`scripts/phonology.py`; FSQ/VLM are later ablations)
 - [x] Pose confidence → `occluded` / class reject → `unmapped` (no forced argmax)
@@ -112,4 +114,7 @@ python3 scripts/ingest_signpuddle.py
 - [x] Residual locked to finger IK (`python/marionet/residual.py`); macro-pose (including head/spine) stays compiled
 - [x] Head / torso / face on `SignDesc` and on clips (axial bones + VRM expression presets)
 - [ ] Per-avatar expression coverage check (missing presets stay silent)
-- [ ] DWPose+HaMeR in-process backend on rented GPU (full body + conf + occluded)
+- [x] GPU extract adapter (`python/marionet/extract_gpu.py`): rtmlib production, MMPose lab, pluggable HaMeR hands; contract + exit 2 if missing
+- [x] JSON Schema + Ajv for `SignDesc` / `MarionetClip` / `marionet.pose/v0` (`schemas/`)
+- [x] pose-format converter (`python/marionet/pose_interop.py`); `trajectory_vector` for path movement; WiLoR/OpenPose/YOLO skipped at the license gate
+- [x] Savitzky–Golay / One-Euro temporal F (`python/marionet/smooth.py`); FSQ ablation module (`python/marionet/fsq.py`)

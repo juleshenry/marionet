@@ -1,0 +1,52 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://marionet.local/schemas/pose.v0.schema.json",
+  "title": "marionet.pose/v0",
+  "description": "Swap layer between pose backends (dummy, MediaPipe, rtmlib, MMPose, HaMeR). Downstream never sees raw DWPose 133 or MediaPipe 543.",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["schema", "fps", "n_frames"],
+  "properties": {
+    "schema": { "const": "marionet.pose/v0" },
+    "fps": { "type": "number", "exclusiveMinimum": 0 },
+    "n_frames": { "type": "integer", "minimum": 0 },
+    "status": { "type": "string" },
+    "language": { "type": ["string", "null"] },
+    "gloss": { "type": ["string", "null"] },
+    "backend": { "type": "string" },
+    "left": { "type": "array", "items": { "$ref": "#/definitions/handFrame" } },
+    "right": { "type": "array", "items": { "$ref": "#/definitions/handFrame" } },
+    "body": { "type": "array" },
+    "face": { "type": "array" },
+    "canonical": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "start": { "type": "integer" },
+        "end": { "type": "integer" }
+      }
+    }
+  },
+  "definitions": {
+    "xyz": {
+      "type": "array",
+      "minItems": 3,
+      "items": { "type": "number" }
+    },
+    "handFrame": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "t": { "type": "number" },
+        "xyz": {
+          "type": "array",
+          "minItems": 21,
+          "maxItems": 21,
+          "items": { "$ref": "#/definitions/xyz" }
+        },
+        "conf": { "type": "number", "minimum": 0, "maximum": 1 },
+        "occluded": { "type": "boolean" }
+      }
+    }
+  }
+}
