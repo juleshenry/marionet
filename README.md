@@ -1,124 +1,139 @@
 # Marionet
 
-Compiling full-body sign (head, body, hands) onto portable VRM avatars.
+Marionet turns sign language signs into small animation files that play on any [VRM](https://vrm.dev/en/) avatar in the browser.
 
-## Abstract
-
-Sign language production systems typically either bake a particular signer into pixels or bind motion to a studio-specific character. Neither yields a sign that a user-chosen avatar can perform. **Marionet** is a framework for isolated sign production whose primary artifact is *VRM gesture code*: retargetable bone and expression tracks that play on any VRM 1.0 humanoid, including a custom avatar dropped in at runtime. Portability is across VRM avatars, not arbitrary rigs.
-
-The video task is **video → full body**, not video → manual phonology. A citation-form sign is head + torso + hands (and face). Geometric retarget always emits that whole humanoid. Discrete `SignDesc` labels the same three articulator groups. ASL-LEX’s spreadsheet is manual-heavy — that is a supervision gap, not the output. Hand-at-the-forehead is a place feature of the hand; it does not nod the neck. Both are required. Face (brows, mouth, gaze) compiles to VRM expression weights. Discourse grammar is out of scope because this paper is citation form, not because the body does not move. **A lemma is one sign.** Spoken English may take several words (`ILY` → “I love you”); that is a translation, not a parse of the gesture, not fingerspelling, and not three catalog entries. An expertise library of VRM-native primitives realizes those features as executable clips (`MarionetClip`). Learned models, when introduced, predict `SignDesc` and residual timing; they do not emit raw quaternions as a first language.
-
-This repository begins with the runtime, the compiler, and a licensed isolated lexicon. The first authored set is American Sign Language fingerspelling (A–Z). Lexical `SignDesc` rows come from ASL-LEX 2.0 (OSF, CC BY 4.0) and SignPuddle ASL notation (official SPML dump). Most sign languages (EVK and the rest) are not written down: **video is the corpus**, and the experiment is to emit Marionet syntax from those clips. Photoreal signer video is a different task; we do not train diffusion.
+You describe a sign the way a linguist would: handshape, where the hand is, which way the palm faces and how it moves, plus head, body and face if they matter. A compiler turns that description into bone rotations, and a three.js player performs it on whichever VRM is loaded, including one you drop in yourself.
 
 ![ASL ILY](docs/demo-ily.gif)
 
 ![LENSEGUA GATO](docs/demo-gato.gif)
 
-Compiler demos (separate clips):
+## What's here
 
-- **ASL ILY** — one citation-form sign (`ILY` handshape at chest-front). English “I love you” is a translation, not three signs. Replay: `http://localhost:8080/?demo=ily`
-- **LENSEGUA GATO** — citation-form *sketch*: F-hand, cheek, whisker stroke, aligned with ASL-LEX `cat` (F / Head / CheekNose). No LENSEGUA dump is on the allowlist yet. Replay: `http://localhost:8080/?demo=gato`
+- **28 finished signs**, baked to `clips/` and checked by eye on the sample avatar:
+  - ASL fingerspelling A–Z, including the movement of J and Z.
+  - ASL **ILY**. It's one sign. "I love you" is its English translation, not three signs and not three letters.
+  - LENSEGUA **GATO** ("cat"). This is a sketch (F-hand, whisker stroke at the cheek), not an entry from a licensed LENSEGUA dictionary.
+- **2,470 ASL-LEX entries that compile** but haven't been reviewed. They use a small set of generic movements, so many look alike.
+- **A browser player** to search signs, play them and swap avatars.
 
-Loop both with `http://localhost:8080/?demo=1`.
+## How it works
 
-## This repository
+```
+SignDesc (data/signs/*.json)        what the sign is: handshape, location, palm, movement, head/body/face
+   │
+   │  src/compile.js + src/library.js
+   ▼
+MarionetClip (clips/*.json)         keyframed rotations per VRM bone, plus face expression weights
+   │
+   │  src/vrm.js
+   ▼
+any VRM avatar in the browser
+```
 
-| Path | Role |
-|---|---|
-| `index.html` | Dictionary player: search, language filter, drop a VRM or clip JSON |
-| `src/ir.js` | `SignDesc` / `MarionetClip` schemas and validators |
-| `src/library.js` | Parametric handshapes + VRM bone solver |
-| `src/compile.js` | `SignDesc` → `MarionetClip` |
-| `src/vrm.js` | Load, rest pose, apply clips |
-| `data/signs/ase/fingerspelling.json` | A–Z as `SignDesc` |
-| `clips/` | Baked `MarionetClip` JSON for every sign in the non-deferred packs (A–Z, ILY, GATO); `scripts/bake_clips.mjs` writes it, `npm run check` fails if it is stale |
-| `scripts/render_clips.mjs` | Renders each baked clip on the sample VRM into `data/runs/renders/index.html` for review: a camera orbit around the held handshape, playback with the fingertip path drawn for signs that move, and contact sheets |
-| `scripts/fit_thumbs.mjs` | Fits the per-letter thumb poses in `src/library.js` from thumb-tip targets |
-| `scripts/hand_gaps.mjs` | Flags fingers or thumb passing through each other in each baked clip |
-| `data/signs/ase/asllex_signdesc.json` | ASL-LEX 2.0 → `SignDesc` (features only) |
-| `dataingestplan.md` | License gate, disk cap, dump-only ingest |
-| `paper/REGIME.md` | Research paper: video corpus → Marionet syntax |
+- **SignDesc** describes one sign: one entry per lemma. Schema: `schemas/signdesc.v0.schema.json`.
+- **The library** (`src/library.js`) is the vocabulary: each named handshape, location, palm orientation and movement as bone rotations. Most values are hand-tuned. The fingerspelling hand poses (palm direction, thumb placement, R's crossed fingers, J and Z paths) were fitted numerically on the sample avatar and checked visually.
+- **MarionetClip** is the output: per-bone keyframes as rotations relative to an arms-down rest pose. It doesn't depend on any particular avatar. Schema: `schemas/clip.v0.schema.json`.
+- **The player** loads a VRM, puts it in the rest pose and applies the clip on top.
+
+## Run the player
 
 ```sh
+npm install
 python3 -m http.server 8080
 # open http://localhost:8080
 ```
 
-Drop a `.vrm` onto the stage, or use the bundled sample. Type A–Z.
+- Type A–Z to fingerspell, or search the lexicon.
+- Drop a `.vrm` file onto the page to change avatar.
+- Drop a clip or SignDesc `.json` file to play it.
+- Demo loops: `?demo=ily`, `?demo=gato`, or `?demo=1` for both.
 
-## Video → Marionet syntax
+## Add or fix a sign
 
-The experiment: a clip of a signer in, `MarionetClip` JSON out. That JSON is what the VRM player already plays. No Stable Diffusion, no AnimateDiff, no signer identity.
+1. Edit the sign in `data/signs/…`, or the vocabulary in `src/library.js`.
+2. Bake: `npm run bake` writes `clips/`. `npm run check` fails if `clips/` is out of date.
+3. Look at it:
+   ```sh
+   python3 -m http.server 8765        # in another terminal
+   npm run render-clips
+   open data/runs/renders/index.html
+   ```
+   The gallery shows three things:
+   - a slow camera orbit around each held handshape, which shows depth such as whether the thumb is over or under the fingers;
+   - a front-view video of each moving sign, with the fingertip's path drawn as it goes;
+   - still frames.
+4. Check for fingers passing through each other: `node scripts/hand_gaps.mjs`.
+5. If a thumb is in the wrong place, set its target in `scripts/fit_thumbs.mjs`, run it, and paste the row it prints into `THUMB_POSES` in `src/library.js`.
 
-```
-allowed isolated-sign video
-        → pose extract          (head/face + body + hands; per-hand conf)
-        → marionet.pose/v0      (landmarks / MANO + conf — not mp4)
-        → nucleus window        (prep | citation-form | retract)
-        → geometric retarget    (full-body clip: spine, neck, head, arms, fingers, face)
-        → SignDesc              (same three groups; unmapped/occluded, never forced)
-        → MarionetClip          (compiler; optional finger residual)
-        → drop onto index.html
-```
+Rendering drives your installed Chrome through Playwright, needs `ffmpeg`, and downloads the sample avatar from GitHub.
 
-SignVIP is the **pose tokenizer** standard (DWPose + HaMeR → discrete motion). We take that front-end and stop. Their diffusion decoder is irrelevant. GPU extract: **rtmlib Wholebody (ONNX Runtime) as the production front-end**, MMPose as the research lab, **HaMeR as a pluggable hand backend** (`--hands auto|hamer|none`; MANO is not MIT). WiLoR / OpenPose / Ultralytics YOLO fail the license gate. `python/marionet/pose_interop.py` converts to pose-format JSON for SL-processing reviewers; `.pose` is not the IR. `trajectory_vector` is the path-movement feature the D-pilot needs (curvature / plane / repetition), not mean wrist energy. Decord loads frames. Fast-HaMeR is an allowed 21-joint drop-in. `marionet.pose/v0` is the swap layer — rtmlib/HaMeR/MediaPipe produce measurements, Marionet produces semantics. JSON Schema lives in `schemas/`; Ajv checks it in Node; `src/ir.js` stays the browser validator. Geometric retarget (`retarget_pose`) is the DWPose/HaMeR → VRM euler solver Kalidokit does not provide (Kalidokit is MediaPipe live mocap). v1 classifies `SignDesc` from pose features (`scripts/phonology.py`); there is no pose→phonology library — ASL-LEX is labels, SLP-AA is an annotation GUI. FSQ (lucidrains / M3T-style, train-split only) and a VLM that emits the same JSON are ablations. Playback is `@pixiv/three-vrm` applying `MarionetClip` JSON — not VRMA, not MMS-Player, not ONNX in the browser. Citation-form face/head/torso are `python/marionet/nmf.py`; discourse NMFs are out.
+## Checks
 
-Video in is **head, body, and hands**. `SignDesc`’s hand layer is two-level: **features** (selected fingers, flexion, location, path) transfer; **names** (`ILY`, `open_b`) stay `unmapped` on L2/L3 until a linguist names the cluster. Head, torso, and face are induced from pose, not from ASL-LEX columns. HaMeR frames below confidence `τ_pose` become `occluded`; a weak class score becomes `unmapped` — never a forced nearest ASL label. Labels are read from the citation-form nucleus, not from preparation/retraction. Residual IK may correct finger bones only (`python/marionet/residual.py`); it must not rewrite the compiler’s arm, wrist, or axial pose.
+`npm run check` validates the compiler and schemas, confirms `clips/` matches the current library, and runs the Python self-tests.
 
-**Compute.** Extract (Step A) is a **one-time** corpus cost on a rented 48GB GPU (days, corpus-size bound). Lookup — nucleus window, retarget, `SignDesc`, compile — is **near-real-time on a Mac**. MediaPipe is the local stand-in so the path exists before you rent a box. Do not quote GPU-days as per-sign inference.
+## Repository map
 
-**Two files.** Pose JSON is the intermediate (`marionet.pose/v0`: fps, per-frame body + 21×2 hands, optional MANO). `MarionetClip` is the syntax (`marionet.clip/v0`, same schema `compile.js` already emits, `source: "retargeted"`). Keep videos and large pose dumps out of git.
+| Path | What it is |
+|---|---|
+| `index.html`, `src/main.js` | Player UI: search, alphabet, drop a VRM or JSON |
+| `src/vrm.js` | Loads a VRM, sets the rest pose, applies clips |
+| `src/compile.js` | SignDesc → MarionetClip |
+| `src/library.js` | Handshapes, locations, orientations and movements as bone rotations |
+| `src/ir.js`, `src/lexicon.js` | Validators; loading and searching sign packs |
+| `data/signs/` | Sign packs: `ase/fingerspelling.json`, `ase/i-love-you.json`, `gsm/gato.json`, `ase/asllex_signdesc.json` |
+| `clips/` | Baked clips for the finished signs, plus `index.json` |
+| `schemas/` | JSON Schemas for SignDesc, clips and pose files |
+| `scripts/bake_clips.mjs` | Compile and bake the finished signs |
+| `scripts/render_clips.mjs` | Review gallery (orbit, fingertip-path videos, stills) |
+| `scripts/hand_gaps.mjs`, `scripts/fit_thumbs.mjs` | Finger collision report; thumb pose fitting |
+| `scripts/check_compiler.mjs` | Compiler and schema checks |
+| `scripts/capture_demo_gifs.mjs` | Regenerates the two GIFs above |
+| `scripts/ingest_asllex.py`, `scripts/ingest_signpuddle.py` | Build the ASL-LEX and SignPuddle sign data |
+| `scripts/video_to_marionet.py`, `scripts/marionet_pose.py`, `scripts/phonology.py`, `python/marionet/` | Video → clip experiment (below) |
+| `data/sources/` | Licence allowlist and citations |
+| `dataingestplan.md` | Which data sources may be used, and how |
+| `batchplan.md` | Plan for converting video in bulk |
+| `paper/REGIME.md` | Research framing for the video experiment |
 
-**CLI:**
+## Video → clip (experimental)
+
+Most sign languages have no written dictionary, so the long-term research question is whether signs can be pulled from video of signers. `scripts/video_to_marionet.py` takes a video, tracks the body and hands, and writes a pose file plus a clip.
+
+It isn't needed for anything above, and its output is a rough draft. The arm is placed in one of three preset positions rather than measured, and fingers are measured coarsely. `batchplan.md` covers what it would take to make it real.
 
 ```sh
-python scripts/phonology.py setup
-python scripts/video_to_marionet.py --backend dummy --lang eso --gloss KASS --phonology
-python scripts/video_to_marionet.py clip.mp4 --backend mediapipe --lang eso --gloss KASS --phonology
-python scripts/video_to_marionet.py clip.mp4 --backend rtmlib --hands auto --smooth savgol --lang eso --gloss KASS --phonology
-python scripts/video_to_marionet.py clip.mp4 --backend dwpose_hamer --hands hamer --lang eso --gloss KASS --phonology
-python scripts/video_to_marionet.py --self-test
+python3 scripts/video_to_marionet.py --self-test
+python3 scripts/video_to_marionet.py --backend dummy --lang eso --gloss KASS      # no video needed
+python3 scripts/video_to_marionet.py clip.mp4 --backend mediapipe --lang eso --gloss KASS
 ```
 
-`setup` trains a linear pose→`SignDesc` classifier on synthetic L1 (ASL-LEX rows + fingerspelling). No torch. `--phonology` writes a sibling `.signdesc.json`; the player compiles it when `compileReady` is true. Geometric retarget always writes the clip. `rtmlib` is the production GPU/CPU backend (ONNX Runtime wholebody → `marionet.pose/v0`). `dwpose_hamer` is the same path plus optional HaMeR hands. On a machine without those packages it prints the contract and exits 2. `--hands auto|hamer|none` keeps the hand plugin pluggable because MANO is not MIT. `--smooth savgol` filters pose xyz before features; `--smooth oneeuro` filters finger eulers after retarget (macro bones stay put). Drop the clip JSON on the player the same way you drop a `.vrm`. Pose JSON is not playable. Unmapped lemmas stay lexicon-only — the player will not invent a pose.
+Backends:
+- `dummy`: synthetic data, no video needed.
+- `mediapipe`: CPU. Needs `pip install mediapipe opencv-python`.
+- `rtmlib` and `dwpose_hamer`: GPU.
 
-For languages without a spreadsheet (Estonian Sign Language / EVK / `eso`, and most of the world), this is the lexicon: video you are allowed to pose-extract, then syntax. No SpreadTheSign scrape in the job script.
-
-The full experimental regime (supervision tiers, FSQ translator, E1–E5, metrics) is `paper/REGIME.md`.
+HaMeR hands need the MANO model, which is licensed for non-commercial research only, so keep any pose data derived from it local.
 
 ## Data and licensing
 
-Ingest follows `dataingestplan.md`. Official dumps only, 20 MB per file, no site mirrors, no SpreadTheSign, no Internet Archive as a licence.
+Data comes in only through the licence gate in `dataingestplan.md`: official dumps, no scraping.
 
-| Now | What |
-|---|---|
-| ASL-LEX 2.0 OSF `signdata.csv` | 2,723 signs → `data/signs/ase/asllex_signdesc.json` (CC BY 4.0 files) |
-| SignPuddle `sgn4.spml` | Gloss + FSW coverage; XML stays in gitignored `data/raw/` |
-| v0 library map | Solver IDs including `5`, `open_b`, Head locations; unmapped codes stay source phonology |
-
-2466 / 2723 ASL-LEX rows compile on today’s primitives (mapped handshape **and** location). The rest of the lexicon is data, not fake bone poses. Citations: `data/sources/CITATIONS.md`. Allowlist: `data/sources/allowlist.jsonl`.
+- **ASL-LEX 2.0** (OSF files, CC BY 4.0) gives 2,723 signs in `data/signs/ase/asllex_signdesc.json`. 2,470 of them compile with today's vocabulary; the rest stay as data with no invented motion.
+- **SignPuddle** ASL notation (`sgn4.spml`) is used for gloss coverage.
+- Citations are in `data/sources/CITATIONS.md` and the allowlist is in `data/sources/allowlist.jsonl`.
 
 ```sh
 python3 scripts/ingest_asllex.py
 python3 scripts/ingest_signpuddle.py
 ```
 
-## Status
+## Known gaps
 
-- [x] VRM player, custom avatar drop, arms-down rest pose
-- [x] `SignDesc` / `MarionetClip` v0
-- [x] ASL fingerspelling expertise-library proof
-- [x] License allowlist + ASL-LEX / SignPuddle dumps
-- [x] Location / handshape catalogs past fingerspelling (`5`, `open_b`, Head, …); unmapped rows stay lexicon-only
-- [x] Video → pose → `MarionetClip` CLI (`dummy` + MediaPipe + `rtmlib` / `dwpose_hamer`)
-- [x] Player: search the polyglot lexicon, inspect `SignDesc`, drop a retargeted `.json` clip
-- [x] Pose → `SignDesc` linear heads (`scripts/phonology.py`; FSQ/VLM are later ablations)
-- [x] Pose confidence → `occluded` / class reject → `unmapped` (no forced argmax)
-- [x] Nucleus window (prep / citation-form / retract) before `SignDesc`
-- [x] Residual locked to finger IK (`python/marionet/residual.py`); macro-pose (including head/spine) stays compiled
-- [x] Head / torso / face on `SignDesc` and on clips (axial bones + VRM expression presets)
-- [ ] Per-avatar expression coverage check (missing presets stay silent)
-- [x] GPU extract adapter (`python/marionet/extract_gpu.py`): rtmlib production, MMPose lab, pluggable HaMeR hands; contract + exit 2 if missing
-- [x] JSON Schema + Ajv for `SignDesc` / `MarionetClip` / `marionet.pose/v0` (`schemas/`)
-- [x] pose-format converter (`python/marionet/pose_interop.py`); `trajectory_vector` for path movement; WiLoR/OpenPose/YOLO skipped at the license gate
-- [x] Savitzky–Golay / One-Euro temporal F (`python/marionet/smooth.py`); FSQ ablation module (`python/marionet/fsq.py`)
+- **C and O** face the viewer, because the data marks them palm-out. They're usually shown side-on so the shape reads.
+- **K** looks close to V from the front.
+- **Hand poses were fitted on one avatar.** Avatars with differently built thumbs may come out slightly differently.
+- **Left-hand finger curl isn't mirrored**, so the non-dominant hand in two-handed signs bends its fingers backwards. None of the 28 finished signs use the left hand.
+- **ASL-LEX clips are generic**: few movement types, and many signs share identical motion.
+- **The face is coarse**: brow raise and furrow map to the "surprised" and "angry" presets.
+- **The demo GIFs predate the finger-spread fix**, so ILY and GATO now spread their fingers slightly more than shown.
