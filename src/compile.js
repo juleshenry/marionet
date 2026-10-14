@@ -5,6 +5,7 @@ import {
   solveHead,
   solveLocation,
   solveOrientation,
+  solveStationPath,
   solveTorso,
 } from "./library.js";
 
@@ -56,7 +57,7 @@ function zeroPose(pose) {
   return out;
 }
 
-function movementKeyframes(basePose, movements, side) {
+function movementKeyframes(basePose, movements, side, location) {
   const bones = {};
   const ensure = (pose) => {
     for (const bone of Object.keys(pose)) {
@@ -84,9 +85,10 @@ function movementKeyframes(basePose, movements, side) {
   }
 
   if (first.type === "hook") {
-    // J: I-hand traces a J in wrist yaw/pitch.
-    const mid = mergePoses(basePose, wristOffset(side, { y: 0.55, x: 0.15 }));
-    const end = mergePoses(basePose, wristOffset(side, { y: 0.15, x: 0.85, z: 0.2 }));
+    // J: I-hand traces a J; at the fingerspelling station the arm carries the path.
+    const station = solveStationPath("hook", location, side);
+    const mid = mergePoses(basePose, station?.[0] ?? wristOffset(side, { y: 0.55, x: 0.15 }));
+    const end = mergePoses(basePose, station?.[1] ?? wristOffset(side, { y: 0.15, x: 0.85, z: 0.2 }));
     apply(basePose, RISE, RISE + 0.15);
     apply(mid, RISE + 0.4);
     apply(end, RISE + 0.85, RISE + 1.05);
@@ -121,9 +123,10 @@ function movementKeyframes(basePose, movements, side) {
   }
 
   if (first.type === "trace" && first.path === "z") {
-    const b = mergePoses(basePose, wristOffset(side, { y: -0.55, x: 0.05 }));
-    const c = mergePoses(basePose, wristOffset(side, { y: 0.15, x: 0.55 }));
-    const d = mergePoses(basePose, wristOffset(side, { y: -0.55, x: 0.85 }));
+    const station = solveStationPath("trace:z", location, side);
+    const b = mergePoses(basePose, station?.[0] ?? wristOffset(side, { y: -0.55, x: 0.05 }));
+    const c = mergePoses(basePose, station?.[1] ?? wristOffset(side, { y: 0.15, x: 0.55 }));
+    const d = mergePoses(basePose, station?.[2] ?? wristOffset(side, { y: -0.55, x: 0.85 }));
     apply(basePose, RISE, RISE + 0.1);
     apply(b, RISE + 0.3);
     apply(c, RISE + 0.55);
@@ -184,8 +187,9 @@ function movementKeyframes(basePose, movements, side) {
 
 function poseForArticulator(art, side) {
   const hand = solveHandshape(art.handshape, side);
-  const loc = solveLocation(art.location ?? "fs-station", side);
-  const ori = solveOrientation(art.orientation ?? "palm-out", side);
+  const location = art.location ?? "fs-station";
+  const loc = solveLocation(location, side);
+  const ori = solveOrientation(art.orientation ?? "palm-out", side, location);
   return mergePoses(loc, ori, hand);
 }
 
@@ -221,7 +225,7 @@ export function compileSignDesc(desc, { side = "right" } = {}) {
   const head = desc.body?.head || desc.nmf?.head || "neutral";
   const torso = desc.body?.torso || desc.nmf?.torso || "neutral";
   base = mergePoses(base, solveTorso(torso), solveHead(head === "nod" || head === "shake" ? "neutral" : head));
-  const { bones, duration: armDur } = movementKeyframes(base, art.movement ?? [], side);
+  const { bones, duration: armDur } = movementKeyframes(base, art.movement ?? [], side, art.location ?? "fs-station");
   const duration = Math.max(armDur, overlayAxial(bones, head, torso, armDur));
 
   return {

@@ -1,0 +1,201 @@
+{
+  "schema": "marionet.clipindex/v0",
+  "clips": [
+    {
+      "id": "ase/fs/A",
+      "language": "ase",
+      "gloss": "FS:A",
+      "duration": 1.3,
+      "path": "ase/fs/A.json"
+    },
+    {
+      "id": "ase/fs/B",
+      "language": "ase",
+      "gloss": "FS:B",
+      "duration": 1.3,
+      "path": "ase/fs/B.json"
+    },
+    {
+      "id": "ase/fs/C",
+      "language": "ase",
+      "gloss": "FS:C",
+      "duration": 1.3,
+      "path": "ase/fs/C.json"
+    },
+    {
+      "id": "ase/fs/D",
+      "language": "ase",
+      "gloss": "FS:D",
+      "duration": 1.3,
+      "path": "ase/fs/D.json"
+    },
+    {
+      "id": "ase/fs/E",
+      "language": "ase",
+      "gloss": "FS:E",
+      "duration": 1.3,
+      "path": "ase/fs/E.json"
+    },
+    {
+      "id": "ase/fs/F",
+      "language": "ase",
+      "gloss": "FS:F",
+      "duration": 1.3,
+      "path": "ase/fs/F.json"
+    },
+    {
+      "id": "ase/fs/G",
+      "language": "ase",
+      "gloss": "FS:G",
+      "duration": 1.3,
+      "path": "ase/fs/G.json"
+    },
+    {
+      "id": "ase/fs/H",
+      "language": "ase",
+      "gloss": "FS:H",
+      "duration": 1.3,
+      "path": "ase/fs/H.json"
+    },
+    {
+      "id": "ase/fs/I",
+      "language": "ase",
+      "gloss": "FS:I",
+      "duration": 1.3,
+      "path": "ase/fs/I.json"
+    },
+    {
+      "id": "ase/fs/J",
+      "language": "ase",
+      "gloss": "FS:J",
+      "duration": 1.45,
+      "path": "ase/fs/J.json"
+    },
+    {
+      "id": "ase/fs/K",
+      "language": "ase",
+      "gloss": "FS:K",
+      "duration": 1.3,
+      "path": "ase/fs/K.json"
+    },
+    {
+      "id": "ase/fs/L",
+      "language": "ase",
+      "gloss": "FS:L",
+      "duration": 1.3,
+      "path": "ase/fs/L.json"
+    },
+    {
+      "id": "ase/fs/M",
+      "language": "ase",
+      "gloss": "FS:M",
+      "duration": 1.3,
+      "path": "ase/fs/M.json"
+    },
+    {
+      "id": "ase/fs/N",
+      "language": "ase",
+      "gloss": "FS:N",
+      "duration": 1.3,
+      "path": "ase/fs/N.json"
+    },
+    {
+      "id": "ase/fs/O",
+      "language": "ase",
+      "gloss": "FS:O",
+      "duration": 1.3,
+      "path": "ase/fs/O.json"
+    },
+    {
+      "id": "ase/fs/P",
+      "language": "ase",
+      "gloss": "FS:P",
+      "duration": 1.3,
+      "path": "ase/fs/P.json"
+    },
+    {
+      "id": "ase/fs/Q",
+      "language": "ase",
+      "gloss": "FS:Q",
+      "duration": 1.3,
+      "path": "ase/fs/Q.json"
+    },
+    {
+      "id": "ase/fs/R",
+      "language": "ase",
+      "gloss": "FS:R",
+      "duration": 1.3,
+      "path": "ase/fs/R.json"
+    },
+    {
+      "id": "ase/fs/S",
+      "language": "ase",
+      "gloss": "FS:S",
+      "duration": 1.3,
+      "path": "ase/fs/S.json"
+    },
+    {
+      "id": "ase/fs/T",
+      "language": "ase",
+      "gloss": "FS:T",
+      "duration": 1.3,
+      "path": "ase/fs/T.json"
+    },
+    {
+      "id": "ase/fs/U",
+      "language": "ase",
+      "gloss": "FS:U",
+      "duration": 1.3,
+      "path": "ase/fs/U.json"
+    },
+    {
+      "id": "ase/fs/V",
+      "language": "ase",
+      "gloss": "FS:V",
+      "duration": 1.3,
+      "path": "ase/fs/V.json"
+    },
+    {
+      "id": "ase/fs/W",
+      "language": "ase",
+      "gloss": "FS:W",
+      "duration": 1.3,
+      "path": "ase/fs/W.json"
+    },
+    {
+      "id": "ase/fs/X",
+      "language": "ase",
+      "gloss": "FS:X",
+      "duration": 1.3,
+      "path": "ase/fs/X.json"
+    },
+    {
+      "id": "ase/fs/Y",
+      "language": "ase",
+      "gloss": "FS:Y",
+      "duration": 1.3,
+      "path": "ase/fs/Y.json"
+    },
+    {
+      "id": "ase/fs/Z",
+      "language": "ase",
+      "gloss": "FS:Z",
+      "duration": 1.45,
+      "path": "ase/fs/Z.json"
+    },
+    {
+      "id": "ase/ily",
+      "language": "ase",
+      "gloss": "ILY",
+      "duration": 2.25,
+      "path": "ase/ily.json"
+    },
+    {
+      "id": "gsm/gato",
+      "language": "gsm",
+      "gloss": "GATO",
+      "duration": 1.36,
+      "path": "gsm/gato.json"
+    }
+  ]
+}

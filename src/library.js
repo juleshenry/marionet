@@ -64,7 +64,7 @@ export const HANDSHAPES = {
   },
   H: {
     id: "H",
-    fingers: { index: 0, middle: 0, ring: 1, little: 1, spread: -0.15 },
+    fingers: { index: 0, middle: 0, ring: 1, little: 1, spread: -0.1 },
     thumb: { curl: 0.55, opposition: 0.45, abduction: 0.1 },
   },
   I: {
@@ -94,14 +94,13 @@ export const HANDSHAPES = {
   },
   O: {
     id: "O",
-    fingers: { index: 0.48, middle: 0.5, ring: 0.52, little: 0.55, spread: 0.05 },
+    fingers: { index: 0.62, middle: 0.64, ring: 0.66, little: 0.68, spread: 0.05 },
     thumb: { curl: 0.45, opposition: 0.8, abduction: 0.3 },
   },
   R: {
     id: "R",
     fingers: { index: 0.08, middle: 0.08, ring: 1, little: 1, spread: -0.05 },
     thumb: { curl: 0.5, opposition: 0.4, abduction: 0.1 },
-    cross: { indexTwist: 0.28, middleTwist: -0.35 },
   },
   S: {
     id: "S",
@@ -115,7 +114,7 @@ export const HANDSHAPES = {
   },
   U: {
     id: "U",
-    fingers: { index: 0, middle: 0, ring: 1, little: 1, spread: -0.2 },
+    fingers: { index: 0, middle: 0, ring: 1, little: 1, spread: -0.1 },
     thumb: { curl: 0.55, opposition: 0.5, abduction: 0.1 },
   },
   V: {
@@ -217,6 +216,51 @@ export const HANDSHAPES = {
 
 const euler = (x = 0, y = 0, z = 0) => ({ x, y, z });
 
+/**
+ * Thumb eulers (metacarpal, proximal, distal) fitted on the sample VRM so the tip
+ * lands where ASL puts it: beside the index (A), across the palm (B), across the
+ * curled fingers (S, I, X, 1, and U/V/R/H/W over the ring and little), under the
+ * fingers (E, M, N, T), on the fingertip (D, O). The parametric thumb below swings
+ * the tip out to the side on VRM thumbs, so these replace it for the named shapes.
+ * Targets: scripts/fit_thumbs.mjs. Right hand; y and z mirror for the left.
+ */
+const THUMB_POSES = {
+  A: [[-0.179, 0.056, -0.6], [0.968, 0, 0.758], [0.622, 0, 0.663]],
+  B: [[0.374, -0.507, -0.511], [1.237, 0, 0.863], [0.617, 0, 0.599]],
+  C: [[0.139, -0.268, -0.118], [0.692, 0, 0.629], [0.399, 0, 0.442]],
+  D: [[0.47, -0.101, 0.11], [0.847, 0, 0.656], [0.542, 0, 0.519]],
+  E: [[0.259, -0.43, -0.301], [1.309, 0, 1.021], [1.166, 0, 0.809]],
+  G: [[-0.252, -0.191, -0.601], [0.56, 0, 0.35], [0.412, 0, 0.42]],
+  H: [[0.595, -0.587, 0.164], [0.843, 0, 0.594], [0.382, 0, 0.358]],
+  I: [[0.625, -0.035, 0.008], [0.993, 0, 0.675], [0.519, 0, 0.478]],
+  K: [[0.725, -0.492, -0.455], [0.832, 0, 0.081], [0.651, 0, 0.385]],
+  M: [[0.41, -0.672, -0.326], [1.034, 0, 0.711], [0.476, 0, 0.456]],
+  N: [[0.423, -0.281, -0.408], [1.291, 0, 0.939], [0.366, 0, 0.284]],
+  O: [[0.325, -0.327, 0.125], [0.375, 0, 0.27], [0.203, 0, 0.19]],
+  P: [[0.725, -0.492, -0.455], [0.832, 0, 0.081], [0.651, 0, 0.385]],
+  R: [[0.596, -0.586, 0.165], [0.843, 0, 0.593], [0.383, 0, 0.359]],
+  S: [[0.632, -0.024, 0.049], [0.963, 0, 0.659], [0.53, 0, 0.495]],
+  T: [[0.776, -0.127, -0.025], [1.007, 0, 0.04], [1.408, 0, 0.809]],
+  U: [[0.595, -0.587, 0.164], [0.843, 0, 0.594], [0.382, 0, 0.358]],
+  V: [[0.609, -0.574, 0.169], [0.843, 0, 0.586], [0.39, 0, 0.363]],
+  W: [[0.484, -0.872, 0.151], [0.836, 0, 0.573], [0.321, 0, 0.308]],
+  X: [[0.461, -0.341, 0.046], [0.885, 0, 0.683], [0.51, 0, 0.502]],
+  "1": [[0.674, -0.294, 0.129], [0.868, 0, 0.543], [0.555, 0, 0.494]],
+};
+
+/**
+ * Fingers that the curl/spread parameters cannot express. R crosses the index in
+ * front of the middle finger: twisting them in place (the old approach) passed one
+ * through the other. Fitted on the sample VRM so they touch without overlapping.
+ */
+const FINGER_POSES = {
+  R: {
+    Index: [[0.071, -0.136, 0.034], [0, 0, -0.011], [0, 0, -0.008]],
+    Middle: [[-0.306, 0.254, -0.225], [0, 0, 0.156], [0, 0, 0.109]],
+  },
+};
+
+
 function curlJoints(curl, profile) {
   if (profile === "hook") {
     return { proximal: curl * 0.35 * CURL_MAX, mid: curl * 1.15 * CURL_MAX, distal: curl * 0.95 * CURL_MAX };
@@ -279,20 +323,35 @@ export function solveHandshape(shapeId, side = "right") {
 
   for (const finger of FINGERS) {
     const joints = curlJoints(curls[finger], finger === "Index" ? profile : "full");
+    // On VRM right-hand fingers, +y swings the finger toward the thumb side, so the
+    // index spreads with +y and the ring and little with -y.
     let spread = 0;
-    if (finger === "Index") spread = -f.spread * SPREAD_MAX;
-    if (finger === "Little") spread = f.spread * SPREAD_MAX * 0.85;
-    if (finger === "Ring") spread = f.spread * SPREAD_MAX * 0.35;
+    if (finger === "Index") spread = f.spread * SPREAD_MAX;
+    if (finger === "Little") spread = -f.spread * SPREAD_MAX * 0.85;
+    if (finger === "Ring") spread = -f.spread * SPREAD_MAX * 0.35;
     if (finger === "Middle") spread = 0;
 
-    let twist = 0;
-    if (shape.cross && finger === "Index") twist = shape.cross.indexTwist;
-    if (shape.cross && finger === "Middle") twist = shape.cross.middleTwist;
 
     const bone = `${prefix}${finger}`;
-    pose[`${bone}Proximal`] = euler(twist, spread * sign, joints.proximal);
+    pose[`${bone}Proximal`] = euler(0, spread * sign, joints.proximal);
     pose[`${bone}Intermediate`] = euler(0, 0, joints.mid);
     pose[`${bone}Distal`] = euler(0, 0, joints.distal);
+  }
+
+  for (const [finger, joints] of Object.entries(FINGER_POSES[shape.id] ?? {})) {
+    ["Proximal", "Intermediate", "Distal"].forEach((joint, i) => {
+      const [x, y, z] = joints[i];
+      pose[`${prefix}${finger}${joint}`] = euler(x, y * sign, z);
+    });
+  }
+
+  const fitted = THUMB_POSES[shape.id];
+  if (fitted) {
+    const [meta, prox, dist] = fitted;
+    pose[`${prefix}ThumbMetacarpal`] = euler(meta[0], meta[1] * sign, meta[2] * sign);
+    pose[`${prefix}ThumbProximal`] = euler(prox[0], prox[1] * sign, prox[2] * sign);
+    pose[`${prefix}ThumbDistal`] = euler(dist[0], dist[1] * sign, dist[2] * sign);
+    return pose;
   }
 
   const t = shape.thumb;
@@ -371,8 +430,29 @@ export function solveLocation(locationId, side = "right") {
   return fn(side, s);
 }
 
-export function solveOrientation(orientation, side = "right") {
+/**
+ * Orientation at the fingerspelling station, as offsets from the station pose.
+ * The generic offsets below left the palm facing the midline here, so V/W read
+ * as 1 and B as a blade. These were fitted so the palm and fingers point where a
+ * viewer straight on expects them (palm-out: palm to the viewer, fingers up;
+ * palm-side: palm to the signer, fingers to the signer's left; palm-down: fingers
+ * down and forward). Palm-down also opens the elbow a little, keeping the hand
+ * at chest height, so P and Q do not bend the wrist past its range.
+ */
+const FS_ORIENTATION = {
+  "palm-out": { Hand: [1.198, -0.306, -0.864] },
+  "palm-side": { Hand: [-0.892, -0.762, 0.925] },
+  "palm-down": { Hand: [-0.868, -1.229, -0.359], UpperArm: [0.233, 0.124, -0.077], LowerArm: [0, -0.332, 0] },
+};
+
+export function solveOrientation(orientation, side = "right", location = null) {
   const s = side === "right" ? 1 : -1;
+  const station = location === "fs-station" ? FS_ORIENTATION[orientation] : null;
+  if (station) {
+    const out = {};
+    for (const [bone, [x, y, z]] of Object.entries(station)) out[`${side}${bone}`] = euler(x, y * s, z * s);
+    return out;
+  }
   const extra = {
     "palm-out": euler(0.1, 0.15 * s, 0),
     "palm-in": euler(0.1, 1.35 * s, 0),
@@ -382,6 +462,36 @@ export function solveOrientation(orientation, side = "right") {
   };
   const e = extra[orientation] ?? extra["palm-out"];
   return { [`${side}Hand`]: e };
+}
+
+/**
+ * Fingertip paths at the fingerspelling station, as arm and hand offsets from the
+ * held letter. Z: the index draws a Z as the signer writes it (8 cm strokes), so the
+ * viewer sees it mirrored. J: the little finger drops 6 cm, then hooks toward the
+ * midline while the palm turns in. Fitted on the sample VRM; the wrist-only
+ * offsets in compile.js no longer trace these from the palm-out station.
+ */
+const FS_PATHS = {
+  "trace:z": [
+    { UpperArm: [-0.036, -0.136, -0.169], LowerArm: [0, -0.076, 0], Hand: [-0.127, 0.203, -0.039] },
+    { UpperArm: [0.222, -0.02, 0.018], LowerArm: [0, -0.044, 0], Hand: [0.071, 0.032, -0.24] },
+    { UpperArm: [0.18, -0.167, -0.139], LowerArm: [0, -0.12, 0], Hand: [-0.038, 0.243, -0.283] },
+  ],
+  hook: [
+    { UpperArm: [0.159, -0.136, 0.227], LowerArm: [0, 0.066, 0], Hand: [-0.15, 0.097, -0.025] },
+    { UpperArm: [0.321, 0.368, -0.205], LowerArm: [0, -0.186, 0], Hand: [-0.623, 1.302, -0.398] },
+  ],
+};
+
+export function solveStationPath(type, location, side = "right") {
+  const keys = location === "fs-station" ? FS_PATHS[type] : null;
+  if (!keys) return null;
+  const s = side === "right" ? 1 : -1;
+  return keys.map((key) => {
+    const out = {};
+    for (const [bone, [x, y, z]] of Object.entries(key)) out[`${side}${bone}`] = euler(x, y * s, z * s);
+    return out;
+  });
 }
 
 export function mergePoses(...poses) {

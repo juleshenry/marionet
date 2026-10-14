@@ -31,6 +31,10 @@ Loop both with `http://localhost:8080/?demo=1`.
 | `src/compile.js` | `SignDesc` → `MarionetClip` |
 | `src/vrm.js` | Load, rest pose, apply clips |
 | `data/signs/ase/fingerspelling.json` | A–Z as `SignDesc` |
+| `clips/` | Baked `MarionetClip` JSON for every sign in the non-deferred packs (A–Z, ILY, GATO); `scripts/bake_clips.mjs` writes it, `npm run check` fails if it is stale |
+| `scripts/render_clips.mjs` | Renders each baked clip on the sample VRM into `data/runs/renders/index.html` for review: a camera orbit around the held handshape, playback with the fingertip path drawn for signs that move, and contact sheets |
+| `scripts/fit_thumbs.mjs` | Fits the per-letter thumb poses in `src/library.js` from thumb-tip targets |
+| `scripts/hand_gaps.mjs` | Flags fingers or thumb passing through each other in each baked clip |
 | `data/signs/ase/asllex_signdesc.json` | ASL-LEX 2.0 → `SignDesc` (features only) |
 | `dataingestplan.md` | License gate, disk cap, dump-only ingest |
 | `paper/REGIME.md` | Research paper: video corpus → Marionet syntax |

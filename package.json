@@ -4,8 +4,10 @@
   "type": "module",
   "description": "Compiling sign phonology onto portable VRM avatars.",
   "scripts": {
+    "bake": "node scripts/bake_clips.mjs",
+    "render-clips": "node scripts/render_clips.mjs http://127.0.0.1:8765 data/runs/renders",
     "capture-demos": "node scripts/capture_demo_gifs.mjs http://127.0.0.1:8765",
-    "check": "node scripts/check_compiler.mjs && python3 scripts/phonology.py self-test && python3 scripts/video_to_marionet.py --self-test"
+    "check": "node scripts/check_compiler.mjs && node scripts/bake_clips.mjs --check && python3 scripts/phonology.py self-test && python3 scripts/video_to_marionet.py --self-test"
   },
   "dependencies": {
     "@pixiv/three-vrm": "3.4.2",
