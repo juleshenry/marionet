@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Marionet renderer</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        background: #000;
+      }
+
+      #stage {
+        position: relative;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="stage"></div>
+    <!-- Offline renders read three and three-vrm from node_modules: the same files every run. -->
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "./node_modules/three/build/three.module.js",
+          "three/addons/": "./node_modules/three/examples/jsm/",
+          "@pixiv/three-vrm": "./node_modules/@pixiv/three-vrm/lib/three-vrm.module.js"
+        }
+      }
+    </script>
+    <script type="module" src="./src/render.js"></script>
+  </body>
+</html>
