@@ -1,0 +1,17 @@
+{
+  "schema": "marionet.avatarweights/v0",
+  "note": "How often each signer is drawn for a sign: a population's share of the world's people, halved between women and men, and split evenly between the signers who stand for it. Shares are rounded estimates from UN World Population Prospects 2024 regional totals (East, South and South-eastern Asia; Sub-Saharan Africa and its diaspora; Europe and the European diaspora; Latin America), and the UN's estimate of 476 million Indigenous people. The roster has no signer for the Middle East, North Africa or Central Asia yet; their share is spread over the others. Edit freely: assignAvatar() in src/assign.js reads this file.",
+  "gender": {
+    "woman": 0.5,
+    "man": 0.5
+  },
+  "populations": {
+    "east-asian": 0.23,
+    "south-asian": 0.27,
+    "southeast-asian": 0.09,
+    "black": 0.17,
+    "white": 0.12,
+    "latino": 0.07,
+    "indigenous": 0.05
+  }
+}
