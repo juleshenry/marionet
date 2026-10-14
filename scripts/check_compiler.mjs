@@ -145,14 +145,16 @@ checkSchema(vPose, poseExample, "pose example");
 for (const row of asllex.signs) checkSchema(vDesc, row, row.id);
 
 const pkg = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
-const html = readFileSync(join(root, "index.html"), "utf8");
 const threeVer = pkg.dependencies?.three;
 const vrmVer = pkg.dependencies?.["@pixiv/three-vrm"];
-if (!threeVer || !html.includes(`three@${threeVer}/`)) {
-  throw new Error(`index.html import map must pin three@${threeVer}`);
-}
-if (!vrmVer || !html.includes(`three-vrm@${vrmVer}/`)) {
-  throw new Error(`index.html import map must pin @pixiv/three-vrm@${vrmVer}`);
+for (const page of ["index.html", "embed.html"]) {
+  const html = readFileSync(join(root, page), "utf8");
+  if (!threeVer || !html.includes(`three@${threeVer}/`)) {
+    throw new Error(`${page} import map must pin three@${threeVer}`);
+  }
+  if (!vrmVer || !html.includes(`three-vrm@${vrmVer}/`)) {
+    throw new Error(`${page} import map must pin @pixiv/three-vrm@${vrmVer}`);
+  }
 }
 
 console.log(`check_compiler ok  asllex compileReady=${ready}/${asllex.n}  schemas=ok`);

@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Marionet player</title>
+    <style>
+      :root {
+        --bg: #f3efe6;
+        --text: #1d2230;
+        --muted: #5c6272;
+        --panel: rgba(255, 255, 255, 0.86);
+        --line: rgba(29, 34, 48, 0.14);
+        --accent: #b8692a;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        :root:not([data-theme="light"]) {
+          --bg: #141923;
+          --text: #efe7d6;
+          --muted: #b7ae9a;
+          --panel: rgba(12, 16, 24, 0.82);
+          --line: rgba(239, 231, 214, 0.16);
+          --accent: #e0a45a;
+        }
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+        overflow: hidden;
+        background: var(--bg);
+        color: var(--text);
+        font: 14px/1.3 system-ui, -apple-system, "Segoe UI", sans-serif;
+      }
+
+      body {
+        display: flex;
+        flex-direction: column;
+      }
+
+      #stage {
+        position: relative;
+        flex: 1;
+        min-height: 0;
+        touch-action: none;
+      }
+
+      #stage canvas {
+        position: absolute;
+        inset: 0;
+        display: block;
+      }
+
+      #status {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        max-width: calc(100% - 32px);
+        padding: 8px 12px;
+        border-radius: 10px;
+        background: var(--panel);
+        color: var(--muted);
+        text-align: center;
+      }
+
+      #status:empty {
+        display: none;
+      }
+
+      #bar {
+        margin: 0 8px 8px;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        padding: 6px;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: var(--panel);
+        backdrop-filter: blur(8px);
+      }
+
+      button,
+      select {
+        min-height: 36px;
+        padding: 0 10px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: transparent;
+        color: var(--text);
+        font: inherit;
+      }
+
+      button[aria-pressed="true"] {
+        border-color: var(--accent);
+        color: var(--accent);
+        font-weight: 600;
+      }
+
+      select {
+        max-width: 11em;
+      }
+
+      .speeds {
+        display: flex;
+        gap: 4px;
+      }
+
+      #file {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="stage" aria-label="3D signing avatar"></div>
+    <p id="status">Loading avatar…</p>
+    <div id="bar">
+      <select id="avatar" aria-label="Avatar"></select>
+      <div class="speeds" role="group" aria-label="Speed">
+        <button type="button" data-speed="0.25" aria-pressed="false">¼×</button>
+        <button type="button" data-speed="0.5" aria-pressed="false">½×</button>
+        <button type="button" data-speed="1" aria-pressed="true">1×</button>
+      </div>
+      <button id="replay" type="button">Replay</button>
+      <input id="file" type="file" accept=".vrm" />
+    </div>
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://cdn.jsdelivr.net/npm/three@0.171.0/build/three.module.js",
+          "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.171.0/examples/jsm/",
+          "@pixiv/three-vrm": "https://cdn.jsdelivr.net/npm/@pixiv/three-vrm@3.4.2/lib/three-vrm.module.js"
+        }
+      }
+    </script>
+    <script type="module" src="./src/embed.js"></script>
+  </body>
+</html>

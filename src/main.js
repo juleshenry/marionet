@@ -1,9 +1,8 @@
-import * as THREE from "three";
-import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { compileSignDesc } from "./compile.js";
 import { isCompilable, languageName, validateClip, validatePose, validateSignDesc } from "./ir.js";
 import { languagesIn, loadLexicon, searchIndex } from "./lexicon.js";
-import { applyClip, applyRestPose, loadVrm, restorePose, sampleUrl, snapshotPose } from "./vrm.js";
+import { createPlayer } from "./player.js";
+import { sampleUrl } from "./vrm.js";
 
 const $ = (id) => document.getElementById(id);
 
@@ -13,21 +12,18 @@ const DEMO_MODE = (params.get("demo") || "").toLowerCase(); // "1" | "ily" | "ga
 const DEMO = DEMO_MODE === "1" || DEMO_MODE === "ily" || DEMO_MODE === "gato";
 const DEMO_ONCE = params.get("once") === "1" || DEMO_MODE === "ily" || DEMO_MODE === "gato";
 
-const state = {
-  vrm: null,
-  rest: null,
+const player = createPlayer($("app"));
+const { camera, controls, renderer } = player;
+
+// The player's state (vrm, rest, clip, clipTime, playing, speed, mirror) plus the page's own.
+const state = Object.assign(player.state, {
   signs: new Map(),
   lexicon: [],
   letter: "A",
   lemma: null,
-  clip: null,
-  clipTime: 0,
-  playing: false,
-  speed: 1,
-  mirror: false,
   query: "",
   language: "all",
-};
+});
 
 function setStatus(text) {
   $("status").textContent = text;
@@ -103,9 +99,7 @@ function showDesc(desc, clip = null) {
 }
 
 function playClip(clip, desc = null) {
-  state.clip = clip;
-  state.clipTime = 0;
-  state.playing = true;
+  player.play(clip);
   state.lemma = desc;
   showDesc(desc, clip);
   const src = clip.source || "authored";
@@ -114,10 +108,8 @@ function playClip(clip, desc = null) {
 
 function playDesc(desc) {
   if (!isCompilable(desc)) {
-    state.clip = null;
-    state.playing = false;
+    player.stop();
     state.lemma = desc;
-    if (state.vrm && state.rest) restorePose(state.vrm, state.rest);
     showDesc(desc);
     setStatus(`marionet / ${desc.id} — lexicon-only, no invented pose`);
     return;
@@ -156,9 +148,7 @@ async function runReadmeDemo() {
   do {
     for (const step of sequence) {
       // Brief rest so the next rise-from-rest is visible and clips do not hard-cut.
-      if (state.vrm && state.rest) restorePose(state.vrm, state.rest);
-      state.clip = null;
-      state.playing = false;
+      player.stop();
       await sleep(280);
       setCaption(step.caption);
       playDesc(step.desc);
@@ -246,97 +236,13 @@ function selectLemma(desc) {
   renderResults();
 }
 
-function applyMirror() {
-  if (!state.vrm) return;
-  state.vrm.scene.scale.x = state.mirror ? -1 : 1;
-}
-
 async function mountVrm(source, label) {
   setStatus(`marionet / loading ${label}…`);
-  if (state.vrm) {
-    state.vrm.scene.removeFromParent();
-    state.vrm = null;
-    state.rest = null;
-  }
-  const vrm = await loadVrm(source);
-  applyRestPose(vrm);
-  state.rest = snapshotPose(vrm);
-  scene.add(vrm.scene);
-  state.vrm = vrm;
-  applyMirror();
-  if (vrm.lookAt) vrm.lookAt.target = camera;
+  if (!(await player.loadAvatar(source))) return;
   setStatus(`marionet / ${label}`);
   if (!DEMO && state.lemma) playDesc(state.lemma);
   else if (!DEMO && state.signs.has(state.letter)) selectLetter(state.letter);
 }
-
-const app = $("app");
-const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 0.1, 100);
-camera.position.set(0, 1.35, 2.05);
-
-let renderer = null;
-let controls = null;
-try {
-  renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-  renderer.setSize(window.innerWidth, window.innerHeight);
-  renderer.outputColorSpace = THREE.SRGBColorSpace;
-  app.append(renderer.domElement);
-  controls = new OrbitControls(camera, renderer.domElement);
-  controls.target.set(0, 1.25, 0);
-  controls.enablePan = false;
-  controls.enableDamping = true;
-  controls.minDistance = 1.1;
-  controls.maxDistance = 4.2;
-} catch (err) {
-  console.error(err);
-  renderer = null;
-}
-
-scene.add(new THREE.HemisphereLight(0xf4efe6, 0x243047, 1.2));
-const dir = new THREE.DirectionalLight(0xfff6e8, 1.55);
-dir.position.set(1.1, 2.3, 2.0);
-scene.add(dir);
-
-const floor = new THREE.Mesh(
-  new THREE.CircleGeometry(2.6, 64),
-  new THREE.MeshStandardMaterial({ color: 0x0b1020, transparent: true, opacity: 0.65 })
-);
-floor.rotation.x = -Math.PI / 2;
-floor.position.y = -0.01;
-scene.add(floor);
-
-const clock = new THREE.Clock();
-
-function animate() {
-  requestAnimationFrame(animate);
-  if (!renderer) return;
-  const delta = clock.getDelta();
-  if (state.vrm) {
-    if (state.clip) {
-      if (state.playing) {
-        state.clipTime += delta * state.speed;
-        if (state.clipTime > state.clip.duration) {
-          state.clipTime = state.clip.duration;
-          state.playing = false;
-        }
-      }
-      // Keep applying the held frame after the clip ends (avoids snap-back to rest).
-      applyClip(state.vrm, state.clip, state.rest, state.clipTime);
-    }
-    state.vrm.update(delta);
-  }
-  controls?.update();
-  renderer.render(scene, camera);
-}
-animate();
-
-window.addEventListener("resize", () => {
-  camera.aspect = window.innerWidth / window.innerHeight;
-  camera.updateProjectionMatrix();
-  renderer?.setSize(window.innerWidth, window.innerHeight);
-});
 
 window.addEventListener("keydown", (event) => {
   if (event.metaKey || event.ctrlKey || event.altKey) return;
@@ -429,8 +335,7 @@ $("language").addEventListener("change", (event) => {
   renderResults();
 });
 $("mirror").addEventListener("change", (event) => {
-  state.mirror = event.target.checked;
-  applyMirror();
+  player.setMirror(event.target.checked);
 });
 $("speed").addEventListener("input", (event) => {
   state.speed = Number(event.target.value) || 1;

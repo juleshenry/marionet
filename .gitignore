@@ -17,3 +17,5 @@ data/runs/*
 *.webm
 *.mov
 *.avi
+dist/
+avatars/out/
