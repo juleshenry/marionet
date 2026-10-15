@@ -67,7 +67,9 @@ writeFileSync(join(outDir, "index.html"), page);
 let version = "unknown";
 try {
   const commit = execSync("git rev-parse --short HEAD", { cwd: root }).toString().trim();
-  const dirty = execSync("git status --porcelain -- embed.html src", { cwd: root }).toString().trim();
+  // only the files the embed ships: other work in progress does not make it a local build
+  const shipped = ["embed.html", ...[...files].filter((file) => !file.startsWith("node_modules/"))];
+  const dirty = execSync(`git status --porcelain -- ${shipped.join(" ")}`, { cwd: root }).toString().trim();
   version = dirty ? `${commit}+local` : commit;
 } catch {
   /* not a git checkout */
