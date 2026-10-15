@@ -109,12 +109,22 @@ function cacheTopsSleevePairs(vrm) {
   return pairs;
 }
 
+/**
+ * 1 for VRM 1.0, -1 for VRM 0.x. A VRM 0.x model faces -Z, and three-vrm's normalized bones
+ * keep its axes: a rotation authored for VRM 1.0 turns the other way about X and Z there. Clips
+ * are authored for VRM 1.0, so their X and Z angles are multiplied by this.
+ */
+export function axisSign(vrm) {
+  return vrm.meta?.metaVersion === "0" ? -1 : 1;
+}
+
 export function applyRestPose(vrm) {
   const left = vrm.humanoid.getNormalizedBoneNode("leftUpperArm");
   const right = vrm.humanoid.getNormalizedBoneNode("rightUpperArm");
   // Normalized VRM 1.0: negative Z on the left, positive Z on the right, drops T-pose arms.
-  if (left) left.rotation.z -= REST_ARM;
-  if (right) right.rotation.z += REST_ARM;
+  const s = axisSign(vrm);
+  if (left) left.rotation.z -= s * REST_ARM;
+  if (right) right.rotation.z += s * REST_ARM;
   // Re-base Aim/Roll sleeve helpers on the arms-down rest, not the T-pose bind.
   vrm.humanoid.update();
   vrm.nodeConstraintManager?.setInitState?.();
@@ -210,14 +220,15 @@ function sampleScalar(keys, time) {
 
 export function applyClip(vrm, clip, rest, t) {
   restorePose(vrm, rest);
+  const s = axisSign(vrm);
   const time = clip.duration > 0 ? Math.min(Math.max(t, 0), clip.duration) : 0;
   for (const [bone, keys] of Object.entries(clip.bones)) {
     const node = vrm.humanoid.getNormalizedBoneNode(bone);
     if (!node) continue;
     const [x, y, z] = sampleTrack(keys, time);
-    node.rotation.x += x;
+    node.rotation.x += s * x;
     node.rotation.y += y;
-    node.rotation.z += z;
+    node.rotation.z += s * z;
     node.quaternion.setFromEuler(node.rotation);
   }
   const retarget = thumbRetargeters.get(vrm);
@@ -232,9 +243,9 @@ export function applyClip(vrm, clip, rest, t) {
         if (!node || !restQ) return;
         node.quaternion.copy(restQ);
         node.rotation.setFromQuaternion(restQ);
-        node.rotation.x += e[0];
+        node.rotation.x += s * e[0];
         node.rotation.y += e[1];
-        node.rotation.z += e[2];
+        node.rotation.z += s * e[2];
         node.quaternion.setFromEuler(node.rotation);
       });
     }

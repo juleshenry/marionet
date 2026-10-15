@@ -24,14 +24,15 @@ const REFERENCE = {
 
 const THUMB = ["ThumbMetacarpal", "ThumbProximal", "ThumbDistal"];
 
-/** The hand's offsets for one side, mirrored to right-hand coordinates. */
+/** The hand's offsets for one side, mirrored to right-hand coordinates, in VRM 1.0 axes. */
 function readHand(vrm, side) {
   const s = side === "right" ? 1 : -1;
+  const v0 = vrm.meta?.metaVersion === "0" ? -1 : 1; // VRM 0.x faces -Z: X and Z turn round
   const pos = (bone) => {
     const node = vrm.humanoid.getNormalizedBoneNode(`${side}${bone}`);
     if (!node) return null;
     const p = node.position;
-    return [p.x * s, p.y, p.z];
+    return [p.x * s * v0, p.y, p.z * v0];
   };
   const hand = {
     meta: pos("ThumbMetacarpal"),
