@@ -7,6 +7,8 @@
  *   index.html         gallery of all of the above
  *
  * Usage: node scripts/render_clips.mjs [baseUrl] [outDir] [id ...]
+ *   MARIONET_CLIPS=data/runs/preview renders a bake_clips --out folder instead of clips/
+ *   MARIONET_AVATAR=avatars/out/w-white.vrm renders on that avatar instead of the sample
  *   python3 -m http.server 8765 &
  *   node scripts/render_clips.mjs http://127.0.0.1:8765 data/runs/renders ase/fs/A ase/ily
  */
@@ -22,9 +24,9 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const baseUrl = process.argv[2] || "http://127.0.0.1:8765";
 const outDir = path.resolve(root, process.argv[3] || "data/runs/renders");
 const only = new Set(process.argv.slice(4));
+const clipsDir = path.resolve(root, process.env.MARIONET_CLIPS || "clips");
 
 const RISE = 0.4;
-const STATIC = 1.3; // compiler RISE + HOLD: a clip this short is a held pose.
 const VIDEO_FPS = 24;
 const ORBIT_FRAMES = 144; // 6 s loop: slow enough not to disorient
 const ORBIT_YAW = 0.26; // ±15°
@@ -50,8 +52,16 @@ async function framesToMp4(pattern, out, fps, width) {
     "-c:v", "libx264", "-pix_fmt", "yuv420p", "-crf", "20", "-movflags", "+faststart", out]);
 }
 
-function sampleTimes(duration) {
-  if (duration <= STATIC + 1e-6) return [duration];
+/** Moves after the hand arrives: some bone track changes value after RISE. */
+function isMoving(clip) {
+  return Object.values(clip.bones).some((keys) => {
+    const held = (keys.find((k) => k[0] >= RISE - 1e-6) ?? keys.at(-1))[1];
+    return keys.some((k) => k[0] > RISE + 1e-6 && k[1].some((v, i) => Math.abs(v - held[i]) > 1e-4));
+  });
+}
+
+function sampleTimes(duration, moving) {
+  if (!moving) return [duration];
   const n = 5;
   return Array.from({ length: n }, (_, i) => RISE + ((duration - RISE) * i) / (n - 1));
 }
@@ -225,7 +235,7 @@ for i, (src, dst) in enumerate(spec["pairs"]):
 
 // --- main ---------------------------------------------------------------------------------
 
-const { clips } = JSON.parse(await readFile(path.join(root, "clips/index.json"), "utf8"));
+const { clips } = JSON.parse(await readFile(path.join(clipsDir, "index.json"), "utf8"));
 const todo = clips.filter((c) => !only.size || only.has(c.id));
 
 await mkdir(outDir, { recursive: true });
@@ -247,18 +257,31 @@ try {
     window.marionet.frameDemoCamera?.();
     window.marionet._render = await import("./src/vrm.js");
   });
+  if (process.env.MARIONET_AVATAR) {
+    await page.evaluate(async (url) => {
+      const m = window.marionet;
+      const { loadVrm, applyRestPose, snapshotPose } = m._render;
+      const v = await loadVrm(url);
+      applyRestPose(v);
+      const rest = snapshotPose(v);
+      m.vrm.scene.parent.add(v.scene);
+      m.vrm.scene.removeFromParent();
+      m.vrm = v;
+      m.rest = rest;
+    }, `/${process.env.MARIONET_AVATAR}`);
+  }
   await page.evaluate(installPageHelpers);
 
   for (const entry of todo) {
-    const clip = JSON.parse(await readFile(path.join(root, "clips", entry.path), "utf8"));
+    const clip = JSON.parse(await readFile(path.join(clipsDir, entry.path), "utf8"));
     const dir = path.join(outDir, entry.id);
     await mkdir(dir, { recursive: true });
     const tmp = await mkdtemp(path.join(tmpdir(), "marionet-render-"));
-    const moving = clip.duration > STATIC + 1e-6;
+    const moving = isMoving(clip);
     try {
       // Sheet.
       const raws = [];
-      const times = sampleTimes(clip.duration);
+      const times = sampleTimes(clip.duration, moving);
       for (let i = 0; i < times.length; i++) {
         const shot = await shootSheetFrame(page, clip, times[i]);
         const raw = path.join(dir, `raw-${i}.png`);

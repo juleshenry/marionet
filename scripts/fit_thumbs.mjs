@@ -9,6 +9,8 @@
  *
  * Usage: python3 -m http.server 8765 &
  *        node scripts/fit_thumbs.mjs [shape ...]
+ *        node scripts/fit_thumbs.mjs --also avatars/out/w-white.vrm [shape ...]
+ *          fit one set of angles that works on the sample VRM and these rigs together
  */
 import { chromium } from "playwright";
 import { readFileSync } from "node:fs";
@@ -42,7 +44,10 @@ const TARGETS = {
   1: { abs: [0.8, -0.18, 0.88] },             // over middle, ring, little
 };
 const SHAPE_CLIP = { P: "P", 1: "Z" }; // shapes whose clip id differs (Z uses 1)
-const only = process.argv.slice(2);
+const argv = process.argv.slice(2);
+const ai = argv.indexOf("--also");
+const also = ai >= 0 ? argv.splice(ai, 2)[1].split(",") : [];
+const only = argv;
 
 const browser = await chromium.launch({ channel: "chrome", headless: true });
 const page = await browser.newPage({ viewport: { width: 300, height: 300 } });
@@ -52,14 +57,26 @@ await page.route("https://cdn.jsdelivr.net/gh/pixiv/three-vrm@release/**", async
 });
 await page.goto(`${baseUrl}/`, { waitUntil: "networkidle", timeout: 90000 });
 await page.waitForFunction(() => window.marionet?.vrm && window.marionet?.rest, null, { timeout: 90000 });
-await page.evaluate(async () => { window.marionet._render = await import("./src/vrm.js"); window.marionet._THREE = await import("three"); });
+await page.evaluate(async (also) => {
+  const m = window.marionet;
+  m._render = await import("./src/vrm.js");
+  m._THREE = await import("three");
+  // Every rig the fit must satisfy: the sample on stage, plus any --also rigs off stage.
+  m._rigs = [{ vrm: m.vrm, rest: m.rest }];
+  for (const url of also) {
+    const vrm = await m._render.loadVrm(url);
+    m._render.applyRestPose(vrm);
+    m._rigs.push({ vrm, rest: m._render.snapshotPose(vrm) });
+  }
+}, also.map((a) => `/${a}`));
 
 for (const [shape, target] of Object.entries(TARGETS)) {
   if (only.length && !only.includes(shape)) continue;
   const clipId = SHAPE_CLIP[shape] ?? shape;
   const clip = JSON.parse(readFileSync(path.join(root, `clips/ase/fs/${clipId}.json`), "utf8"));
   const r = await page.evaluate(({ clip, target }) => {
-    const m = window.marionet, THREE = m._THREE, h = m.vrm.humanoid;
+    const m = window.marionet, THREE = m._THREE;
+    let rig = m._rigs[0], h = rig.vrm.humanoid;
     const P = (n) => h.getRawBoneNode(n).getWorldPosition(new THREE.Vector3());
     const N = (n) => h.getNormalizedBoneNode(n);
     const t = clip.duration;
@@ -67,10 +84,11 @@ for (const [shape, target] of Object.entries(TARGETS)) {
     const tb = ["rightThumbMetacarpal", "rightThumbProximal", "rightThumbDistal"];
     let frame = null;
     function setThumb(v) {
-      m._render.applyClip(m.vrm, clip, m.rest, t);
+      m.clip = null;
+      m._render.applyClip(rig.vrm, clip, rig.rest, t);
       const vals = [[v[0], v[1], v[2]], [v[3], 0, v[4]], [v[5], 0, v[6]]];
       tb.forEach((b, i) => { const n = N(b); n.rotation.set(...vals[i]); n.quaternion.setFromEuler(n.rotation); });
-      m.vrm.update(0); m.vrm.scene.updateMatrixWorld(true);
+      rig.vrm.update(0); rig.vrm.scene.updateMatrixWorld(true);
       const w = P("rightHand"), mm = P("rightMiddleProximal"), im = P("rightIndexProximal"), lm = P("rightLittleProximal");
       const L = mm.distanceTo(w);
       const f = mm.clone().sub(w).normalize();
@@ -111,7 +129,20 @@ for (const [shape, target] of Object.entries(TARGETS)) {
       const [fin, j, off] = target.rel;
       return add(fr.fingers[fin][j], off);
     }
+    // Sum over rigs; `frame` and the reported tip error come from the worst rig.
     function cost(v) {
+      let total = 0, worst = -1;
+      for (const r of m._rigs) {
+        rig = r;
+        h = r.vrm.humanoid;
+        const c = rigCost(v);
+        total += c;
+        if (c > worst) { worst = c; worstRig = r; }
+      }
+      return total;
+    }
+    let worstRig = null;
+    function rigCost(v) {
       const fr = setThumb(v);
       frame = fr;
       const g = goal(fr);
@@ -164,6 +195,8 @@ for (const [shape, target] of Object.entries(TARGETS)) {
     let best = null;
     for (const s of seeds) { let r = nm(s); r = nm(r.x); if (!best || r.v < best.v) best = r; }
     cost(best.x);
+    rig = worstRig; h = rig.vrm.humanoid;
+    rigCost(best.x);
     const g = goal(frame);
     const r3 = (a) => a.map((x) => +x.toFixed(3));
     return { cost: +best.v.toFixed(4), tipErr: +len(sub(frame.thumb[3], g)).toFixed(3), tip: r3(frame.thumb[3]), goal: r3(g), v: r3(best.x) };

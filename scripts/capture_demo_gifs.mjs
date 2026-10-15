@@ -117,6 +117,11 @@ async function captureSign(browser, sign) {
 
   try {
     // Load player without auto-demo so we can scrub deterministically.
+    // jsdelivr's /gh/ route for the sample VRM is flaky; the same file is on raw.githubusercontent.
+    await page.route("https://cdn.jsdelivr.net/gh/pixiv/three-vrm@release/**", async (route) => {
+      const url = route.request().url().replace("https://cdn.jsdelivr.net/gh/pixiv/three-vrm@release/", "https://raw.githubusercontent.com/pixiv/three-vrm/release/");
+      await route.fulfill({ response: await route.fetch({ url }) });
+    });
     await page.goto(`${baseUrl}/`, { waitUntil: "networkidle", timeout: 60000 });
     await page.waitForFunction(() => window.marionet?.vrm && window.marionet?.rest, null, {
       timeout: 60000,

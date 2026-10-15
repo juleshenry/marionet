@@ -1,6 +1,10 @@
 import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { VRMLoaderPlugin, VRMUtils } from "@pixiv/three-vrm";
+import { THUMB_BONES, thumbRetargeter } from "./hands.js";
+
+/** Per avatar: retargets clip thumbs to this avatar's hand (null when it matches the sample's). */
+const thumbRetargeters = new WeakMap();
 
 const REST_ARM = Math.PI * 0.47;
 
@@ -72,6 +76,8 @@ export async function loadVrm(source, loader = createLoader()) {
       for (const material of materials) material.update?.(delta);
     }
   };
+  // Clip thumbs are authored on the sample's hand; this avatar's thumb may be built differently.
+  thumbRetargeters.set(vrm, thumbRetargeter(vrm));
   return vrm;
 }
 
@@ -213,6 +219,25 @@ export function applyClip(vrm, clip, rest, t) {
     node.rotation.y += y;
     node.rotation.z += z;
     node.quaternion.setFromEuler(node.rotation);
+  }
+  const retarget = thumbRetargeters.get(vrm);
+  if (retarget) {
+    for (const side of ["right", "left"]) {
+      const names = THUMB_BONES.map((b) => `${side}${b}`);
+      if (!names.some((n) => clip.bones[n])) continue;
+      const eulers = names.map((n) => (clip.bones[n] ? sampleTrack(clip.bones[n], time) : [0, 0, 0]));
+      retarget(side, eulers).forEach((e, i) => {
+        const node = vrm.humanoid.getNormalizedBoneNode(names[i]);
+        const restQ = rest.get(names[i]);
+        if (!node || !restQ) return;
+        node.quaternion.copy(restQ);
+        node.rotation.setFromQuaternion(restQ);
+        node.rotation.x += e[0];
+        node.rotation.y += e[1];
+        node.rotation.z += e[2];
+        node.quaternion.setFromEuler(node.rotation);
+      });
+    }
   }
   const em = vrm.expressionManager;
   if (em?.setValue) {

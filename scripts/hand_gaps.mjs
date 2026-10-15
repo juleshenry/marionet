@@ -8,6 +8,8 @@
  *
  * Usage: python3 -m http.server 8765 &
  *        node scripts/hand_gaps.mjs [id ...]
+ *        node scripts/hand_gaps.mjs --avatars avatars/out/w-white.vrm,avatars/out/m-black-1.vrm [id ...]
+ *          (without --avatars: the sample VRM)
  */
 import { chromium } from "playwright";
 import { readFileSync } from "node:fs";
@@ -16,7 +18,10 @@ import { fileURLToPath } from "node:url";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const baseUrl = process.env.MARIONET_URL || "http://127.0.0.1:8765";
-const only = new Set(process.argv.slice(2));
+const argv = process.argv.slice(2);
+const ai = argv.indexOf("--avatars");
+const avatars = ai >= 0 ? argv.splice(ai, 2)[1].split(",") : [null];
+const only = new Set(argv);
 const STATIC = 1.3;
 const FINGER_MIN = 0.17;
 const THUMB_MIN = 0.15;
@@ -57,6 +62,21 @@ try {
   });
 
   const { clips } = JSON.parse(readFileSync(path.join(root, "clips/index.json"), "utf8"));
+  for (const avatar of avatars) {
+  if (avatar) {
+    await page.evaluate(async (url) => {
+      const m = window.marionet;
+      const { loadVrm, applyRestPose, snapshotPose } = m._render;
+      const v = await loadVrm(url);
+      applyRestPose(v);
+      const rest = snapshotPose(v);
+      m.vrm.scene.parent.add(v.scene);
+      m.vrm.scene.removeFromParent();
+      m.vrm = v;
+      m.rest = rest;
+    }, `/${avatar}`);
+    console.log(`— ${avatar}`);
+  }
   let flagged = 0;
   for (const c of clips.filter((c) => !only.size || only.has(c.id))) {
     const clip = JSON.parse(readFileSync(path.join(root, "clips", c.path), "utf8"));
@@ -92,6 +112,7 @@ try {
     console.log(`${c.gloss.padEnd(6)} I|M M|R R|L ${fmt(fingers)}   thumb→I M R L ${fmt(thumb)}${bad ? "   <-- check" : ""}`);
   }
   console.log(`${flagged} flagged`);
+  }
 } finally {
   await browser.close();
 }

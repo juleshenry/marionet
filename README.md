@@ -32,9 +32,16 @@ any VRM avatar in the browser
 ```
 
 - **SignDesc** describes one sign: one entry per lemma. Schema: `schemas/signdesc.v0.schema.json`.
-- **The library** (`src/library.js`) is the vocabulary: each named handshape, location, palm orientation and movement as bone rotations. Most values are hand-tuned. The fingerspelling hand poses (palm direction, thumb placement, R's crossed fingers, J and Z paths) were fitted numerically on the sample avatar and checked visually.
+- **The library** (`src/library.js`) is the vocabulary: each named handshape, location, palm orientation and movement as bone rotations. The numbers are fitted on the sample avatar against targets on the body, then checked by eye:
+  - each location puts the index fingertip on its point (forehead, eye, nose, cheek, mouth, chin, neck, temple, ear, shoulder) or holds the hand a set distance in front of the body (chest, belly, neutral space);
+  - two-handed signs give each hand its own side, and the non-dominant hand waits in front of the body for the dominant hand to act on it;
+  - each named palm orientation is fitted per location;
+  - `linear`, `arc` and `circle` move the hand along real paths;
+  - fingerspelling has its own station, thumbs and paths for J and Z.
+
+  A sign with no orientation (ASL-LEX gives none) uses the location's natural hand.
 - **MarionetClip** is the output: per-bone keyframes as rotations relative to an arms-down rest pose. It doesn't depend on any particular avatar. Schema: `schemas/clip.v0.schema.json`.
-- **The player** loads a VRM, puts it in the rest pose and applies the clip on top.
+- **The player** loads a VRM, puts it in the rest pose and applies the clip on top. Thumbs are retargeted per avatar (`src/hands.js`), because rigs build the thumb differently. The clip's thumb pose is replayed so the joints land in the same place on this avatar's hand.
 
 ## Run the player
 
@@ -63,8 +70,13 @@ python3 -m http.server 8080
    - a slow camera orbit around each held handshape, which shows depth such as whether the thumb is over or under the fingers;
    - a front-view video of each moving sign, with the fingertip's path drawn as it goes;
    - still frames.
-4. Check for fingers passing through each other: `node scripts/hand_gaps.mjs`.
-5. If a thumb is in the wrong place, set its target in `scripts/fit_thumbs.mjs`, run it, and paste the row it prints into `THUMB_POSES` in `src/library.js`.
+4. Check for fingers passing through each other: `node scripts/hand_gaps.mjs`, or on other avatars with `--avatars avatars/out/w-white.vrm,…`. To render the gallery on another avatar, set `MARIONET_AVATAR=avatars/out/w-white.vrm`.
+5. If a thumb is in the wrong place, set its target in `scripts/fit_thumbs.mjs`, run it, and paste the row it prints into `THUMB_POSES` in `src/library.js`. For locations, palm orientations and movement paths, `scripts/fit_arm.mjs` does the same job: see its header for the order to run its modes.
+6. To spot-check lexicon signs, bake chosen ones elsewhere and render them:
+   ```sh
+   node scripts/bake_clips.mjs --ids ase/asllex/please,ase/asllex/night --out data/runs/preview
+   MARIONET_CLIPS=data/runs/preview node scripts/render_clips.mjs http://127.0.0.1:8765 data/runs/preview-renders
+   ```
 
 Rendering drives your installed Chrome through Playwright, needs `ffmpeg`, and downloads the sample avatar from GitHub.
 
@@ -78,6 +90,7 @@ Rendering drives your installed Chrome through Playwright, needs `ffmpeg`, and d
 |---|---|
 | `index.html`, `src/main.js` | Player UI: search, alphabet, drop a VRM or JSON |
 | `src/vrm.js` | Loads a VRM, sets the rest pose, applies clips |
+| `src/hands.js` | Retargets clip thumbs to each avatar's hand |
 | `src/compile.js` | SignDesc → MarionetClip |
 | `src/library.js` | Handshapes, locations, orientations and movements as bone rotations |
 | `src/ir.js`, `src/lexicon.js` | Validators; loading and searching sign packs |
@@ -87,6 +100,7 @@ Rendering drives your installed Chrome through Playwright, needs `ffmpeg`, and d
 | `scripts/bake_clips.mjs` | Compile and bake the finished signs |
 | `scripts/render_clips.mjs` | Review gallery (orbit, fingertip-path videos, stills) |
 | `scripts/hand_gaps.mjs`, `scripts/fit_thumbs.mjs` | Finger collision report; thumb pose fitting |
+| `scripts/fit_arm.mjs` | Fits locations, two-handed spacing, palm orientations and movement paths |
 | `scripts/check_compiler.mjs` | Compiler and schema checks |
 | `scripts/capture_demo_gifs.mjs` | Regenerates the two GIFs above |
 | `scripts/ingest_asllex.py`, `scripts/ingest_signpuddle.py` | Build the ASL-LEX and SignPuddle sign data |
@@ -130,10 +144,8 @@ python3 scripts/ingest_signpuddle.py
 
 ## Known gaps
 
-- **C and O** face the viewer, because the data marks them palm-out. They're usually shown side-on so the shape reads.
-- **K** looks close to V from the front.
-- **Hand poses were fitted on one avatar.** Avatars with differently built thumbs may come out slightly differently.
-- **Two-handed signs at a shared location collide**: both hands go to the same spot (for example chest-front), so they cross over each other instead of sitting side by side. None of the 28 finished signs use two hands.
-- **ASL-LEX clips are generic**: few movement types, and many signs share identical motion.
+- **Arm poses are fitted on the sample avatar.** Thumbs retarget per avatar, but locations don't yet. On an avatar with different proportions, such as a bigger head or shorter arms, a fingertip meant to touch the chin may stop short or sink in.
+- **ASL-LEX motion is generic.** The data says "straight", "arc" or "circle" but not which way, so every straight movement goes forward, every arc goes toward the midline and every circle runs in the body's plane.
+- **Some palm orientations can't be reached at some locations.** For example, palm-up with a fingertip on the face: the fit gets within about 50°.
+- **MakeHuman fingers curl less tightly** than the sample's, so fists look looser on those avatars.
 - **The face is coarse**: brow raise and furrow map to the "surprised" and "angry" presets.
-- **The demo GIFs predate the finger-spread fix**, so ILY and GATO now spread their fingers slightly more than shown.

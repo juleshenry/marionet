@@ -4,6 +4,7 @@ import {
   solveHandshape,
   solveHead,
   solveLocation,
+  solveMovePath,
   solveOrientation,
   solveStationPath,
   solveTorso,
@@ -57,7 +58,32 @@ function zeroPose(pose) {
   return out;
 }
 
-function movementKeyframes(basePose, movements, side, location) {
+/**
+ * Fitted hand paths (linear, arc, circle) for one movement, as a list of keyframe poses.
+ * Two-handed signs move both hands: in step when symmetric, half a cycle apart when
+ * alternating. Returns null where the library has no fitted path for the location.
+ */
+function pathPoses(basePose, type, location, side, handed) {
+  const dom = solveMovePath(type, location, side);
+  if (!dom) return null;
+  const other = side === "right" ? "left" : "right";
+  const both = handed === "2h-symmetric" || handed === "2h-alternating";
+  const nd = both ? solveMovePath(type, location, other) : null;
+  // One cycle: base, then each path point. Alternating hands run half a cycle behind.
+  const cycle = [null, ...dom.map((_, i) => i)];
+  const shift = Math.floor(cycle.length / 2);
+  return cycle.map((idx, k) => {
+    const parts = [basePose];
+    if (idx != null) parts.push(dom[idx]);
+    if (nd) {
+      const j = handed === "2h-alternating" ? cycle[(k + shift) % cycle.length] : idx;
+      if (j != null) parts.push(nd[j]);
+    }
+    return mergePoses(...parts);
+  });
+}
+
+function movementKeyframes(basePose, movements, side, location, handed) {
   const bones = {};
   const ensure = (pose) => {
     for (const bone of Object.keys(pose)) {
@@ -134,6 +160,31 @@ function movementKeyframes(basePose, movements, side, location) {
     return { bones, duration: RISE + 1.05 };
   }
 
+  if (first.type === "linear" || first.type === "arc" || first.type === "circle") {
+    const poses = pathPoses(basePose, first.type, location, side, handed);
+    if (poses) {
+      const reps = Math.max(1, first.reps ?? 1);
+      // Seconds per path point: a straight stroke is one point, a circle eight.
+      const step = { linear: 0.24, arc: 0.22, circle: 0.11 }[first.type];
+      let t = RISE;
+      apply(poses[0], t, t + 0.1);
+      t += 0.1;
+      for (let r = 0; r < reps; r++) {
+        for (const pose of poses.slice(1)) {
+          t += step;
+          apply(pose, t);
+        }
+        // Linear and circle return to the start each repetition; an arc ends where it lands.
+        if (first.type !== "arc") {
+          t += step;
+          apply(poses[0], t);
+        }
+      }
+      apply(first.type === "arc" ? poses.at(-1) : poses[0], t + 0.25);
+      return { bones, duration: t + 0.25 };
+    }
+  }
+
   if (first.type === "linear") {
     const reps = Math.max(1, first.reps ?? 1);
     const fwd = mergePoses(basePose, { [`${side}UpperArm`]: { x: -0.22, y: 0, z: 0 } });
@@ -185,11 +236,15 @@ function movementKeyframes(basePose, movements, side, location) {
   return { bones, duration: RISE + HOLD };
 }
 
-function poseForArticulator(art, side) {
+/**
+ * No orientation means the location's natural hand (ASL-LEX gives none); a named one
+ * turns the hand from there.
+ */
+function poseForArticulator(art, side, twoHanded = false) {
   const hand = solveHandshape(art.handshape, side);
   const location = art.location ?? "fs-station";
-  const loc = solveLocation(location, side);
-  const ori = solveOrientation(art.orientation ?? "palm-out", side, location);
+  const loc = solveLocation(location, side, { twoHanded });
+  const ori = art.orientation ? solveOrientation(art.orientation, side, location) : {};
   return mergePoses(loc, ori, hand);
 }
 
@@ -201,19 +256,20 @@ export function compileSignDesc(desc, { side = "right" } = {}) {
   }
 
   const art = desc.dominant;
-  const pose = poseForArticulator(art, side);
   const twoHanded =
     desc.handed === "2h-symmetric" || desc.handed === "2h-alternating";
+  const pose = poseForArticulator(art, side, twoHanded);
   let base = pose;
   if (twoHanded) {
     const other = side === "right" ? "left" : "right";
-    base = mergePoses(pose, poseForArticulator(art, other));
+    base = mergePoses(pose, poseForArticulator(art, other, true));
   } else if (desc.handed === "2h-asymmetric" && desc.nondominant?.handshape) {
     const other = side === "right" ? "left" : "right";
+    // The weak hand waits in front of the body for the dominant hand to act on it.
     const nd = {
       handshape: desc.nondominant.handshape,
-      location: desc.nondominant.location ?? "weak-hand",
-      orientation: desc.nondominant.orientation ?? "palm-in",
+      location: desc.nondominant.location ?? "base-hand",
+      orientation: desc.nondominant.orientation,
       movement: [],
     };
     try {
@@ -225,7 +281,7 @@ export function compileSignDesc(desc, { side = "right" } = {}) {
   const head = desc.body?.head || desc.nmf?.head || "neutral";
   const torso = desc.body?.torso || desc.nmf?.torso || "neutral";
   base = mergePoses(base, solveTorso(torso), solveHead(head === "nod" || head === "shake" ? "neutral" : head));
-  const { bones, duration: armDur } = movementKeyframes(base, art.movement ?? [], side, art.location ?? "fs-station");
+  const { bones, duration: armDur } = movementKeyframes(base, art.movement ?? [], side, art.location ?? "fs-station", desc.handed);
   const duration = Math.max(armDur, overlayAxial(bones, head, torso, armDur));
 
   return {

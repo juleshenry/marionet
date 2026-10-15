@@ -29,7 +29,7 @@
       "gloss": "FS:C",
       "spoken": ["C"],
       "handed": "1h",
-      "dominant": { "handshape": "C", "orientation": "palm-out", "location": "fs-station", "movement": [] },
+      "dominant": { "handshape": "C", "orientation": "palm-in", "location": "fs-station", "movement": [] },
       "nmf": { "eyebrows": "neutral", "mouth": "neutral", "eyegaze": "hand" }
     },
     {
@@ -154,7 +154,7 @@
       "gloss": "FS:O",
       "spoken": ["O"],
       "handed": "1h",
-      "dominant": { "handshape": "O", "orientation": "palm-out", "location": "fs-station", "movement": [] },
+      "dominant": { "handshape": "O", "orientation": "palm-in", "location": "fs-station", "movement": [] },
       "nmf": { "eyebrows": "neutral", "mouth": "neutral", "eyegaze": "hand" }
     },
     {
