@@ -140,7 +140,13 @@ def main() -> None:
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(
         json.dumps(
-            {"dataset": "asl-lex-2.0", "license": "CC-BY-4.0", "n": len(signs), "signs": signs},
+            {
+                "dataset": "asl-lex-2.0",
+                "license": "CC-BY-NC-4.0",
+                "licenseNote": "Contested: OSF zpha4 says CC BY 4.0; asl-lex.org says CC BY-NC 4.0. Non-commercial until the authors confirm (#33).",
+                "n": len(signs),
+                "signs": signs,
+            },
             separators=(",", ":"),
         )
         + "\n"
