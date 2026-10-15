@@ -1,16 +1,17 @@
 /**
  * Render baked clips into the dictionary's videos: each sign performed by the signer
- * src/assign.js draws for it, as one seamless loop (rise from rest, sign, hold, back to rest),
+ * src/assign.js deals it, as one seamless loop (rise from rest, sign, hold, back to rest),
  * drawn at twice the size and scaled down so edges stay smooth.
  *
  * Usage:
  *   python3 -m http.server 8765 &
  *   node scripts/bake_clips.mjs
- *   node scripts/render_videos.mjs [--ids ase/fs/A,ase/ily] [--language ase] [--out dist/signs] [--force]
+ *   node scripts/render_videos.mjs [--ids ase/fs/A,ase/ily] [--language ase] [--out dist/signs] [--force] [--reassign]
  *
  * Writes {out}/{language}/{slug}.mp4 (H.264, faststart), {slug}.jpg (the held pose, the poster),
  * {slug}.clip.json (for the live player) and manifest.json (marionet.signmedia/v0). A sign whose
- * clip, signer and renderer are unchanged since the last run is not drawn again.
+ * clip, signer and renderer are unchanged since the last run is not drawn again. A sign keeps the
+ * signer the last manifest gave it; --reassign deals the signs asked for afresh.
  */
 import { chromium } from "playwright";
 import { execFileSync, spawn } from "node:child_process";
@@ -19,7 +20,7 @@ import { existsSync } from "node:fs";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { assignAvatar, avatarWeights } from "../src/assign.js";
+import { assignAvatars, avatarWeights } from "../src/assign.js";
 import { packSigns } from "../src/lexicon.js";
 import { cycleLength } from "../src/loop.js";
 
@@ -32,6 +33,7 @@ const baseUrl = arg("base") || "http://127.0.0.1:8765";
 const language = arg("language") || "ase";
 const outDir = path.resolve(root, arg("out") || "dist/signs", language);
 const force = process.argv.includes("--force");
+const reassign = process.argv.includes("--reassign");
 const only = arg("ids") ? new Set(arg("ids").split(",")) : null;
 
 // colour: frames are converted with the BT.709 matrix and tagged as sRGB. An untagged video is
@@ -103,12 +105,15 @@ await mkdir(outDir, { recursive: true });
 const manifestPath = path.join(outDir, "manifest.json");
 const previous = existsSync(manifestPath) ? JSON.parse(await readFile(manifestPath, "utf8")) : { signs: [] };
 const before = new Map(previous.signs.map((s) => [s.id, s]));
+const asked = new Set(todo.map((c) => c.id));
+const kept = new Map(previous.signs.filter((s) => !(reassign && asked.has(s.id))).map((s) => [s.id, s.avatar]));
+const signers = assignAvatars([...asked], roster, weights, kept);
 
 const jobs = [];
 for (const entry of todo) {
   const clip = await readJson(path.join("clips", entry.path));
   const desc = descs.get(entry.id);
-  const avatar = assignAvatar(entry.id, roster, weights);
+  const avatar = signers.get(entry.id);
   const slug = slugOf(entry.id);
   const hash = sha1(JSON.stringify(clip), avatarHash.get(avatar), rendererHash);
   const fresh =
@@ -212,3 +217,4 @@ for (const [population, { target: t, actual }] of byPopulation) {
 }
 const women = signs.filter((s) => roster.avatars.find((a) => a.id === s.avatar)?.gender === "woman").length;
 console.log(`         women ${((women / signs.length) * 100).toFixed(0)}%, men ${(((signs.length - women) / signs.length) * 100).toFixed(0)}%`);
+console.log(`         ${new Set(signs.map((s) => s.avatar)).size} of ${roster.avatars.length} signers sign`);
