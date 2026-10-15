@@ -372,17 +372,19 @@ def hand_eulers(xyz21: list, side: str = "right") -> dict[str, list[float]]:
     pose = {}
     for finger in FINGERS:
         proximal, mid, distal = _curl_joints(curls[finger])
+        # Same convention as src/library.js: +y swings a right-hand finger toward the
+        # thumb, and y and z both mirror for the left hand.
         spr = 0.0
         if finger == "Index":
-            spr = -spread * SPREAD_MAX
+            spr = spread * SPREAD_MAX
         elif finger == "Little":
-            spr = spread * SPREAD_MAX * 0.85
+            spr = -spread * SPREAD_MAX * 0.85
         elif finger == "Ring":
-            spr = spread * SPREAD_MAX * 0.35
+            spr = -spread * SPREAD_MAX * 0.35
         bone = f"{side}{finger}"
-        pose[f"{bone}Proximal"] = [0.0, spr * sign, proximal]
-        pose[f"{bone}Intermediate"] = [0.0, 0.0, mid]
-        pose[f"{bone}Distal"] = [0.0, 0.0, distal]
+        pose[f"{bone}Proximal"] = [0.0, spr * sign, proximal * sign]
+        pose[f"{bone}Intermediate"] = [0.0, 0.0, mid * sign]
+        pose[f"{bone}Distal"] = [0.0, 0.0, distal * sign]
     tcurl = thumb_curl(xyz21)
     pose[f"{side}ThumbMetacarpal"] = [tcurl * 0.85 * 0.3, 0.2 * sign, 0.45 * sign]
     pose[f"{side}ThumbProximal"] = [tcurl * 0.85 * 0.85, 0.0, 0.0]

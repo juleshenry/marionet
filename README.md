@@ -133,7 +133,7 @@ python3 scripts/ingest_signpuddle.py
 - **C and O** face the viewer, because the data marks them palm-out. They're usually shown side-on so the shape reads.
 - **K** looks close to V from the front.
 - **Hand poses were fitted on one avatar.** Avatars with differently built thumbs may come out slightly differently.
-- **Left-hand finger curl isn't mirrored**, so the non-dominant hand in two-handed signs bends its fingers backwards. None of the 28 finished signs use the left hand.
+- **Two-handed signs at a shared location collide**: both hands go to the same spot (for example chest-front), so they cross over each other instead of sitting side by side. None of the 28 finished signs use two hands.
 - **ASL-LEX clips are generic**: few movement types, and many signs share identical motion.
 - **The face is coarse**: brow raise and furrow map to the "surprised" and "angry" presets.
 - **The demo GIFs predate the finger-spread fix**, so ILY and GATO now spread their fingers slightly more than shown.

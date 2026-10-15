@@ -331,17 +331,18 @@ export function solveHandshape(shapeId, side = "right") {
     if (finger === "Ring") spread = -f.spread * SPREAD_MAX * 0.35;
     if (finger === "Middle") spread = 0;
 
-
+    // Mirror y and z for the left hand, like the arms and thumb: an unmirrored z
+    // bent left fingers backwards.
     const bone = `${prefix}${finger}`;
-    pose[`${bone}Proximal`] = euler(0, spread * sign, joints.proximal);
-    pose[`${bone}Intermediate`] = euler(0, 0, joints.mid);
-    pose[`${bone}Distal`] = euler(0, 0, joints.distal);
+    pose[`${bone}Proximal`] = euler(0, spread * sign, joints.proximal * sign);
+    pose[`${bone}Intermediate`] = euler(0, 0, joints.mid * sign);
+    pose[`${bone}Distal`] = euler(0, 0, joints.distal * sign);
   }
 
   for (const [finger, joints] of Object.entries(FINGER_POSES[shape.id] ?? {})) {
     ["Proximal", "Intermediate", "Distal"].forEach((joint, i) => {
       const [x, y, z] = joints[i];
-      pose[`${prefix}${finger}${joint}`] = euler(x, y * sign, z);
+      pose[`${prefix}${finger}${joint}`] = euler(x, y * sign, z * sign);
     });
   }
 
