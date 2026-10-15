@@ -84,14 +84,17 @@ export function createPlayer(container, options = {}) {
     renderer = null;
   }
 
-  scene.add(new THREE.HemisphereLight(0xf4efe6, 0x243047, 1.2));
-  const sun = new THREE.DirectionalLight(0xfff6e8, 1.55);
-  sun.position.set(1.1, 2.3, 2.0);
+  // Bright, even light from the front, as anime is drawn: the key light sits near the camera, so
+  // the face and hands are lit and only the far sides fall into MToon's shade colour, and the
+  // light from below is a warm floor bounce, not a blue that greys the hands and chin.
+  scene.add(new THREE.HemisphereLight(0xffffff, 0x8a7f72, 1.4));
+  const sun = new THREE.DirectionalLight(0xfff8ee, 1.9);
+  sun.position.set(0.7, 1.8, 2.6);
   scene.add(sun);
-  // A soft light from the viewer's side, so the features of a dark-skinned face read as well
-  // as a light one's.
+  // A soft light from the viewer's other side, so the features of a dark-skinned face read as
+  // well as a light one's.
   const fill = new THREE.DirectionalLight(0xfff8f0, 0.8);
-  fill.position.set(-0.4, 1.6, 3);
+  fill.position.set(-0.6, 1.4, 3);
   scene.add(fill);
 
   if (floor) {
