@@ -115,6 +115,8 @@ function renderMenu() {
   };
   if (state.roster.length) for (const a of state.roster) add(a.id, a.label);
   else add("sample", "Sample avatar");
+  // an avatar given by URL rather than from the roster
+  if (state.choice && state.choice !== OWN && ![...menu.options].some((o) => o.value === state.choice)) add(state.choice, "This avatar");
   if (state.own) add(OWN, "Your avatar");
   add(UPLOAD, "Use your own .vrm…");
   menu.value = state.choice ?? menu.options[0].value;

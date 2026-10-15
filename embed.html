@@ -74,14 +74,13 @@
         display: none;
       }
 
+      /* One row, even in a phone-sized frame: the stage keeps the height. */
       #bar {
-        margin: 0 8px 8px;
+        margin: 0 6px 6px;
         display: flex;
-        flex-wrap: wrap;
         align-items: center;
-        justify-content: center;
-        gap: 6px;
-        padding: 6px;
+        gap: 4px;
+        padding: 4px;
         border: 1px solid var(--line);
         border-radius: 12px;
         background: var(--panel);
@@ -90,8 +89,8 @@
 
       button,
       select {
-        min-height: 36px;
-        padding: 0 10px;
+        min-height: 32px;
+        padding: 0 8px;
         border: 1px solid var(--line);
         border-radius: 8px;
         background: transparent;
@@ -106,7 +105,13 @@
       }
 
       select {
+        flex: 1 1 auto;
+        min-width: 0;
         max-width: 11em;
+      }
+
+      #replay {
+        font-size: 16px;
       }
 
       .speeds {
@@ -129,7 +134,7 @@
         <button type="button" data-speed="0.5" aria-pressed="false">½×</button>
         <button type="button" data-speed="1" aria-pressed="true">1×</button>
       </div>
-      <button id="replay" type="button">Replay</button>
+      <button id="replay" type="button" aria-label="Replay" title="Replay">↻</button>
       <input id="file" type="file" accept=".vrm" />
     </div>
     <script type="importmap">
