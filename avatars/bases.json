@@ -1,0 +1,62 @@
+{
+  "schema": "marionet.avatarbases/v0",
+  "note": "The anime-style bodies the signers are made from: VRoid Project's sample models for VRoid Studio, mirrored on OpenGameArt (https://opengameart.org/content/vroid-studio-cc0-models). Base_*, HairSample_* and AvatarSample_D (beta AvatarSample_1) are CC0; the others carry VRoid Hub's licence as embedded in each file: anyone may use, modify and redistribute them, commercially too, with no credit needed. build_avatars.py downloads each zip into avatars/bases/ and checks it against sha256.",
+  "models": {
+    "AvatarSample_D": {
+      "title": "Sendagaya Shibu",
+      "url": "https://opengameart.org/sites/default/files/avatarsample_d_0.zip",
+      "sha256": "311a383b0b63b55102c82efa5ab2afec0dfcccc1cc6fa2db10fd5583981b3167",
+      "file": "AvatarSample_D.vrm",
+      "gender": "woman"
+    },
+    "AvatarSample_E": {
+      "title": "Vivi",
+      "url": "https://opengameart.org/sites/default/files/avatarsample_e.zip",
+      "sha256": "3b6808e241102221625380d3e5d6911efb5cd484f290bfa16955e1b65856b6b1",
+      "file": "AvatarSample_E.vrm",
+      "gender": "woman"
+    },
+    "AvatarSample_G": {
+      "title": "Victoria Rubin",
+      "url": "https://opengameart.org/sites/default/files/avatarsample_g.zip",
+      "sha256": "3dc643aa55bf565512aa445775943b3ee93c71dc157b8ea8394863d494811b34",
+      "file": "AvatarSample_G.vrm",
+      "gender": "woman"
+    },
+    "Base_Female": {
+      "title": "Base Female",
+      "url": "https://opengameart.org/sites/default/files/base_female.zip",
+      "sha256": "bf2717cff70b40a278df56e137dbb699c6499551096fa4c005e9aeca1de68eb3",
+      "file": "Base_Female.vrm",
+      "gender": "woman"
+    },
+    "Base_Male": {
+      "title": "Base Male",
+      "url": "https://opengameart.org/sites/default/files/base_male.zip",
+      "sha256": "8a6049236aae93a31392c56cf2606bd2d3a74711c156e34225616f1ab3cc91b8",
+      "file": "Base_Male.vrm",
+      "gender": "man"
+    },
+    "HairSample_Male": {
+      "title": "Hair Sample Male",
+      "url": "https://opengameart.org/sites/default/files/hairsample_male.zip",
+      "sha256": "ba87440272b157a443dbe2cddb375eb175bce3586a45a84779bb018a5e730129",
+      "file": "HairSample_Male.vrm",
+      "gender": "man"
+    },
+    "Sakurada_Fumiriya": {
+      "title": "Sakurada Fumiriya",
+      "url": "https://opengameart.org/sites/default/files/sakurada_fumiriya.zip",
+      "sha256": "f3c53eea11398c7ed650d686a1e19e0823122068280ed4adc8105c9913e9fc66",
+      "file": "Sakurada Fumiriya.vrm",
+      "gender": "man"
+    },
+    "Sendagaya_Shino": {
+      "title": "Sendagaya Shino",
+      "url": "https://opengameart.org/sites/default/files/sendagaya_shino.zip",
+      "sha256": "ff85ff42c1d041fd66dabdb36761a98557d7b55199f635769f3698a41c0a3696",
+      "file": "Sendagaya Shino.vrm",
+      "gender": "woman"
+    }
+  }
+}

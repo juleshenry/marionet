@@ -19,3 +19,4 @@ data/runs/*
 *.avi
 dist/
 avatars/out/
+avatars/bases/
