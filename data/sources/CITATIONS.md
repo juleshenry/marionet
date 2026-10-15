@@ -2,7 +2,7 @@
 
 Keep these with the data. Catalog CC BY does not license the underlying corpora.
 
-- Sehyr, Caselli, Cohen-Goldberg, Emmorey. ASL-LEX 2.0. OSF `osf.io/zpha4`. Files: CC BY 4.0.
+- Sehyr, Caselli, Cohen-Goldberg, Emmorey. ASL-LEX 2.0. OSF `osf.io/zpha4`. Files: CC BY 4.0 on OSF, but asl-lex.org says CC BY-NC 4.0 and bans commercial use; treat as non-commercial until the authors confirm (#33).
 - Slevinski / Sutton. SignPuddle Online SPML dumps. SignWriting: CC BY-SA 3.0. Use official `sgn{ID}.spml` URLs.
 - Kopf, Schulder, Hanke. Sign Language Dataset Compendium. Catalog: CC BY 4.0. https://doi.org/10.25592/dgs.sldc
 - Rudra Sarker. SignLanguage-Dataset-Hub. Catalog: CC BY 4.0. Underlying datasets: their own licenses.

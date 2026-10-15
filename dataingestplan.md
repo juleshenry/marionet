@@ -33,9 +33,9 @@ Corpus QA (later, not the runtime): **FiftyOne** for visual inspection of extrac
 
 | Tier | You may | Sources |
 |---|---|---|
-| **A — CC BY / BY-SA dumps** | Download, derive `SignDesc`, retarget, redistribute derived artifacts with attribution (SA if the source is SA) | ASL-LEX 2.0 **OSF files**, 3D-LEX v1.0 (deferred: mocap is large), Global Signbank **NGT public**, Wikisigns (LSM, Malagasy, West Bengal: BY-SA 4.0), Wikisign LSC (BY-SA 2.0 ES), SignPuddle **SPML/FSW notation**, BdSL47 |
-| **B — NC / C-UDA / research** | Local research, pose extraction, **no commercial, no video redistrib** | WLASL (C-UDA; annotations only are theirs), How2Sign (BY-NC), OpenASL (BY-NC), ASL Signbank (BY-NC-SA), ASL-LEX **website** (BY-NC — use OSF instead) |
-| **C — register / contract** | After they say yes | **ASL-LEX reference videos**, DGS Corpus, BSL Corpus / SignBank, ASLLVD, BOBSL, most Signbank forks |
+| **A — CC BY / BY-SA dumps** | Download, derive `SignDesc`, retarget, redistribute derived artifacts with attribution (SA if the source is SA) | 3D-LEX v1.0 (LLF zips now; GLB/FBX deferred: mocap is large), Global Signbank **NGT public**, Wikisigns (LSM, Malagasy, West Bengal: BY-SA 4.0) **glosses only** (video is YouTube embeds = D), SignPuddle **SPML/FSW notation**, BdSL47 (fingerspelling only), and the 2026-10 survey rows in `allowlist.jsonl` (ISL-LEX, NationalCSL-DP, IsharaKotha, StudioGalt CC0 mocap, …; full list in `candidates.jsonl`). Wikisign LSC (BY-SA 2.0 ES) is a dead site. |
+| **B — NC / C-UDA / research** | Local research, pose extraction, **no commercial, no video redistrib** | WLASL (C-UDA; annotations only are theirs), How2Sign (BY-NC), OpenASL (BY-NC), ASL Signbank (BY-NC-SA, max 5–10% of the work), **ASL-LEX 2.0** (contested: OSF says CC BY 4.0, asl-lex.org says BY-NC and bans commercial use; B until the authors confirm in writing, #33) |
+| **C — register / contract** | After they say yes | **ASL-LEX reference videos**, DGS Corpus, BSL Corpus / SignBank (open-access data is CC BY-SA 4.0, but the download agreement requires sharing annotations back), ASLLVD, BOBSL, most Signbank forks |
 | **D — skip** | — | SpreadTheSign, YouTube-SL-25 videos (IDs are BY, footage is YouTube ToS), Internet Archive captures used as a licence, **WiLoR**, **OpenPose** (incl. controlnet-aux OpenPose), **Ultralytics YOLO**, anything with no stated license |
 
 Marionet’s README already says training data is public isolated corpora and pose is not redistributed video. That maps onto **A for the lexicon IR, B only if we stay non-commercial**.
@@ -58,7 +58,7 @@ Target: keep the repo and working tree in the **low tens of megabytes**, not gig
 
 Hard rules:
 
-- Cap any single download at **20 MB** unless a later task raises it.
+- Cap any single download at **20 MB** unless a later task raises it (the raise is tracked in #32).
 - Prefer official dumps (`Content-Length` via `HEAD`) over recursive wget.
 - Gitignore raw caches. Commit allowlist, converters, and derived JSON — not mp4/fbx/glb.
 - Do not clone the Hub or Compendium as data; copy the few fields we need.
@@ -72,10 +72,10 @@ Finder, not a corpus. The repo is CC BY 4.0; each listed dataset is not. Parse `
 Best structured metadata: language, size, licence, access route. Ingest catalog rows (HTML or the CC BY PDF). Use it to fill gaps the Hub misses (Signbanks, SignWikis, national dictionaries). Following a Compendium URL is not a licence to take that dataset.
 
 **Global Signbank** (`https://signbank.cls.ru.nl/`)  
-Lexical database, not a public video dictionary. NGT public subset is **CC BY 4.0** (~6.5k public glosses). Register, request the NGT dataset, use **CSV / ECV export**. Do not scrape the HTML viewer. Other hosted languages are private until a dataset manager grants access.
+Lexical database, not a public video dictionary. NGT public subset is **CC BY 4.0** (6,862 public of 7,469 glosses; example sentences are BY-NC-SA, so leave their media out). Register, request the NGT dataset, use **CSV / ECV export**. Do not scrape the HTML viewer. Other hosted languages are private until a dataset manager grants access.
 
 **Wikisigns** (`http://www.wikisigns.org/`)  
-Community video dictionaries, **CC BY-SA 4.0** on the ones Compendium lists (Mexican SL ~2.2k, Malagasy ~1.3k, West Bengal). ShareAlike applies to adapted video; keep source clips under SA and attribute per dictionary. Phonology notes we write are ours; do not re-host their MP4s as CC BY. Deferred until a language has no Signbank/OSF dump.
+Community video dictionaries, **CC BY-SA 4.0** on the ones Compendium lists (Mexican SL ~2.2k, Malagasy ~1.3k, West Bengal). The licence covers glosses and metadata only: the sign videos are YouTube embeds (Tier D), and there is no bulk export. Take gloss lists; ask ULPGC for source MP4s (#31). Phonology notes we write are ours. Deferred until a language has no Signbank/OSF dump.
 
 **SignPuddle Online** (`https://www.signbank.org/signpuddle`)  
 Do **not** scrape. Every puddle has an official dump:
