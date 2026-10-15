@@ -1,12 +1,13 @@
 import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { VRMLoaderPlugin, VRMUtils } from "@pixiv/three-vrm";
-import { THUMB_BONES, thumbRetargeter } from "./hands.js";
+import { REST_ARM, armRetargeter } from "./body.js";
+import { FINGER_BONES, THUMB_BONES, thumbRetargeter } from "./hands.js";
 
 /** Per avatar: retargets clip thumbs to this avatar's hand (null when it matches the sample's). */
 const thumbRetargeters = new WeakMap();
-
-const REST_ARM = Math.PI * 0.47;
+/** Per avatar: retargets clip arms to this avatar's body (null when it is built like the sample). */
+const armRetargeters = new WeakMap();
 
 const SAMPLE_VRM =
   "https://cdn.jsdelivr.net/gh/pixiv/three-vrm@release/packages/three-vrm/examples/models/VRM1_Constraint_Twist_Sample.vrm";
@@ -78,6 +79,8 @@ export async function loadVrm(source, loader = createLoader()) {
   };
   // Clip thumbs are authored on the sample's hand; this avatar's thumb may be built differently.
   thumbRetargeters.set(vrm, thumbRetargeter(vrm));
+  // Clip arms put the hand on the sample's face and body; this avatar's are shaped differently.
+  armRetargeters.set(vrm, armRetargeter(vrm));
   return vrm;
 }
 
@@ -218,8 +221,16 @@ function sampleScalar(keys, time) {
   return Number(last[1]) || 0;
 }
 
-export function applyClip(vrm, clip, rest, t) {
+/** The clip as this avatar plays it: arm tracks moved to fit its body. */
+export function retargetedClip(vrm, clip) {
+  return armRetargeters.get(vrm)?.(clip) ?? clip;
+}
+
+export function applyClip(vrm, clip, rest, t, { raw = false } = {}) {
   restorePose(vrm, rest);
+  // raw: the clip's eulers as they are, as on the sample (for checking the retargeting itself)
+  const arms = raw ? null : armRetargeters.get(vrm);
+  if (arms) clip = arms(clip);
   const s = axisSign(vrm);
   const time = clip.duration > 0 ? Math.min(Math.max(t, 0), clip.duration) : 0;
   for (const [bone, keys] of Object.entries(clip.bones)) {
@@ -231,13 +242,21 @@ export function applyClip(vrm, clip, rest, t) {
     node.rotation.z += s * z;
     node.quaternion.setFromEuler(node.rotation);
   }
-  const retarget = thumbRetargeters.get(vrm);
+  const retarget = raw ? null : thumbRetargeters.get(vrm);
   if (retarget) {
     for (const side of ["right", "left"]) {
       const names = THUMB_BONES.map((b) => `${side}${b}`);
       if (!names.some((n) => clip.bones[n])) continue;
       const eulers = names.map((n) => (clip.bones[n] ? sampleTrack(clip.bones[n], time) : [0, 0, 0]));
-      retarget(side, eulers).forEach((e, i) => {
+      const fingers = {};
+      for (const bone of FINGER_BONES) {
+        const keys = clip.bones[`${side}${bone}`];
+        const finger = bone.replace(/(Proximal|Intermediate|Distal)$/, "");
+        (fingers[finger] ??= [[0, 0, 0], [0, 0, 0], [0, 0, 0]])[["Proximal", "Intermediate", "Distal"].findIndex((p) => bone.endsWith(p))] = keys
+          ? sampleTrack(keys, time)
+          : [0, 0, 0];
+      }
+      retarget(side, eulers, fingers).forEach((e, i) => {
         const node = vrm.humanoid.getNormalizedBoneNode(names[i]);
         const restQ = rest.get(names[i]);
         if (!node || !restQ) return;

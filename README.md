@@ -41,7 +41,11 @@ any VRM avatar in the browser
 
   A sign with no orientation (ASL-LEX gives none) uses the location's natural hand.
 - **MarionetClip** is the output: per-bone keyframes as rotations relative to an arms-down rest pose. It doesn't depend on any particular avatar. Schema: `schemas/clip.v0.schema.json`.
-- **The player** loads a VRM, puts it in the rest pose and applies the clip on top. Thumbs are retargeted per avatar (`src/hands.js`), because rigs build the thumb differently. The clip's thumb pose is replayed so the joints land in the same place on this avatar's hand.
+- **The player** loads a VRM, puts it in the rest pose and applies the clip on top. Clips are fitted on the sample avatar, so the player retargets each one to the avatar it's playing on:
+  - **Arms** (`src/body.js`): the first time a sign plays, the player measures about 20 points on this avatar's face and body, the same points the location fits aimed at. For each keyframe it finds the hand point nearest the body on the sample (a fingertip on the chin, the palm in front of the chest) and carries it to the same place on this body, scaled to this face or torso. It then bends this arm to put the hand there, facing the same way, and lifts the hand off the skin wherever another point would sink in. On VRoid signers, fingertips used to sink up to 1.7 cm into the face; now they rest where they do on the sample.
+  - **Thumbs** (`src/hands.js`): rigs build the thumb, and space the knuckles, differently. The clip's thumb joints are found among the sample's fingers, curled as the clip curls them, and placed at the same spots among this avatar's fingers, so a thumb on the index's middle joint stays on it.
+
+  An avatar built like the sample gets the clip exactly as baked.
 
 ## Run the player
 
@@ -71,6 +75,7 @@ python3 -m http.server 8080
    - a front-view video of each moving sign, with the fingertip's path drawn as it goes;
    - still frames.
 4. Check for fingers passing through each other: `node scripts/hand_gaps.mjs`, or on other avatars with `--avatars avatars/out/w-white.vrm,…`. To render the gallery on another avatar, set `MARIONET_AVATAR=avatars/out/w-white.vrm`.
+   To check that hands land where the location fits aimed on every signer, run `node scripts/check_reach.mjs`, adding `--shots data/runs/reach` for close-ups. If you change where `src/body.js` measures, run `node scripts/measure_body.mjs` to re-measure the sample.
 5. If a thumb is in the wrong place, set its target in `scripts/fit_thumbs.mjs`, run it, and paste the row it prints into `THUMB_POSES` in `src/library.js`. For locations, palm orientations and movement paths, `scripts/fit_arm.mjs` does the same job: see its header for the order to run its modes.
 6. To spot-check lexicon signs, bake chosen ones elsewhere and render them:
    ```sh
@@ -90,7 +95,9 @@ Rendering drives your installed Chrome through Playwright, needs `ffmpeg`, and d
 |---|---|
 | `index.html`, `src/main.js` | Player UI: search, alphabet, drop a VRM or JSON |
 | `src/vrm.js` | Loads a VRM, sets the rest pose, applies clips |
+| `src/body.js` | Retargets clip arms to each avatar's face and body |
 | `src/hands.js` | Retargets clip thumbs to each avatar's hand |
+| `src/sample_body.js` | The sample's skeleton and body points, which both retargeters work from (written by `scripts/measure_body.mjs`) |
 | `src/compile.js` | SignDesc → MarionetClip |
 | `src/library.js` | Handshapes, locations, orientations and movements as bone rotations |
 | `src/ir.js`, `src/lexicon.js` | Validators; loading and searching sign packs |
@@ -101,6 +108,7 @@ Rendering drives your installed Chrome through Playwright, needs `ffmpeg`, and d
 | `scripts/render_clips.mjs` | Review gallery (orbit, fingertip-path videos, stills) |
 | `scripts/hand_gaps.mjs`, `scripts/fit_thumbs.mjs` | Finger collision report; thumb pose fitting |
 | `scripts/fit_arm.mjs` | Fits locations, two-handed spacing, palm orientations and movement paths |
+| `scripts/check_reach.mjs`, `scripts/measure_body.mjs` | Where hands land on each signer, before and after retargeting; the sample's measurements |
 | `scripts/check_compiler.mjs` | Compiler and schema checks |
 | `scripts/capture_demo_gifs.mjs` | Regenerates the two GIFs above |
 | `scripts/ingest_asllex.py`, `scripts/ingest_signpuddle.py` | Build the ASL-LEX and SignPuddle sign data |
@@ -144,8 +152,8 @@ python3 scripts/ingest_signpuddle.py
 
 ## Known gaps
 
-- **Arm poses are fitted on the sample avatar.** Thumbs retarget per avatar, but locations don't yet. On an avatar with different proportions, such as a bigger head or shorter arms, a fingertip meant to touch the chin may stop short or sink in.
+- **Retargeting places the hand, not the whole arm.** The hand is kept off the skin, but the forearm can still pass through a bigger chest. Hair isn't counted as body, so fingers on the forehead or temple go under fringes.
+- **Hand-on-hand contact is approximate on other avatars.** Each hand is fitted to the body on its own; two-handed spacing stays within about 1 cm of the sample's.
 - **ASL-LEX motion is generic.** The data says "straight", "arc" or "circle" but not which way, so every straight movement goes forward, every arc goes toward the midline and every circle runs in the body's plane.
 - **Some palm orientations can't be reached at some locations.** For example, palm-up with a fingertip on the face: the fit gets within about 50°.
-- **MakeHuman fingers curl less tightly** than the sample's, so fists look looser on those avatars.
 - **The face is coarse**: brow raise and furrow map to the "surprised" and "angry" presets.
