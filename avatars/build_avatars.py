@@ -146,6 +146,9 @@ def borrow_hair(name, rig):
     hair.data.transform(matrix.inverted() @ Matrix.Translation(offset) @ matrix)
     hair.parent = None
     hair.matrix_world = matrix
+    body = named(objects, "Body")
+    scalp = world_points(body, "HairBack")  # HairSample_Male has none: then the top of the head
+    drop_ahoge(hair, (scalp if len(scalp) else world_points(body))[:, 2].max() + offset.z)
     for obj in objects:
         if obj is not hair:
             bpy.data.objects.remove(obj, do_unlink=True)
@@ -166,6 +169,34 @@ def trim_fringe(hair, head):
         if y < head.front + 0.3 * head.depth and abs(x - head.centre.x) < 0.42 * head.width and z < reach:
             doomed.append(f)
     bmesh.ops.delete(bm, geom=doomed, context="FACES")
+    bm.to_mesh(hair.data)
+    bm.free()
+
+
+def drop_ahoge(hair, scalp_top):
+    """Take off the strands that stand up from the crown on their own (ahoge), which mark an anime
+    character as a child: the loose pieces of hair that lie wholly above the top of the scalp they
+    were made for."""
+    matrix = hair.matrix_world
+    bm = bmesh.new()
+    bm.from_mesh(hair.data)
+    seen, doomed = set(), []
+    for start in bm.verts:
+        if start in seen:
+            continue
+        island, stack = [], [start]
+        seen.add(start)
+        while stack:
+            vert = stack.pop()
+            island.append(vert)
+            for edge in vert.link_edges:
+                other = edge.other_vert(vert)
+                if other not in seen:
+                    seen.add(other)
+                    stack.append(other)
+        if min((matrix @ v.co).z for v in island) > scalp_top - 0.005:
+            doomed.extend(island)
+    bmesh.ops.delete(bm, geom=doomed, context="VERTS")
     bm.to_mesh(hair.data)
     bm.free()
 
@@ -425,7 +456,108 @@ def dress(entry, objects):
             elif "Tops" in name or "Onepice" in name:
                 repaint(material, lambda image, f: flat(image, top, f"{sid}-top"), shade=(0.72, 0.72, 0.78))
             elif "Bottoms" in name:
-                repaint(material, lambda image, f: flat(image, hex_rgb(BOTTOMS), f"{sid}-bottoms"), shade=(0.8, 0.8, 0.85))
+                # one flat colour with no outline or sheen, so a skirt's school pleats don't show
+                repaint(material, lambda image, f: flat(image, hex_rgb(BOTTOMS), f"{sid}-bottoms"), shade=(1, 1, 1))
+                mtoon = material.vrm_addon_extension.mtoon1.extensions.vrmc_materials_mtoon
+                mtoon.outline_width_mode = "none"
+                mtoon.matcap_factor = (0.0, 0.0, 0.0)
+                mtoon.matcap_texture.index.source = None
+
+
+# ---- grown up ----
+
+# VRoid's samples are drawn as teenagers: a head about a sixth of the body and eyes half the face.
+# A smaller head and smaller eyes make the same faces read as adults.
+HEAD_SCALE = {"woman": 0.84, "man": 0.87}
+EYE_SCALE = (0.9, 0.76)  # across, high
+EYE_PARTS = ("EyeWhite", "EyeIris", "EyeHighlight", "EyeExtra", "FaceEyeline", "FaceEyelash")
+
+
+def reshape(obj, move):
+    """Move the mesh's vertices and every shape key alike: move(points) takes and returns world-space
+    (n, 3) arrays, one row per vertex."""
+    matrix = np.array(obj.matrix_world)
+    inverse = np.linalg.inv(matrix)
+    count = len(obj.data.vertices)
+
+    def apply(collection):
+        flat_co = np.empty(count * 3)
+        collection.foreach_get("co", flat_co)
+        world = flat_co.reshape(count, 3) @ matrix[:3, :3].T + matrix[:3, 3]
+        local = move(world) @ inverse[:3, :3].T + inverse[:3, 3]
+        collection.foreach_set("co", local.ravel())
+
+    apply(obj.data.vertices)
+    if obj.data.shape_keys:
+        for block in obj.data.shape_keys.key_blocks:
+            apply(block.data)
+    obj.data.update()
+
+
+def narrow_eyes(face, across, high):
+    """Draw each eye smaller about its own centre, and lower the brow over it by part of the drop."""
+    names = [slot.material.name if slot.material else "" for slot in face.material_slots]
+    parts = {}
+    for poly in face.data.polygons:
+        name = names[poly.material_index]
+        part = next((p for p in (*EYE_PARTS, "FaceBrow") if p in name), None)
+        if part:
+            parts.setdefault(part, set()).update(poly.vertices)
+    points = world_points(face)
+    mid = (points[:, 0].min() + points[:, 0].max()) / 2
+    eye = np.array(sorted(set().union(*(parts.get(p, set()) for p in EYE_PARTS))))
+    brow = np.array(sorted(parts.get("FaceBrow", set())))
+    whites = np.array(sorted(parts["EyeWhite"]))
+    lashes = np.array(sorted(parts["FaceEyelash"]))
+    count = len(points)
+    scale_x, scale_z, centre_x, centre_z, drop = np.ones(count), np.ones(count), np.zeros(count), np.zeros(count), np.zeros(count)
+    for side in (-1, 1):
+        on = lambda ids: ids[(points[ids, 0] - mid) * side > 0]
+        white = points[on(whites)]
+        cx = (white[:, 0].min() + white[:, 0].max()) / 2
+        cz = (white[:, 2].min() + white[:, 2].max()) / 2
+        ids = on(eye)
+        scale_x[ids], scale_z[ids], centre_x[ids], centre_z[ids] = across, high, cx, cz
+        top = points[on(lashes), 2].max()
+        drop[on(brow)] = 0.6 * (top - cz) * (high - 1)
+
+    def move(p):
+        q = p.copy()
+        q[:, 0] = centre_x + (p[:, 0] - centre_x) * scale_x
+        q[:, 2] = centre_z + (p[:, 2] - centre_z) * scale_z + drop
+        return q
+
+    reshape(face, move)
+
+
+def shrink_head(rig, objects, scale):
+    """Scale the head, and the hair and eyes it carries, about the top of the neck. A vertex shared
+    by neck and head moves by its weight on the head, so the neck tapers into the smaller head."""
+    head = rig.data.bones[HEAD]
+    carried = {head.name, *(bone.name for bone in head.children_recursive)}
+    local_pivot = head.head_local.copy()
+    pivot = np.array(rig.matrix_world @ local_pivot)
+    for obj in meshes(objects):
+        groups = {group.index for group in obj.vertex_groups if group.name in carried}
+        if not groups:
+            continue
+        weight = np.array([min(1.0, sum(g.weight for g in v.groups if g.group in groups)) for v in obj.data.vertices])
+        factor = (1 + weight * (scale - 1))[:, None]
+        reshape(obj, lambda p: pivot + (p - pivot) * factor)
+    bpy.context.view_layer.objects.active = rig
+    bpy.ops.object.mode_set(mode="EDIT")
+    for bone in rig.data.edit_bones:
+        if bone.name in carried:
+            bone.head = local_pivot + (bone.head - local_pivot) * scale
+            bone.tail = local_pivot + (bone.tail - local_pivot) * scale
+    bpy.ops.object.mode_set(mode="OBJECT")
+    look_at = rig.data.vrm_addon_extension.vrm1.look_at
+    look_at.offset_from_head_bone = tuple(Vector(look_at.offset_from_head_bone) * scale)
+
+
+def grow_up(rig, objects, gender):
+    narrow_eyes(named(objects, "Face"), *EYE_SCALE)
+    shrink_head(rig, objects, HEAD_SCALE[gender])
 
 
 # ---- export ----
@@ -509,6 +641,8 @@ def build(entry):
             hair = borrow_hair(style, rig)
             if entry.get("fringe") is False:
                 trim_fringe(hair, Head(objects))
+    if hair is not None and hair is own:
+        drop_ahoge(hair, Head(objects).top)
     if hair is not None:
         fix_to_head(hair, rig)
         if hair not in objects:
@@ -516,6 +650,7 @@ def build(entry):
     objects = [obj for obj in objects if obj.type != "EMPTY"]  # the spring colliders, gone next
     drop_springs(rig)
     prune_morphs(rig, objects)
+    grow_up(rig, objects, entry["gender"])
     dress(entry, objects)
     for image in list(bpy.data.images):
         if image.users == 0:
