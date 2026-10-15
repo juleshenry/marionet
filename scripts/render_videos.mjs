@@ -13,7 +13,7 @@
  * clip, signer and renderer are unchanged since the last run is not drawn again.
  */
 import { chromium } from "playwright";
-import { spawn } from "node:child_process";
+import { execFileSync, spawn } from "node:child_process";
 import { createHash } from "node:crypto";
 import { existsSync } from "node:fs";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
@@ -38,6 +38,16 @@ const only = arg("ids") ? new Set(arg("ids").split(",")) : null;
 // shown darker by Apple's players than by others, and its paper background no longer matches
 // the page around it.
 const SETTINGS = { size: 540, scale: 2, fps: 30, background: "f4ecd8", crf: 23, colour: "bt709/srgb" };
+const COLOUR_TAGS = { color_primaries: "bt709", color_transfer: "iec61966-2-1", color_space: "bt709" };
+
+/** Stop if ffmpeg wrote the video without its colour tags (it once ignored the flags). */
+function checkColour(file) {
+  const out = execFileSync("ffprobe", ["-v", "error", "-select_streams", "v:0", "-show_entries",
+    `stream=${Object.keys(COLOUR_TAGS).join(",")}`, "-of", "json", file]).toString();
+  const stream = JSON.parse(out).streams?.[0] ?? {};
+  const wrong = Object.entries(COLOUR_TAGS).filter(([key, value]) => stream[key] !== value);
+  if (wrong.length) throw new Error(`${file}: colour tags ${JSON.stringify(stream)}, expected ${JSON.stringify(COLOUR_TAGS)}`);
+}
 
 const readJson = async (p) => JSON.parse(await readFile(path.join(root, p), "utf8"));
 const sha1 = (...parts) => {
@@ -148,6 +158,7 @@ try {
         await video.write(png);
       }
       await video.end();
+      checkColour(path.join(outDir, `${slug}.mp4`));
       const still = ffmpeg(["-f", "image2pipe", "-c:v", "png", "-i", "-", "-vf", `scale=${size}:${size}:flags=lanczos`, "-q:v", "3", path.join(outDir, `${slug}.jpg`)]);
       await still.write(poster);
       await still.end();
