@@ -34,7 +34,10 @@ const outDir = path.resolve(root, arg("out") || "dist/signs", language);
 const force = process.argv.includes("--force");
 const only = arg("ids") ? new Set(arg("ids").split(",")) : null;
 
-const SETTINGS = { size: 540, scale: 2, fps: 30, background: "f4ecd8", crf: 23 };
+// colour: frames are converted with the BT.709 matrix and tagged as sRGB. An untagged video is
+// shown darker by Apple's players than by others, and its paper background no longer matches
+// the page around it.
+const SETTINGS = { size: 540, scale: 2, fps: 30, background: "f4ecd8", crf: 23, colour: "bt709/srgb" };
 
 const readJson = async (p) => JSON.parse(await readFile(path.join(root, p), "utf8"));
 const sha1 = (...parts) => {
@@ -132,7 +135,8 @@ try {
 
       const video = ffmpeg([
         "-f", "image2pipe", "-framerate", String(fps), "-c:v", "png", "-i", "-",
-        "-vf", `scale=${size}:${size}:flags=lanczos,format=yuv420p`,
+        "-vf", `scale=${size}:${size}:flags=lanczos:out_color_matrix=bt709:out_range=tv,format=yuv420p,`
+          + "setparams=color_primaries=bt709:color_trc=iec61966-2-1:colorspace=bt709:range=tv",
         "-c:v", "libx264", "-profile:v", "high", "-preset", "slow", "-crf", String(crf),
         "-movflags", "+faststart", "-an", path.join(outDir, `${slug}.mp4`),
       ]);
