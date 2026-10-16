@@ -42,10 +42,12 @@ any VRM avatar in the browser
   A sign with no orientation (ASL-LEX gives none) uses the location's natural hand.
 - **MarionetClip** is the output: per-bone keyframes as rotations relative to an arms-down rest pose. It doesn't depend on any particular avatar. Schema: `schemas/clip.v0.schema.json`.
 - **The player** loads a VRM, puts it in the rest pose and applies the clip on top. Clips are fitted on the sample avatar, so the player retargets each one to the avatar it's playing on:
-  - **Arms** (`src/body.js`): the first time a sign plays, the player measures about 20 points on this avatar's face and body, the same points the location fits aimed at. For each keyframe it finds the hand point nearest the body on the sample (a fingertip on the chin, the palm in front of the chest) and carries it to the same place on this body, scaled to this face or torso. It then bends this arm to put the hand there, facing the same way, and lifts the hand off the skin wherever another point would sink in. On VRoid signers, fingertips used to sink up to 1.7 cm into the face; now they rest where they do on the sample.
+  - **Arms** (`src/body.js`): the first time a sign plays, the player measures about 20 points on this avatar's face and body, the same points the location fits aimed at. For each keyframe it finds the hand point nearest the body on the sample (a fingertip on the chin, the palm in front of the chest) and carries it to the same place on this body, scaled to this face or torso. It then bends this arm to put the hand there, facing the same way, and lifts the hand off the skin wherever another point would sink in.
   - **Thumbs** (`src/hands.js`): rigs build the thumb, and space the knuckles, differently. The clip's thumb joints are found among the sample's fingers, curled as the clip curls them, and placed at the same spots among this avatar's fingers, so a thumb on the index's middle joint stays on it.
 
-  An avatar built like the sample gets the clip exactly as baked.
+  An avatar built like the sample gets the clip exactly as baked. Everything that plays a clip goes through the retargeting: the player, the dictionary videos and the embed (below).
+
+  `scripts/check_reach.mjs` measures it on the sixteen signers in `avatars/out/`. Played as baked, fingertips sank up to 0.8 cm into their faces, and hands stopped up to 7 cm short of the ear, chest and belly. Retargeted, face and shoulder contacts land within about 0.6 cm of where they do on the sample, and the neck and ear within 1 cm. On the men, chest and belly contacts sit 1.1–1.4 cm further out, scaled to their bigger torsos. No contact ends up under the skin.
 
 ## Run the player
 
@@ -85,6 +87,15 @@ python3 -m http.server 8080
 
 Rendering drives your installed Chrome through Playwright, needs `ffmpeg`, and downloads the sample avatar from GitHub.
 
+## Dictionary videos and the embed
+
+[glottosphere](https://glottosphere.com) shows each sign as a video, and in a 3D tab that runs this player.
+
+- `node scripts/render_videos.mjs` draws each sign on the signer `src/assign.js` deals it, into `dist/signs/`. It redraws a sign when its clip, its signer, or any module the player loads changes (`scripts/page_modules.mjs` finds them).
+- `node scripts/build_embed.mjs` builds the player, with three.js and three-vrm, into `dist/embed/`. glottosphere's `scripts/build/sync_marionet.sh` copies it in.
+
+When the player changes, and not only a clip, redraw the videos and sync the embed, then publish them together with glottosphere's `scripts/pipeline/publish_signs.py`. Otherwise the video and the 3D tab show the hand in different places.
+
 ## Checks
 
 `npm run check` validates the compiler and schemas, confirms `clips/` matches the current library, and runs the Python self-tests.
@@ -108,6 +119,7 @@ Rendering drives your installed Chrome through Playwright, needs `ffmpeg`, and d
 | `scripts/render_clips.mjs` | Review gallery (orbit, fingertip-path videos, stills) |
 | `scripts/hand_gaps.mjs`, `scripts/fit_thumbs.mjs` | Finger collision report; thumb pose fitting |
 | `scripts/fit_arm.mjs` | Fits locations, two-handed spacing, palm orientations and movement paths |
+| `scripts/render_videos.mjs`, `scripts/build_embed.mjs`, `scripts/page_modules.mjs` | glottosphere's sign videos and embeddable player; the modules a page loads |
 | `scripts/check_reach.mjs`, `scripts/measure_body.mjs` | Where hands land on each signer, before and after retargeting; the sample's measurements |
 | `scripts/check_compiler.mjs` | Compiler and schema checks |
 | `scripts/capture_demo_gifs.mjs` | Regenerates the two GIFs above |

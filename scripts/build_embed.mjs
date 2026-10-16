@@ -7,8 +7,9 @@
  */
 import { execSync } from "node:child_process";
 import { copyFileSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
-import { dirname, join, posix, relative } from "node:path";
+import { dirname, join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
+import { pageModules } from "./page_modules.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const outDir = join(root, process.argv[2] || "dist/embed");
@@ -24,32 +25,8 @@ const LICENCES = ["node_modules/three/LICENSE", "node_modules/@pixiv/three-vrm/L
 
 const published = (file) => (file.startsWith("node_modules/") ? `vendor/${file.slice("node_modules/".length)}` : file);
 
-function resolve(specifier, from) {
-  if (specifier.startsWith("./") || specifier.startsWith("../")) return posix.join(posix.dirname(from), specifier);
-  if (BARE[specifier] && !specifier.endsWith("/")) return BARE[specifier];
-  for (const [prefix, target] of Object.entries(BARE)) {
-    if (prefix.endsWith("/") && specifier.startsWith(prefix)) return target + specifier.slice(prefix.length);
-  }
-  // URLs in comments (GLTFLoader's usage notes) and anything else the page does not load
-  return null;
-}
-
-const IMPORT = /\bfrom\s*["']([^"']+)["']|\bimport\s*["']([^"']+)["']|\bimport\(\s*["']([^"']+)["']\s*\)/g;
-
 const html = readFileSync(join(root, "embed.html"), "utf8");
-const entries = [...html.matchAll(/<script type="module" src="\.\/([^"]+)"/g)].map((m) => m[1]);
-const files = new Set();
-const queue = [...entries];
-while (queue.length) {
-  const file = queue.shift();
-  if (files.has(file)) continue;
-  files.add(file);
-  const text = readFileSync(join(root, file), "utf8");
-  for (const match of text.matchAll(IMPORT)) {
-    const target = resolve(match[1] || match[2] || match[3], file);
-    if (target && !files.has(target)) queue.push(target);
-  }
-}
+const files = pageModules(root, "embed.html", BARE);
 
 rmSync(outDir, { recursive: true, force: true });
 for (const file of [...files, ...LICENCES]) {

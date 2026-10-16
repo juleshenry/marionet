@@ -10,8 +10,9 @@
  *
  * Writes {out}/{language}/{slug}.mp4 (H.264, faststart), {slug}.jpg (the held pose, the poster),
  * {slug}.clip.json (for the live player) and manifest.json (marionet.signmedia/v0). A sign whose
- * clip, signer and renderer are unchanged since the last run is not drawn again. A sign keeps the
- * signer the last manifest gave it; --reassign deals the signs asked for afresh.
+ * clip, signer and renderer (render.html and every module it loads) are unchanged since the last
+ * run is not drawn again. A sign keeps the signer the last manifest gave it; --reassign deals the
+ * signs asked for afresh.
  */
 import { chromium } from "playwright";
 import { execFileSync, spawn } from "node:child_process";
@@ -23,6 +24,7 @@ import { fileURLToPath } from "node:url";
 import { assignAvatars, avatarWeights } from "../src/assign.js";
 import { packSigns } from "../src/lexicon.js";
 import { cycleLength } from "../src/loop.js";
+import { pageModules } from "./page_modules.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const arg = (name) => {
@@ -89,10 +91,10 @@ for (const a of roster.avatars) {
   if (!existsSync(file)) throw new Error(`${a.id}.vrm is missing: run blender -b --python avatars/build_avatars.py`);
   avatarHash.set(a.id, sha1(await readFile(file)));
 }
-const rendererHash = sha1(
-  ...(await Promise.all(["src/player.js", "src/loop.js", "src/vrm.js", "src/render.js", "render.html"].map((p) => readFile(path.join(root, p))))),
-  JSON.stringify(SETTINGS)
-);
+// Everything that draws a frame: the page and every module it loads (the player, the retargeting
+// in body.js and hands.js, three and three-vrm), so a change to any of them redraws the videos.
+const rendererFiles = ["render.html", ...pageModules(root, "render.html")];
+const rendererHash = sha1(...(await Promise.all(rendererFiles.map((p) => readFile(path.join(root, p))))), JSON.stringify(SETTINGS));
 
 const { clips } = await readJson("clips/index.json");
 const todo = clips.filter((c) => c.language === language && (!only || only.has(c.id)));
