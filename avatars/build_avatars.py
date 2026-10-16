@@ -16,7 +16,8 @@ A signer is its `body` base with:
     off), or one drawn here: afro, puffs, hightop, or crop (the painted scalp alone). All hair is
     fixed to the head, with no spring bones, so a looping video ends exactly where it began.
   - skin scaled to `tone`, irises to `eyes`, hair and brows to `hairColor`;
-  - a plain top in `topColor`, as signers wear on camera; ties and bows taken off.
+  - a plain top in `topColor`, as signers wear on camera; ties and bows taken off;
+  - trousers: a body that came in a skirt has its legs' skin made into trousers (trousers()).
 """
 import hashlib
 import io
@@ -464,12 +465,91 @@ def dress(entry, objects):
                 mtoon.matcap_texture.index.source = None
 
 
+# ---- trousers ----
+
+# VRoid dresses its women in a school uniform: a short pleated skirt over bare legs with knee socks
+# painted on, and underwear painted on the skin beneath. Every signer wears trousers instead.
+EASE = 0.012  # how far the cloth stands off the leg, in metres
+UNDER_TOP = 0.002  # the waistband's ease where the top hangs over it, so it never shows through
+
+
+def trousers(rig, objects):
+    """Trousers made of the legs' own skin, for a body that came in a skirt: the skin from the waist to
+    the shoes stands off the leg by EASE, falls straight from the knee, and takes a plain material
+    that dress() colours as bottoms. The skirt goes. Being the body's own faces, they bend with it and
+    leave no skin beneath them to show through."""
+    body = named(objects, "Body")
+    slots = [slot.material for slot in body.material_slots]
+    zs = lambda part: world_points(body, part)[:, 2]
+    knee = (rig.matrix_world @ rig.data.bones["J_Bip_L_LowerLeg"].head_local).z
+    if zs("Bottoms").min() < knee:
+        return  # already trousers
+    waist, top_hem, hem = zs("Bottoms").max(), zs("Tops").min(), zs("Shoes").max() - 0.01
+    delete_faces(body, "Bottoms")
+
+    material = next(m for m in slots if part_of(m, "Bottoms")).copy()
+    material.name = material.name.replace("Bottoms", "Bottoms_Trousers")
+    mt = material.vrm_addon_extension.mtoon1
+    mt.alpha_mode = "OPAQUE"
+    plain = bpy.data.images.new("trousers-plain", 4, 4)
+    plain.pixels.foreach_set(np.ones(64, dtype=np.float32))
+    mt.pbr_metallic_roughness.base_color_texture.index.source = plain
+    mt.extensions.vrmc_materials_mtoon.shade_multiply_texture.index.source = plain
+    mt.normal_texture.index.source = None
+    body.data.materials.append(material)
+    index = len(body.data.materials) - 1
+
+    matrix = body.matrix_world
+    normal_matrix = matrix.to_3x3().inverted().transposed()
+    skin = [part_of(slot.material, "_SKIN") for slot in body.material_slots]
+    legs, rest = set(), set()
+    for poly in body.data.polygons:
+        inside = skin[poly.material_index] and hem < (matrix @ poly.center).z < waist
+        if inside:
+            poly.material_index = index
+        (legs if inside else rest).update(poly.vertices)
+    ids = np.array(sorted(legs))
+    edge = np.isin(ids, sorted(rest))  # shared with the skin above and below: stays on the leg
+    points = world_points(body)[ids]
+    normals = np.array([(normal_matrix @ body.data.vertices[i].normal).normalized() for i in ids])
+
+    # Under the top the waistband hugs the body; below it the cloth stands off by EASE
+    ease = np.interp(points[:, 2], [top_hem, top_hem + 0.03], [EASE, UNDER_TOP])
+    moved = points + normals * ease[:, None]
+
+    # Below the knee each leg falls straight: out from the line knee to ankle to the knee's width,
+    # narrowing a little to the hem
+    centre = (rig.matrix_world @ rig.data.bones["J_Bip_C_Hips"].head_local).x
+    for leg in ("L", "R"):
+        a = np.array(rig.matrix_world @ rig.data.bones[f"J_Bip_{leg}_LowerLeg"].head_local)
+        b = np.array(rig.matrix_world @ rig.data.bones[f"J_Bip_{leg}_Foot"].head_local)
+        on = ((points[:, 0] - centre) * np.sign(a[0] - centre) > 0) & (points[:, 2] < a[2]) & ~edge
+        t = np.clip((a[2] - points[:, 2]) / (a[2] - b[2]), 0, 1)
+        axis = a[None, :2] + t[:, None] * (b - a)[None, :2]
+        radial = moved[:, :2] - axis
+        r = np.linalg.norm(radial, axis=1)
+        near_knee = on & (np.abs(points[:, 2] - a[2]) < 0.02)
+        width = np.median(r[near_knee])
+        target = width * (1 - 0.1 * t)
+        grow = on & (r < target)
+        moved[grow, :2] = axis[grow] + radial[grow] * (target[grow] / np.maximum(r[grow], 1e-6))[:, None]
+
+    shift = np.zeros((len(body.data.vertices), 3))
+    shift[ids] = moved - points
+    reshape(body, lambda p: p + shift)
+
+
 # ---- grown up ----
 
-# VRoid's samples are drawn as teenagers: a head about a sixth of the body and eyes half the face.
-# A smaller head and smaller eyes make the same faces read as adults.
-HEAD_SCALE = {"woman": 0.84, "man": 0.87}
-EYE_SCALE = (0.9, 0.76)  # across, high
+# VRoid's samples are drawn as teenagers: a head about a sixth of the body, eyes half the face, round
+# cheeks, a short chin and hardly any neck. A smaller head, smaller eyes, a longer and narrower lower
+# face and a longer neck make the same faces read as adults.
+HEAD_SCALE = {"woman": 0.8, "man": 0.84}
+EYE_SCALE = (0.84, 0.62)  # across, high
+FACE_LENGTH = 1.14  # the face below the eyes, drawn this much longer
+JAW_WIDTH = 0.93  # and this much narrower at the chin
+NECK = 0.02  # metres added to the neck
+NECK_BONE = "J_Bip_C_Neck"
 EYE_PARTS = ("EyeWhite", "EyeIris", "EyeHighlight", "EyeExtra", "FaceEyeline", "FaceEyelash")
 
 
@@ -530,6 +610,72 @@ def narrow_eyes(face, across, high):
     reshape(face, move)
 
 
+def carried_weights(rig, obj):
+    """How much each of the object's vertices moves with the head (and the bones it carries), 0 to 1;
+    None if none does."""
+    head = rig.data.bones[HEAD]
+    carried = {head.name, *(bone.name for bone in head.children_recursive)}
+    groups = {group.index for group in obj.vertex_groups if group.name in carried}
+    if not groups:
+        return None
+    return np.array([min(1.0, sum(g.weight for g in v.groups if g.group in groups)) for v in obj.data.vertices])
+
+
+def lengthen_face(rig, objects):
+    """Draw the face below the eyes FACE_LENGTH longer and the jaw JAW_WIDTH narrower at the chin.
+    Everything the head carries moves alike (face, scalp, hair, the mouth's shapes), so no seam opens;
+    below the chin it moves down with the chin and keeps its width."""
+    face = named(objects, "Face")
+    eye = world_points(face, "EyeWhite")[:, 2].mean()
+    chin = world_points(face)[:, 2].min()
+    centre = (rig.matrix_world @ rig.data.bones[HEAD].head_local).x
+    for obj in meshes(objects):
+        weight = carried_weights(rig, obj)
+        if weight is None:
+            continue
+
+        def move(p, weight=weight):
+            below = np.clip((eye - p[:, 2]) / (eye - chin), 0, None)  # 0 at the eyes, 1 at the chin
+            t = np.minimum(below, 1)
+            narrow = (JAW_WIDTH - 1) * t * np.clip(1 - (below - 1) / 0.3, 0, 1)
+            q = p.copy()
+            q[:, 2] -= (eye - chin) * (FACE_LENGTH - 1) * t * weight
+            q[:, 0] = centre + (p[:, 0] - centre) * (1 + narrow * weight)
+            return q
+
+        reshape(obj, move)
+
+
+def lengthen_neck(rig, objects, amount):
+    """Raise the head by `amount`, stretching the neck: a vertex moves up by its weight on the neck
+    and the bones it carries, by the share of the neck below it (all of it from the head up)."""
+    neck = rig.data.bones[NECK_BONE]
+    carried = {neck.name, *(bone.name for bone in neck.children_recursive)}
+    base = (rig.matrix_world @ neck.head_local).z
+    top = (rig.matrix_world @ rig.data.bones[HEAD].head_local).z
+    for obj in meshes(objects):
+        groups = {group.index for group in obj.vertex_groups if group.name in carried}
+        if not groups:
+            continue
+        weight = np.array([min(1.0, sum(g.weight for g in v.groups if g.group in groups)) for v in obj.data.vertices])
+
+        def move(p, weight=weight):
+            q = p.copy()
+            q[:, 2] += amount * weight * np.clip((p[:, 2] - base) / (top - base), 0, 1)
+            return q
+
+        reshape(obj, move)
+    bpy.context.view_layer.objects.active = rig
+    bpy.ops.object.mode_set(mode="EDIT")
+    up = Vector((0, 0, amount)) @ rig.matrix_world.to_3x3()  # world up, in the rig's space
+    for bone in rig.data.edit_bones:
+        if bone.name in carried and bone.name != neck.name:
+            bone.head += up
+            bone.tail += up
+    rig.data.edit_bones[neck.name].tail += up
+    bpy.ops.object.mode_set(mode="OBJECT")
+
+
 def shrink_head(rig, objects, scale):
     """Scale the head, and the hair and eyes it carries, about the top of the neck. A vertex shared
     by neck and head moves by its weight on the head, so the neck tapers into the smaller head."""
@@ -538,10 +684,9 @@ def shrink_head(rig, objects, scale):
     local_pivot = head.head_local.copy()
     pivot = np.array(rig.matrix_world @ local_pivot)
     for obj in meshes(objects):
-        groups = {group.index for group in obj.vertex_groups if group.name in carried}
-        if not groups:
+        weight = carried_weights(rig, obj)
+        if weight is None:
             continue
-        weight = np.array([min(1.0, sum(g.weight for g in v.groups if g.group in groups)) for v in obj.data.vertices])
         factor = (1 + weight * (scale - 1))[:, None]
         reshape(obj, lambda p: pivot + (p - pivot) * factor)
     bpy.context.view_layer.objects.active = rig
@@ -557,7 +702,9 @@ def shrink_head(rig, objects, scale):
 
 def grow_up(rig, objects, gender):
     narrow_eyes(named(objects, "Face"), *EYE_SCALE)
+    lengthen_face(rig, objects)
     shrink_head(rig, objects, HEAD_SCALE[gender])
+    lengthen_neck(rig, objects, NECK)
 
 
 # ---- export ----
@@ -650,6 +797,7 @@ def build(entry):
     objects = [obj for obj in objects if obj.type != "EMPTY"]  # the spring colliders, gone next
     drop_springs(rig)
     prune_morphs(rig, objects)
+    trousers(rig, objects)
     grow_up(rig, objects, entry["gender"])
     dress(entry, objects)
     for image in list(bpy.data.images):
