@@ -78,10 +78,10 @@ export function createPlayer(container, options = {}) {
       controls.enableDamping = true;
       controls.minDistance = 1.1;
       controls.maxDistance = 4.2;
-      // The reader turns the signer around and looks down on the hands, never up from below: the
-      // camera stays at or above the middle of the signing space, so no angle looks up a skirt,
-      // a reader's own avatar's included.
-      controls.minPolarAngle = Math.PI / 6;
+      // The reader turns the signer around, and only that: the camera stays level with the middle
+      // of the signing space, never looking up at the signer or down on them, a reader's own
+      // avatar included.
+      controls.minPolarAngle = Math.PI / 2;
       controls.maxPolarAngle = Math.PI / 2;
     }
   } catch (err) {
