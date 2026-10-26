@@ -8,7 +8,7 @@ export function packSigns(data) {
   return [];
 }
 
-export function indexSign(desc) {
+export function indexSign(desc, pack) {
   const phrases = (desc.spoken || []).map((s) => String(s).toLowerCase()).filter(Boolean);
   const gloss = (desc.gloss || "").toLowerCase();
   const hay = `${desc.id} ${desc.language} ${desc.gloss} ${phrases.join(" ")}`.toLowerCase();
@@ -20,6 +20,8 @@ export function indexSign(desc) {
     language: desc.language,
     compileReady: isCompilable(desc),
     letter: Boolean(desc.id?.includes("/fs/")),
+    // From a bulk lexicon (ASL-LEX), not filled out by hand: listed only when searched for.
+    lexicon: pack?.kind === "lexicon",
   };
 }
 
@@ -29,7 +31,7 @@ export function languagesIn(items) {
 }
 
 function searchScore(item, query) {
-  if (!query) return item.letter || !item.desc.id?.includes("/asllex/") ? 1 : -1;
+  if (!query) return item.letter || !item.lexicon ? 1 : -1;
   if (item.gloss === query || item.phrases.some((p) => p === query)) return 100;
   // A multi-word spoken string is one sign. Do not split it on spaces.
   if (query.includes(" ") && item.phrases.some((p) => p.includes(query) || query.includes(p))) return 90;
@@ -63,7 +65,7 @@ export async function loadPack(pack) {
       console.warn(desc.id, errors);
       continue;
     }
-    signs.push(indexSign(desc));
+    signs.push(indexSign(desc, pack));
   }
   return signs;
 }
@@ -79,11 +81,21 @@ export async function loadLexicon(indexUrl = "./data/signs/index.json") {
   for (const pack of immediate) {
     items.push(...(await loadPack(pack)));
   }
+  // A lexicon row a filled-out sign already stands for (same id, same source entry, or a variant
+  // it folds in) is left out, so a search finds the sign once.
+  const covered = new Set();
+  for (const { desc } of items) {
+    covered.add(desc.id);
+    if (desc.source?.entryId) covered.add(desc.source.entryId);
+    for (const entryId of desc.source?.folds ?? []) covered.add(entryId);
+  }
   const pending = Promise.all(deferred.map((pack) => loadPack(pack).catch((err) => {
     console.warn(pack.path, err);
     return [];
   }))).then((chunks) => {
-    for (const chunk of chunks) items.push(...chunk);
+    for (const chunk of chunks) {
+      items.push(...chunk.filter(({ desc }) => !covered.has(desc.id) && !covered.has(desc.source?.entryId)));
+    }
     return items;
   });
   return { items, pending, packs: index.packs };

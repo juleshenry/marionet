@@ -23,6 +23,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { assignAvatars, avatarWeights } from "../src/assign.js";
 import { packSigns } from "../src/lexicon.js";
+import { meaningsOf } from "../src/ir.js";
 import { cycleLength } from "../src/loop.js";
 import { pageModules } from "./page_modules.mjs";
 
@@ -78,9 +79,10 @@ function ffmpeg(args) {
 }
 
 // What each sign says and where it came from: the SignDesc packs, deferred ones included.
+// The first pack to list a sign describes it, as in bake_clips: reviewed rows before the lexicon's.
 const descs = new Map();
 for (const pack of (await readJson("data/signs/index.json")).packs) {
-  for (const desc of packSigns(await readJson(pack.path))) descs.set(desc.id, desc);
+  for (const desc of packSigns(await readJson(pack.path))) if (!descs.has(desc.id)) descs.set(desc.id, desc);
 }
 
 const roster = await readJson("avatars/roster.json");
@@ -177,6 +179,7 @@ try {
       id: entry.id,
       gloss: entry.gloss,
       spoken: desc?.spoken ?? [],
+      meanings: meaningsOf(desc),
       slug,
       avatar,
       duration: Math.round(cycle * 1000) / 1000,

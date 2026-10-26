@@ -12,6 +12,22 @@
     "language": { "type": "string", "minLength": 1 },
     "gloss": { "type": "string", "minLength": 1 },
     "spoken": { "type": "array", "items": { "type": "string" } },
+    "meanings": {
+      "description": "What the sign means in English, for a dictionary. spoken holds the same words for older readers.",
+      "type": "array",
+      "items": {
+        "oneOf": [
+          { "type": "string", "minLength": 1 },
+          {
+            "type": "object",
+            "required": ["text"],
+            "additionalProperties": false,
+            "properties": { "text": { "type": "string", "minLength": 1 }, "pos": { "$ref": "#/definitions/pos" } }
+          }
+        ]
+      }
+    },
+    "pos": { "$ref": "#/definitions/pos" },
     "handed": {
       "type": "string",
       "enum": ["1h", "2h-symmetric", "2h-asymmetric", "2h-alternating"]
@@ -19,6 +35,20 @@
     "dominant": { "$ref": "#/definitions/articulator" },
     "nondominant": { "$ref": "#/definitions/articulator" },
     "compileReady": { "type": "boolean" },
+    "review": {
+      "description": "A person's check of a hand-filled entry. Only approved entries with no todo are baked.",
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["status"],
+      "properties": {
+        "status": { "type": "string", "enum": ["draft", "approved", "rejected"] },
+        "date": { "type": "string" },
+        "reviewer": { "type": "string" },
+        "reference": { "type": "string" },
+        "notes": { "type": "string" }
+      }
+    },
+    "todo": { "description": "What is still to be checked or filled in.", "type": "array", "items": { "type": "string" } },
     "body": {
       "type": "object",
       "additionalProperties": true,
@@ -46,6 +76,13 @@
     }
   },
   "definitions": {
+    "pos": {
+      "type": "string",
+      "enum": [
+        "noun", "verb", "adjective", "adverb", "pronoun", "interjection", "numeral",
+        "determiner", "preposition", "conjunction", "proper noun", "phrase", "letter"
+      ]
+    },
     "articulator": {
       "type": "object",
       "additionalProperties": true,
@@ -61,9 +98,44 @@
           "type": "string",
           "enum": ["palm-out", "palm-in", "palm-down", "palm-up", "palm-side"]
         },
+        "palm": { "$ref": "#/definitions/direction" },
+        "fingers": { "$ref": "#/definitions/direction" },
+        "site": { "$ref": "#/definitions/site" },
+        "offset": { "$ref": "#/definitions/offset" },
         "location": { "type": "string" },
-        "movement": { "type": "array" }
+        "movement": { "type": "array", "items": { "$ref": "#/definitions/movement" } }
       }
-    }
+    },
+    "movement": {
+      "description": "One movement. See MOVEMENT_TYPES in src/ir.js for what each type does.",
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["type"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["linear", "arc", "circle", "trace", "hook", "present", "whisker", "tap", "move", "change", "nod", "twist"]
+        },
+        "direction": { "type": "string", "pattern": "^(out|in|up|down|contra|ipsi)(\\+(out|in|up|down|contra|ipsi)){0,2}$" },
+        "contact": { "type": "string", "enum": ["start", "end"] },
+        "reps": { "type": "integer", "minimum": 1 },
+        "to": { "type": "string" },
+        "handshape": { "type": "string", "minLength": 1 },
+        "orientation": { "type": "string", "enum": ["palm-out", "palm-in", "palm-down", "palm-up", "palm-side"] },
+        "palm": { "$ref": "#/definitions/direction" },
+        "fingers": { "$ref": "#/definitions/direction" },
+        "site": { "$ref": "#/definitions/site" },
+        "offset": { "$ref": "#/definitions/offset" }
+      }
+    },
+    "direction": { "type": "string", "pattern": "^(out|in|up|down|contra|ipsi)(\\+(out|in|up|down|contra|ipsi)){0,2}$" },
+    "offset": {
+      "description": "How far the hand is held off its location: centimetres per direction.",
+      "type": "object",
+      "minProperties": 1,
+      "propertyNames": { "enum": ["out", "in", "up", "down", "contra", "ipsi"] },
+      "additionalProperties": { "type": "number", "exclusiveMinimum": 0, "maximum": 30 }
+    },
+    "site": { "type": "string", "enum": ["index", "thumb", "fingertips", "palm", "back", "pinky-side"] }
   }
 }

@@ -1,14 +1,16 @@
 /**
- * Bake every compile-ready SignDesc in the non-deferred packs to MarionetClip JSON.
+ * Bake every SignDesc in the non-deferred packs that is ready for the dictionary (isPublishable:
+ * compiles, and approved if it carries a review) to MarionetClip JSON.
  * No video: the clip is the compiler's output, written once so players need no compiler.
+ * A sign listed by two packs is baked from the first: reviewed rows come before the lexicon's.
  *
  * Usage: node scripts/bake_clips.mjs           write clips/ + clips/index.json
  *        node scripts/bake_clips.mjs --check   fail if clips/ is stale
  *        node scripts/bake_clips.mjs --ids ase/asllex/tree,ase/asllex/cat --out data/runs/preview
- *          bake chosen signs from any pack (deferred ones too) to review them
+ *          bake chosen signs from any pack (deferred ones too, drafts too) to review them
  */
 import { compileSignDesc } from "../src/compile.js";
-import { isCompilable, validateClip } from "../src/ir.js";
+import { isCompilable, isPublishable, validateClip } from "../src/ir.js";
 import { packSigns } from "../src/lexicon.js";
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
@@ -40,10 +42,14 @@ function roundClip(clip) {
 
 const index = [];
 const stale = [];
+const seen = new Set();
 for (const pack of load("data/signs/index.json").packs) {
   if (pack.defer && !ids) continue;
   for (const desc of packSigns(load(pack.path))) {
+    if (seen.has(desc.id)) continue;
+    seen.add(desc.id);
     if (!isCompilable(desc) || (ids && !ids.has(desc.id))) continue;
+    if (!ids && !isPublishable(desc)) continue;
     const clip = roundClip(compileSignDesc(desc));
     const errors = validateClip(clip);
     if (errors.length) throw new Error(`${desc.id}: ${errors.join("; ")}`);

@@ -1,7 +1,7 @@
 /**
  * Fit per-handshape thumb eulers on the sample VRM so the thumb tip lands where ASL
  * puts it. Prints THUMB_POSES rows for src/library.js. Fingers come from the baked
- * letter clip, so bake first.
+ * letter clip, so bake first; a handshape that is not a letter (flat_o) is compiled held.
  *
  * Targets are in the palm frame [f, a, n], in hand lengths (wrist → middle knuckle):
  * f along the fingers, a toward the index side, n out of the palm. `rel` targets are
@@ -13,9 +13,10 @@
  *          fit one set of angles that works on the sample VRM and these rigs together
  */
 import { chromium } from "playwright";
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { compileSignDesc } from "../src/compile.js";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const baseUrl = process.env.MARIONET_URL || "http://127.0.0.1:8765";
@@ -42,6 +43,7 @@ const TARGETS = {
   W: { abs: [0.78, -0.46, 0.8] },             // over the curled little finger
   X: { abs: [0.78, -0.08, 0.88] },
   1: { abs: [0.8, -0.18, 0.88] },             // over middle, ring, little
+  flat_o: { rel: ["Index", 3, [0, -0.08, 0]], solid: true }, // pad against the index and middle tips
 };
 const SHAPE_CLIP = { P: "P", 1: "Z" }; // shapes whose clip id differs (Z uses 1)
 const argv = process.argv.slice(2);
@@ -73,7 +75,13 @@ await page.evaluate(async (also) => {
 for (const [shape, target] of Object.entries(TARGETS)) {
   if (only.length && !only.includes(shape)) continue;
   const clipId = SHAPE_CLIP[shape] ?? shape;
-  const clip = JSON.parse(readFileSync(path.join(root, `clips/ase/fs/${clipId}.json`), "utf8"));
+  const file = path.join(root, `clips/ase/fs/${clipId}.json`);
+  const clip = existsSync(file)
+    ? JSON.parse(readFileSync(file, "utf8"))
+    : compileSignDesc({
+        schema: "marionet.signdesc/v0", id: `fit/${shape}`, language: "ase", gloss: "FIT", spoken: [], handed: "1h",
+        dominant: { handshape: shape, location: "fs-station", movement: [] }, compileReady: true,
+      });
   const r = await page.evaluate(({ clip, target }) => {
     const m = window.marionet, THREE = m._THREE;
     let rig = m._rigs[0], h = rig.vrm.humanoid;

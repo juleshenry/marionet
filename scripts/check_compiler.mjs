@@ -1,7 +1,8 @@
 /** Compile a handful of lemmas; fail if the library invents a pose it cannot name. */
 import Ajv from "ajv";
-import { compileSignDesc } from "../src/compile.js";
-import { isCompilable, validateClip, validateSignDesc } from "../src/ir.js";
+import { compileSignDesc, fitJobs } from "../src/compile.js";
+import { isFitted } from "../src/library.js";
+import { isCompilable, isPublishable, meaningsOf, validateClip, validateSignDesc } from "../src/ir.js";
 import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -13,6 +14,7 @@ const ily = load("data/signs/ase/i-love-you.json");
 const gato = load("data/signs/gsm/gato.json");
 const fsPack = load("data/signs/ase/fingerspelling.json");
 const asllex = load("data/signs/ase/asllex_signdesc.json");
+const core = load("data/signs/ase/core.json");
 
 function mustCompile(desc, label) {
   const verr = validateSignDesc(desc);
@@ -117,6 +119,34 @@ try {
 }
 if (!threw) throw new Error("compiler must refuse lexicon-only rows");
 
+// Filled-out signs: valid, approved ones compile, a review never passes with work left to do.
+for (const desc of core.signs) {
+  const verr = validateSignDesc(desc);
+  if (verr.length) throw new Error(`${desc.id} invalid: ${verr.join("; ")}`);
+  if (!desc.review) throw new Error(`${desc.id}: a filled-out sign carries a review`);
+  if (desc.review.status === "approved") {
+    if (desc.todo?.length) throw new Error(`${desc.id}: approved with todo ${desc.todo.join(", ")}`);
+    if (!meaningsOf(desc).length) throw new Error(`${desc.id}: approved without meanings`);
+    const unfitted = fitJobs(desc).filter((j) => !isFitted(j.key)).map((j) => j.key);
+    if (unfitted.length) throw new Error(`${desc.id}: approved but not fitted (node scripts/fit_arm.mjs jobs): ${unfitted.join(", ")}`);
+    mustCompile(desc, desc.id);
+  }
+}
+const draft = { ...core.signs[0], review: { status: "draft" } };
+if (core.signs.length && isPublishable(draft)) throw new Error("a draft must not be publishable");
+// No sign listed twice among the packs that are baked.
+const baked = new Map();
+for (const pack of load("data/signs/index.json").packs.filter((p) => !p.defer)) {
+  for (const desc of load(pack.path).signs ?? [load(pack.path)]) {
+    if (baked.has(desc.id)) throw new Error(`${desc.id} is in ${baked.get(desc.id)} and ${pack.path}`);
+    baked.set(desc.id, pack.path);
+  }
+}
+const meant = meaningsOf({ spoken: ["eat"], meanings: ["eat", { text: "food", pos: "noun" }], pos: "verb" });
+if (JSON.stringify(meant) !== '[{"text":"eat","pos":"verb"},{"text":"food","pos":"noun"}]') {
+  throw new Error(`meaningsOf: ${JSON.stringify(meant)}`);
+}
+
 const ready = asllex.signs.filter((s) => s.compileReady).length;
 if (ready < 1500) throw new Error(`expected compileReady well past 462, got ${ready}/${asllex.n}`);
 
@@ -143,6 +173,7 @@ const poseExample = {
 };
 checkSchema(vPose, poseExample, "pose example");
 for (const row of asllex.signs) checkSchema(vDesc, row, row.id);
+for (const row of core.signs) checkSchema(vDesc, row, row.id);
 
 const pkg = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
 const threeVer = pkg.dependencies?.three;
@@ -157,4 +188,5 @@ for (const page of ["index.html", "embed.html"]) {
   }
 }
 
-console.log(`check_compiler ok  asllex compileReady=${ready}/${asllex.n}  schemas=ok`);
+const approved = core.signs.filter((s) => s.review.status === "approved").length;
+console.log(`check_compiler ok  asllex compileReady=${ready}/${asllex.n}  core approved=${approved}/${core.signs.length}  schemas=ok`);

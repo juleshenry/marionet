@@ -15,15 +15,26 @@
  *   node scripts/fit_arm.mjs where                       where each location puts the hand now
  *   node scripts/fit_arm.mjs measure <location> [orientation] [handshape]
  *   node scripts/fit_arm.mjs shot <out.png> '<dominant fields JSON, may include "handed">'
- *   node scripts/fit_arm.mjs locations                   → LOCATION_POSES rows
+ *   node scripts/fit_arm.mjs locations [loc ...]         → LOCATION_POSES rows (orient and paths take the same filter)
  *   node scripts/fit_arm.mjs two-hand                    → LOCATION_POSES_2H, weak-hand, forearm
  *   node scripts/fit_arm.mjs orient                      → LOCATION_ORIENTATION
  *   node scripts/fit_arm.mjs paths                       → LOCATION_PATHS
  *   node scripts/fit_arm.mjs fs-turn                     → FS_ORIENTATION "palm-in" (C, O)
  * Run them in that order: each later table is fitted on top of the earlier ones.
+ *
+ *   node scripts/fit_arm.mjs jobs [--ids a,b] [--refit]  → src/fitted.js
+ * fits what the signs of the non-deferred packs need that is not fitted yet (compile.js fitJobs:
+ * a palm and fingers turned, a part of the hand touching, a directed path, tap, nod or twist),
+ * and drops the rows no sign needs any more.
  */
 import { chromium } from "playwright";
-import { writeFileSync } from "node:fs";
+import { readFileSync, writeFileSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
+import { fitJobs } from "../src/compile.js";
+import { FITTED, FITTED_NOTES } from "../src/fitted.js";
+import { awayFrom } from "../src/library.js";
+import { packSigns } from "../src/lexicon.js";
 
 const baseUrl = process.env.MARIONET_URL || "http://127.0.0.1:8765";
 const [mode = "where", ...rest] = process.argv.slice(2);
@@ -55,7 +66,19 @@ async function installFitter() {
     a.sub(f.clone().multiplyScalar(a.dot(f))).normalize();
     // Right hand: palm = a × f. The left hand is its mirror image.
     const palm = side === "right" ? a.clone().cross(f) : f.clone().cross(a);
-    return { f, palm: palm.normalize(), center: w.clone().lerp(mm, 0.6), index: tip(side, "Index"), wrist: w, elbow: P(`${side}LowerArm`) };
+    const center = w.clone().lerp(mm, 0.6);
+    palm.normalize();
+    // The parts of the hand a sign can touch with (ir.js SITES).
+    const tips = ["Index", "Middle", "Ring"].map((d) => tip(side, d));
+    const sites = {
+      index: tips[0],
+      thumb: tip(side, "Thumb"),
+      fingertips: tips[0].clone().add(tips[1]).add(tips[2]).multiplyScalar(1 / 3),
+      palm: center.clone().addScaledVector(palm, 0.012),
+      back: center.clone().addScaledVector(palm, -0.012),
+      "pinky-side": lm.clone().lerp(w, 0.4),
+    };
+    return { f, palm, center, index: tips[0], sites, wrist: w, elbow: P(`${side}LowerArm`) };
   };
 
   function held(desc, t = 0.4) {
@@ -164,7 +187,8 @@ async function installFitter() {
     },
     /**
      * job: { desc, goals: [{ target: [x,y,z] } | { offset: [dx,dy,dz] } | {}], point: "center" | "index",
-     *        fingers?, palm?  (world directions; default: as held), handOnly?, wOrient? }
+     *        fingers?, palm?  (world directions; default: as held), handOnly?, wOrient?,
+     *        elbowDrop? (how far below the shoulder the elbow stays; default 0.1 m) }
      * One 7-vector of offsets per goal, each fitted from the previous one.
      */
     fit(job) {
@@ -181,19 +205,28 @@ async function installFitter() {
       const out = [];
       let x0 = [0, 0, 0, 0, 0, 0, 0];
       for (const g of job.goals) {
-        const at = (fr) => (job.point === "index" ? fr.index : fr.center);
+        const at = (fr) => (job.point === "center" ? fr.center : fr.sites[job.point]);
         const goal = g.target ? new V(...g.target) : g.offset ? at(base).clone().add(new V(...g.offset)) : null;
+        // A goal can turn the hand from how it is held: flex (fingers toward the palm, about the
+        // knuckles' axis) or twist (palm and fingers about the forearm).
+        let [fG, pG] = [fT, pT];
+        if (g.turn) {
+          const axis = g.turn.kind === "twist" ? base.wrist.clone().sub(base.elbow).normalize() : fT.clone().cross(pT).normalize();
+          const sign = g.turn.kind === "twist" ? 1 : -1;
+          fG = fT.clone().applyAxisAngle(axis, sign * g.turn.angle);
+          pG = pT.clone().applyAxisAngle(axis, sign * g.turn.angle);
+        }
         const cost = (v) => {
           const d = job.handOnly ? [0, 0, 0, 0, v[4], v[5], v[6]] : v;
           apply(pose, side, d);
           const fr = frame(side);
           let c = goal ? (at(fr).distanceTo(goal) / 0.01) ** 2 : 0;
-          c += wO * (fr.palm.angleTo(pT) ** 2 + fr.f.angleTo(fT) ** 2);
+          c += wO * (fr.palm.angleTo(pG) ** 2 + fr.f.angleTo(fG) ** 2);
           const over = (x, lo, hi) => (x < lo ? (lo - x) ** 2 : x > hi ? (x - hi) ** 2 : 0);
           c += 4 * (over(d[4], -1.6, 1.6) + over(d[5], -1.0, 1.0) + over(d[6], -1.2, 1.2));
           c += 10 * over(lower0 + d[3], 0.05, 2.5); // elbow bends one way only
-          // A resting elbow: well below the shoulder and not flared out past it.
-          c += (Math.max(0, fr.elbow.y - (shoulder.y - 0.1)) / 0.01) ** 2 + (Math.max(0, shoulder.x - 0.05 - fr.elbow.x) / 0.01) ** 2;
+          // A resting elbow: well below the shoulder (less so for a hand above the eyes) and not flared out past it.
+          c += (Math.max(0, fr.elbow.y - (shoulder.y - (job.elbowDrop ?? 0.1))) / 0.01) ** 2 + (Math.max(0, shoulder.x - 0.05 - fr.elbow.x) / 0.01) ** 2;
           // ...and outside the torso: in front of the chest wherever it is within the body's width.
           const inside = (q) => (Math.abs(q.x) < 0.13 ? Math.max(0, 0.07 - q.z) / 0.01 : 0) ** 2;
           c += inside(fr.elbow) + inside(fr.elbow.clone().lerp(fr.wrist, 0.5));
@@ -213,8 +246,8 @@ async function installFitter() {
         out.push({
           d: r3(d),
           errCm: goal ? +(at(fr).distanceTo(goal) * 100).toFixed(2) : 0,
-          palmDeg: +(fr.palm.angleTo(pT) * 57.3).toFixed(1),
-          fingDeg: +(fr.f.angleTo(fT) * 57.3).toFixed(1),
+          palmDeg: +(fr.palm.angleTo(pG) * 57.3).toFixed(1),
+          fingDeg: +(fr.f.angleTo(fG) * 57.3).toFixed(1),
         });
         x0 = best.x;
       }
@@ -269,11 +302,93 @@ async function locationJobs() {
     { location: "head", point: "index", target: await front(-0.06, eye + 0.03, 0.012), ...SIDE },
     { location: "ear", point: "index", target: await fromRight(eye - 0.015, -0.01, 0.012), ...SIDE },
     { location: "shoulder", point: "index", target: await front(-0.085, lm.rightUpperArm[1] - 0.02, 0.015), ...SHOULDER },
+    // The chest itself (ME, MY, PLEASE): the fingertip on it, where chest-front holds the hand 7 cm off.
+    { location: "chest", point: "index", target: await front(-0.025, 1.17, 0.012), ...CHEST },
     { location: "chest-front", point: "center", target: await front(-0.025, 1.17, 0.07), ...CHEST },
     { location: "belly", point: "center", target: await front(-0.03, 0.99, 0.05), ...BELLY },
     { location: "neutral-space", point: "center", target: await front(-0.06, 1.13, 0.2), ...NEUTRAL },
     { location: "base-hand", point: "center", target: await front(-0.07, 1.1, 0.18), ...BASE },
   ];
+}
+
+// --- fitted rows for what the signs use (mode jobs) ------------------------------------------
+
+const root = join(dirname(fileURLToPath(import.meta.url)), "..");
+// Where the index fingertip touches (as in locationJobs); elsewhere the hand centre is held.
+const AT_INDEX = new Set(["forehead", "eye", "nose", "cheek", "mouth", "chin", "neck", "head", "ear", "shoulder", "chest"]);
+// From the signer, right hand: +x is the signer's left (across the body), +z toward the viewer.
+const UNIT = { out: [0, 0, 1], in: [0, 0, -1], up: [0, 1, 0], down: [0, -1, 0], contra: [1, 0, 0], ipsi: [-1, 0, 0] };
+const PATH_CM = 7;
+const TAP_CM = 2.5;
+const vec = (dir) => {
+  const v = dir.split("+").reduce((a, p) => a.map((x, i) => x + UNIT[p][i]), [0, 0, 0]);
+  const n = Math.hypot(...v);
+  return v.map((x) => x / n);
+};
+const add = (...vs) => vs.reduce((a, v) => a.map((x, i) => x + v[i]), [0, 0, 0]);
+const mul = (v, k) => v.map((x) => x * k);
+const handed = (job) => (job.twoHanded ? "2h-symmetric" : "1h");
+const pointOf = (location) => (AT_INDEX.has(location) ? "index" : "center");
+// The hold as SignDesc fields: handshape, a named orientation or palm and fingers, a site.
+const holdFields = (h, { site = true } = {}) => ({
+  handshape: h.handshape ?? "B",
+  ...(h.orientation ? { orientation: h.orientation } : {}),
+  ...(h.palm ? { palm: h.palm, fingers: h.fingers } : {}),
+  ...(h.offset ? { offset: h.offset } : {}),
+  ...(site && h.site ? { site: h.site } : {}),
+});
+
+// Holding the hand above the eyes (FATHER's thumb on the forehead, TEACH by the temples) lifts the elbow.
+const HIGH = new Set(["forehead", "head"]);
+
+/** What fit() is asked for one job of compile.js fitJobs. */
+async function fitSpec(job) {
+  const spec = await specOf(job);
+  return HIGH.has(job.hold.location) ? { ...spec, elbowDrop: 0.02 } : spec;
+}
+
+async function specOf(job) {
+  const loc = job.hold.location;
+  // Held off the location: the contact point moved by the hold's offset (centimetres per direction).
+  const off = add(...Object.entries(job.hold.offset ?? {}).map(([d, cm]) => mul(UNIT[d], cm / 100)), [0, 0, 0]);
+  if (job.kind === "turn") {
+    // The contact point stays where the location holds it, or moves by the offset; the palm and fingers turn.
+    return { desc: sd(loc, {}, handed(job)), point: pointOf(loc), goals: [{ offset: off }], fingers: vec(job.hold.fingers), palm: vec(job.hold.palm) };
+  }
+  if (job.kind === "site") {
+    // The named part of this hand goes where the location's contact point is (moved by the offset),
+    // the palm and fingers as the form says, where a turn alone (the index on the spot) could not.
+    const natural = await page.evaluate((d) => window.fitter.measure(d), sd(loc, {}, handed(job)));
+    const target = add(pointOf(loc) === "index" ? natural.index : natural.center, off);
+    const facing = job.hold.palm ? { fingers: vec(job.hold.fingers), palm: vec(job.hold.palm) } : {};
+    return { desc: sd(loc, holdFields(job.hold, { site: false }), handed(job)), point: job.hold.site, goals: [{ target }], ...facing };
+  }
+  const desc = sd(loc, holdFields(job.hold), handed(job));
+  const point = job.hold.site ?? pointOf(loc);
+  const [type, dir] = job.move.split(":");
+  // Along the face and chest, a path keeps 1.5 cm off the skin.
+  const lift = AT_INDEX.has(loc) && !dir?.includes("out") ? [0, 0, 0.015] : [0, 0, 0];
+  if (type === "linear") return { desc, point, goals: [{ offset: add(mul(vec(dir), PATH_CM / 100), lift) }] };
+  if (type === "arc") {
+    const v = vec(dir);
+    // An arc bows up, or out from the body when it goes up or down.
+    const bow = Math.abs(v[1]) > 0.7 ? [0, 0, 1] : [0, 1, 0];
+    const mid = add(mul(v, PATH_CM / 200), mul(bow, 0.02), lift);
+    return { desc, point, goals: [{ offset: mid }, { offset: add(mul(v, PATH_CM / 100), lift) }] };
+  }
+  if (type === "tap") return { desc, point, goals: [{ offset: mul(vec(awayFrom(loc)), TAP_CM / 100) }] };
+  if (type === "nod") return { desc, point, handOnly: true, goals: [{ turn: { kind: "flex", angle: 0.6 } }] };
+  if (type === "twist") return { desc, point, handOnly: true, goals: [{ turn: { kind: "twist", angle: 0.8 } }, { turn: { kind: "twist", angle: -0.8 } }] };
+  throw new Error(`no fit for ${job.move}`);
+}
+
+function writeFitted(rows, notes) {
+  const keys = Object.keys(rows).sort();
+  const body = keys.map((k) => `  // ${notes[k] ?? ""}\n  ${JSON.stringify(k)}: [\n${rows[k].map((r) => `    ${r},`).join("\n")}\n  ],`).join("\n");
+  const noteRows = keys.map((k) => `  ${JSON.stringify(k)}: ${JSON.stringify(notes[k] ?? "")},`).join("\n");
+  const text = readFileSync(join(root, "src/fitted.js"), "utf8").split("export const FITTED = ")[0]
+    + `export const FITTED = {\n${body}\n};\n\n/** How close each fit came. */\nexport const FITTED_NOTES = {\n${noteRows}\n};\n`;
+  writeFileSync(join(root, "src/fitted.js"), text);
 }
 
 const fmt = (a) => `[${a.map((x) => +x.toFixed(3)).join(", ")}]`;
@@ -296,9 +411,14 @@ await page.route("https://cdn.jsdelivr.net/gh/pixiv/three-vrm@release/**", async
   const url = route.request().url().replace("https://cdn.jsdelivr.net/gh/pixiv/three-vrm@release/", "https://raw.githubusercontent.com/pixiv/three-vrm/release/");
   await route.fulfill({ response: await route.fetch({ url }) });
 });
-await page.goto(`${baseUrl}/`, { waitUntil: "networkidle", timeout: 90000 });
-await page.waitForFunction(() => window.marionet?.vrm && window.marionet?.rest, null, { timeout: 90000 });
-await page.evaluate(installFitter);
+// No cached modules: mode jobs reloads the player to pick up the rows it has just written.
+await (await page.context().newCDPSession(page)).send("Network.setCacheDisabled", { cacheDisabled: true });
+async function openPlayer() {
+  await page.goto(`${baseUrl}/`, { waitUntil: "networkidle", timeout: 90000 });
+  await page.waitForFunction(() => window.marionet?.vrm && window.marionet?.rest, null, { timeout: 90000 });
+  await page.evaluate(installFitter);
+}
+await openPlayer();
 
 try {
   if (mode === "where") {
@@ -354,7 +474,7 @@ try {
       "palm-side": { fingers: [0.1, 1, 0], palm: [1, 0, 0] },
     };
     const points = Object.fromEntries((await locationJobs()).map((j) => [j.location, j.point]));
-    const locs = [...Object.keys(points), "weak-hand", "forearm"];
+    const locs = [...Object.keys(points), "weak-hand", "forearm"].filter((l) => !rest.length || rest.includes(l));
     console.log("const LOCATION_ORIENTATION = {");
     for (const loc of locs) {
       console.log(`  ${JSON.stringify(loc)}: {`);
@@ -377,7 +497,7 @@ try {
     // midline, bowing up. Circle: in the body's plane, starting at its top, the last point
     // before the return. Near the face they lift off the skin a little.
     const points = Object.fromEntries((await locationJobs()).map((j) => [j.location, j.point]));
-    const locs = Object.keys(points).filter((l) => l !== "base-hand").concat(["weak-hand", "forearm"]);
+    const locs = Object.keys(points).filter((l) => l !== "base-hand").concat(["weak-hand", "forearm"]).filter((l) => !rest.length || rest.includes(l));
     console.log("const LOCATION_PATHS = {");
     for (const loc of locs) {
       const face = points[loc] === "index";
@@ -402,8 +522,49 @@ try {
       console.log("  },");
     }
     console.log("};");
+  } else if (mode === "jobs") {
+    const flag = (name) => rest.indexOf(`--${name}`);
+    const ids = flag("ids") >= 0 ? new Set(rest[flag("ids") + 1].split(",")) : null;
+    const refit = flag("refit") >= 0;
+    const jobs = new Map();
+    const needed = new Set();
+    const packs = JSON.parse(readFileSync(join(root, "data/signs/index.json"), "utf8")).packs.filter((p) => !p.defer);
+    for (const pack of packs) {
+      for (const desc of packSigns(JSON.parse(readFileSync(join(root, pack.path), "utf8")))) {
+        for (const job of fitJobs(desc)) {
+          needed.add(job.key);
+          if (ids && !ids.has(desc.id)) continue;
+          if (refit || !(job.key in FITTED)) jobs.set(job.key, job);
+        }
+      }
+    }
+    // Rows no sign needs any more (its form was changed) are dropped.
+    const kept = Object.entries(FITTED).filter(([k]) => needed.has(k));
+    const rows = Object.fromEntries(kept.map(([k, rs]) => [k, rs.map((r) => `{ UpperArm: ${fmt(r.UpperArm)}, LowerArm: ${fmt(r.LowerArm)}, Hand: ${fmt(r.Hand)} }`)]));
+    const notes = Object.fromEntries(kept.map(([k]) => [k, FITTED_NOTES[k]]));
+    if (kept.length < Object.keys(FITTED).length) console.log(`${Object.keys(FITTED).length - kept.length} rows no sign needs, dropped`);
+    // Turns first, then sites (held turned), then paths (from the turned, touching hand): the
+    // page reloads between them so the compiler it runs holds the hands the new rows say.
+    let fitted = 0;
+    for (const kind of ["turn", "site", "path"]) {
+      const todo = [...jobs.values()].filter((j) => j.kind === kind);
+      if (!todo.length) continue;
+      if (fitted) await openPlayer();
+      console.log(`${todo.length} ${kind}s to fit`);
+      for (const job of todo) {
+        const rs = await page.evaluate((j) => window.fitter.fit(j), await fitSpec(job));
+        const worst = rs.reduce((a, x) => (x.errCm > a.errCm ? x : a));
+        const palm = Math.max(...rs.map((x) => x.palmDeg));
+        const fing = Math.max(...rs.map((x) => x.fingDeg));
+        rows[job.key] = rs.map((x) => row(x.d));
+        notes[job.key] = `${job.kind === "path" ? "worst point" : "point"} ${worst.errCm} cm off, palm ${palm}°, fingers ${fing}°`;
+        console.log(`  ${job.key}: ${notes[job.key]}`);
+        writeFitted(rows, notes);
+        fitted++;
+      }
+    }
   } else if (mode === "locations") {
-    for (const job of await locationJobs()) await fitLocation(job);
+    for (const job of await locationJobs()) if (!rest.length || rest.includes(job.location)) await fitLocation(job);
   } else {
     throw new Error(`unknown mode ${mode}`);
   }

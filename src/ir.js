@@ -52,10 +52,51 @@ export const LOCATIONS = Object.freeze([
   "cheek",
   "mouth",
   "chin",
+  "chest",
   "ear",
   "forearm",
   "weak-hand",
 ]);
+
+/**
+ * Movement items. linear, arc and circle without a direction, trace, hook, present and whisker
+ * are the first vocabulary (ASL-LEX rows, the letters, ILY, GATO). The rest, and a direction or
+ * contact on a path, are played as a sequence (compile.js sequenceKeyframes):
+ *   linear/arc  a one-way path in a direction; contact "end" arrives at the location instead
+ *   tap         touch the location, lift off and touch again (reps)
+ *   move        go to another location ("to"), changing handshape or palm on the way
+ *   change      change handshape or palm in place; reps go back and forth
+ *   nod         bend the wrist toward the palm and back (reps)
+ *   twist       turn the forearm; reps twist back and forth
+ */
+export const MOVEMENT_TYPES = Object.freeze([
+  "linear", "arc", "circle", "trace", "hook", "present", "whisker",
+  "tap", "move", "change", "nod", "twist",
+]);
+/** Path directions, from the signer: out (away from the body), contra (across the body), ipsi. */
+export const DIRECTIONS = Object.freeze(["out", "in", "up", "down", "contra", "ipsi"]);
+export const OPPOSITE = Object.freeze({ out: "in", in: "out", up: "down", down: "up", contra: "ipsi", ipsi: "contra" });
+
+/**
+ * Where on the hand a sign touches its location: at the face the index fingertip unless one is
+ * named (MOTHER's thumb on the chin, GOOD's fingertips, MY's palm on the chest).
+ */
+export const SITES = Object.freeze(["index", "thumb", "fingertips", "palm", "back", "pinky-side"]);
+
+/** "out", "out+down": one to three directions, none opposite another. */
+export function isDirection(value) {
+  if (typeof value !== "string") return false;
+  const parts = value.split("+");
+  if (parts.length > 3 || new Set(parts).size !== parts.length) return false;
+  return parts.every((p) => DIRECTIONS.includes(p) && !parts.includes(OPPOSITE[p]));
+}
+
+/** The cosine between two directions such as "in+up" and "down": each part is a unit axis. */
+function cosBetween(a, b) {
+  const pa = a.split("+"), pb = b.split("+");
+  const dot = pa.reduce((n, p) => n + (pb.includes(p) ? 1 : pb.includes(OPPOSITE[p]) ? -1 : 0), 0);
+  return dot / Math.sqrt(pa.length * pb.length);
+}
 
 export const POSE_SCHEMA = "marionet.pose/v0";
 export const CLIP_SOURCES = Object.freeze(["authored", "retargeted", "compiled+residual"]);
@@ -76,6 +117,24 @@ export const NMF_HEAD = Object.freeze([
   "shake",
 ]);
 export const TORSO = Object.freeze(["neutral", "lean-left", "lean-right", "forward"]);
+
+/** What a sign means, for a dictionary: parts of speech as glottosphere's entry pages name them. */
+export const POS = Object.freeze([
+  "noun",
+  "verb",
+  "adjective",
+  "adverb",
+  "pronoun",
+  "interjection",
+  "numeral",
+  "determiner",
+  "preposition",
+  "conjunction",
+  "proper noun",
+  "phrase",
+  "letter",
+]);
+export const REVIEW_STATUS = Object.freeze(["draft", "approved", "rejected"]);
 
 /** Solver catalogs. Lexicon rows may use unmapped ASL-LEX codes; only these compile. */
 
@@ -116,6 +175,7 @@ export function validateSignDesc(desc) {
       }
     }
   }
+  validateMeaning(desc, errors);
   if (desc.body != null) {
     if (!isObj(desc.body)) errors.push("body must be an object");
     else {
@@ -130,6 +190,38 @@ export function validateSignDesc(desc) {
   return errors;
 }
 
+function validateMeaning(desc, errors) {
+  if (desc.pos != null && !POS.includes(desc.pos)) errors.push(`pos unknown: ${desc.pos}`);
+  if (desc.meanings != null) {
+    if (!Array.isArray(desc.meanings)) errors.push("meanings must be an array");
+    else {
+      for (const m of desc.meanings) {
+        const text = isObj(m) ? m.text : m;
+        if (typeof text !== "string" || !text.trim()) errors.push("each meaning must be a string or {text, pos}");
+        else if (isObj(m) && m.pos != null && !POS.includes(m.pos)) errors.push(`meanings pos unknown: ${m.pos}`);
+      }
+    }
+  }
+  if (desc.review != null) {
+    if (!isObj(desc.review)) errors.push("review must be an object");
+    else if (!REVIEW_STATUS.includes(desc.review.status)) {
+      errors.push(`review.status must be one of ${REVIEW_STATUS.join(", ")}`);
+    }
+  }
+  if (desc.todo != null && (!Array.isArray(desc.todo) || desc.todo.some((t) => typeof t !== "string"))) {
+    errors.push("todo must be an array of strings");
+  }
+}
+
+/** The English a sign means, as [{text, pos}]: its meanings, or else what it is spoken as. */
+export function meaningsOf(desc) {
+  const list = desc?.meanings ?? desc?.spoken ?? [];
+  return list
+    .map((m) => (isObj(m) ? { text: m.text, pos: m.pos ?? desc.pos } : { text: m, pos: desc.pos }))
+    .filter((m) => typeof m.text === "string" && m.text.trim())
+    .map((m) => (m.pos ? m : { text: m.text }));
+}
+
 function isHandshapeRef(v) {
   if (typeof v === "string" && v) return true;
   return Array.isArray(v) && v.length > 0 && v.every((id) => typeof id === "string" && id);
@@ -142,11 +234,54 @@ function validateArticulator(art, label, errors) {
   if (art.orientation && !ORIENTATIONS.includes(art.orientation)) {
     errors.push(`${label}.orientation unknown: ${art.orientation}`);
   }
+  validateHold(art, label, errors);
   if (art.location != null && typeof art.location !== "string") {
     errors.push(`${label}.location must be a string`);
   }
   if (art.movement != null && !Array.isArray(art.movement)) {
     errors.push(`${label}.movement must be an array`);
+  } else {
+    for (const [i, m] of (art.movement ?? []).entries()) validateMovement(m, `${label}.movement[${i}]`, errors);
+  }
+}
+
+/**
+ * A hand can say which way its palm and fingers point (palm, fingers: one direction each, from
+ * the signer) instead of a named orientation, which of its parts touches (site), and how far it
+ * is held off its location (offset: centimetres per direction, {"out": 6}; TEACH in front of the
+ * forehead, BOOK's palms together at the midline).
+ */
+function validateHold(h, label, errors) {
+  if (h.offset != null) {
+    const dirs = isObj(h.offset) ? Object.entries(h.offset) : [];
+    if (!dirs.length || dirs.some(([d, cm]) => !DIRECTIONS.includes(d) || typeof cm !== "number" || cm <= 0 || cm > 30)) {
+      errors.push(`${label}.offset must map directions to centimetres (0–30)`);
+    }
+    if (h.palm == null) errors.push(`${label}: an offset is fitted with palm and fingers`);
+  }
+  if (h.palm != null || h.fingers != null) {
+    if (h.orientation != null) errors.push(`${label}: palm and fingers replace orientation, not both`);
+    if (!isDirection(h.palm) || !isDirection(h.fingers)) errors.push(`${label}: palm and fingers each need a direction`);
+    else if (Math.abs(cosBetween(h.palm, h.fingers)) > 0.5) errors.push(`${label}: palm and fingers must point at least 60° apart`);
+  }
+  if (h.site != null && !SITES.includes(h.site)) errors.push(`${label}.site unknown: ${h.site}`);
+}
+
+function validateMovement(m, label, errors) {
+  if (!isObj(m)) return errors.push(`${label} must be an object`);
+  if (!MOVEMENT_TYPES.includes(m.type)) errors.push(`${label}.type unknown: ${m.type}`);
+  if (m.direction != null && !isDirection(m.direction)) errors.push(`${label}.direction unknown: ${m.direction}`);
+  if (m.contact != null && !["start", "end"].includes(m.contact)) errors.push(`${label}.contact must be start or end`);
+  if (m.reps != null && !(Number.isInteger(m.reps) && m.reps >= 1)) errors.push(`${label}.reps must be a whole number from 1`);
+  if (m.orientation != null && !ORIENTATIONS.includes(m.orientation)) errors.push(`${label}.orientation unknown: ${m.orientation}`);
+  validateHold(m, label, errors);
+  if (m.handshape != null && !isHandshapeRef(m.handshape)) errors.push(`${label}.handshape must be a primitive id`);
+  if (m.type === "move" && !LOCATIONS.includes(m.to)) errors.push(`${label}: move needs a location "to"`);
+  if (m.type === "change" && m.handshape == null && m.orientation == null && m.palm == null && m.site == null) {
+    errors.push(`${label}: change needs a handshape, orientation, palm or site`);
+  }
+  if ((m.type === "arc" || m.type === "linear") && m.contact === "end" && m.direction == null) {
+    errors.push(`${label}: contact "end" needs a direction`);
   }
 }
 
@@ -166,6 +301,16 @@ export function isCompilable(desc) {
   if (!hs || !loc || loc === UNMAPPED || loc === OCCLUDED) return false;
   if (hs === UNMAPPED || hs === OCCLUDED) return false;
   return LOCATIONS.includes(loc);
+}
+
+/**
+ * Ready for the dictionary: compiles, and if it carries a review, approved with nothing left
+ * to do. Signs with no review record (the letters, ILY, GATO) were checked before reviews were.
+ */
+export function isPublishable(desc) {
+  if (!isCompilable(desc)) return false;
+  if (desc.todo?.length) return false;
+  return desc.review == null || desc.review.status === "approved";
 }
 
 export function validateClip(clip) {

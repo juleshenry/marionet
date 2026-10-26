@@ -4,7 +4,8 @@
  *   <id>/orbit.mp4     hand close-up while the camera drifts around the held handshape
  *                      (parallax shows thumb over/under, finger depth; the hand never moves)
  *   <id>/play.mp4      moving signs only: front view with the fingertip's path drawn as it goes
- *   index.html         gallery of all of the above
+ *   index.html         gallery of all of the above; signs filled out by hand (core.json) first,
+ *                      each with its meanings, review status, notes, todo and ASL-LEX entry
  *
  * Usage: node scripts/render_clips.mjs [baseUrl] [outDir] [id ...]
  *   MARIONET_CLIPS=data/runs/preview renders a bake_clips --out folder instead of clips/
@@ -357,6 +358,23 @@ try {
 const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;");
 const have = (id, f) => existsSync(path.join(outDir, id, f));
 const video = (src) => `<video src="${src}" autoplay loop muted playsinline preload="auto"></video>`;
+// What each sign is, from the packs (the first to list it, as bake_clips reads them).
+const descs = new Map();
+for (const pack of JSON.parse(await readFile(path.join(root, "data/signs/index.json"), "utf8")).packs) {
+  const data = JSON.parse(await readFile(path.join(root, pack.path), "utf8"));
+  for (const desc of data.signs ?? [data]) if (!descs.has(desc.id)) descs.set(desc.id, desc);
+}
+const reviewTiles = clips.filter((c) => descs.get(c.id)?.review && (have(c.id, "play.mp4") || have(c.id, "orbit.mp4")))
+  .map((c) => {
+    const d = descs.get(c.id);
+    const meanings = (d.meanings ?? d.spoken).map((m) => (typeof m === "string" ? esc(m) : `${esc(m.text)} <i>${esc(m.pos ?? "")}</i>`)).join(", ");
+    const todo = (d.todo ?? []).map((t) => `<li>${esc(t)}</li>`).join("");
+    const clipVideo = have(c.id, "play.mp4") ? `${c.id}/play.mp4` : `${c.id}/orbit.mp4`;
+    return `<figure class="review ${esc(d.review.status)}">${video(clipVideo)}${have(c.id, "orbit.mp4") ? video(`${c.id}/orbit.mp4`) : ""}
+<div><b>${esc(d.gloss)}</b> <span class="status">${esc(d.review.status)}</span><br>${meanings}
+<p>${esc(d.review.notes ?? "")}</p>${todo ? `<ul>${todo}</ul>` : ""}
+<small>${c.id} · ASL-LEX <a href="${esc(d.review.reference ?? "")}">${esc(d.source?.entryId ?? "")}</a></small></div></figure>`;
+  }).join("\n");
 const orbitTiles = clips.filter((c) => have(c.id, "orbit.mp4"))
   .map((c) => `<figure>${video(`${c.id}/orbit.mp4`)}<figcaption>${esc(c.gloss)}</figcaption></figure>`).join("\n");
 const playTiles = clips.filter((c) => have(c.id, "play.mp4"))
@@ -372,9 +390,16 @@ figure{margin:0;background:#141a2c;padding:6px;border-radius:8px}
 figure img,figure video{display:block;width:200px} figure.play video{width:380px} figure.sheet img{width:420px}
 figcaption{margin-top:4px;font-weight:600;text-align:center} figcaption span{font-weight:400;opacity:.6;margin-left:6px}
 figure.sheet figcaption{margin:0 0 6px;text-align:left}
+figure.review{display:flex;gap:10px;align-items:flex-start;width:100%;max-width:980px}
+figure.review video{width:380px} figure.review video+video{width:200px} figure.review p{opacity:.8;margin:6px 0}
+figure.review ul{margin:4px 0;padding-left:18px;color:#f0b86e} figure.review a{color:#9cc3ff}
+.status{font-size:12px;padding:1px 6px;border-radius:6px;background:#2a3350} .approved .status{background:#1f5a35}
 details summary{cursor:pointer;margin-top:28px;font-size:15px;font-weight:600}
 </style>
 <h1>Marionet renders</h1>
+${reviewTiles ? `<h2>Filled out by hand, for review</h2>
+<p>Each sign as played, its handshape held, what it means and what is still to check. Compare with the sign in ASL-LEX (search its entry).</p>
+<div class="row">${reviewTiles}</div>` : ""}
 <h2>Movement</h2>
 <p>Front view, played at real speed. The line is the fingertip that travels furthest: green ring is where the movement starts, red → yellow over time.</p>
 <div class="row">${playTiles}</div>

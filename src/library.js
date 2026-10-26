@@ -4,8 +4,11 @@
  * curl 0 = extended, 1 = full fist
  * spread: abduction at MCP, + away from palm midline
  * thumb.opposition 0 = along radial edge, 1 = across palm
- * profile "hook" puts flexion on PIP/DIP more than MCP (X, bent-B, etc.)
+ * profile "hook" puts flexion on PIP/DIP more than MCP (X, bent-B, etc.); "flat" bends all
+ * four fingers at the knuckles and keeps them nearly straight (flat O)
  */
+
+import { FITTED } from "./fitted.js";
 
 export const FINGER_AXES = {
   curl: "z",
@@ -180,6 +183,13 @@ export const HANDSHAPES = {
     fingers: { index: 0, middle: 0, ring: 0, little: 0, spread: -0.08 },
     thumb: { curl: 0.2, opposition: 0.15, abduction: 0.12 },
   },
+  // Bent B (NIGHT, AGAIN): the fingers bent at the knuckles, straight and together.
+  bent_b: {
+    id: "bent_b",
+    fingers: { index: 1, middle: 1, ring: 1, little: 1, spread: -0.08 },
+    thumb: { curl: 0.2, opposition: 0.15, abduction: 0.12 },
+    profile: "flat",
+  },
   curved_5: {
     id: "curved_5",
     fingers: { index: 0.38, middle: 0.4, ring: 0.42, little: 0.45, spread: 0.55 },
@@ -192,8 +202,9 @@ export const HANDSHAPES = {
   },
   flat_o: {
     id: "flat_o",
-    fingers: { index: 0.32, middle: 0.34, ring: 0.36, little: 0.38, spread: 0.08 },
+    fingers: { index: 0.95, middle: 0.97, ring: 0.99, little: 1.01, spread: -0.05 },
     thumb: { curl: 0.35, opposition: 0.75, abduction: 0.35 },
+    profile: "flat",
   },
   open_8: {
     id: "open_8",
@@ -220,13 +231,14 @@ const euler = (x = 0, y = 0, z = 0) => ({ x, y, z });
  * Thumb eulers (metacarpal, proximal, distal) fitted on the sample VRM so the tip
  * lands where ASL puts it: beside the index (A), across the palm (B), across the
  * curled fingers (S, I, X, 1, and U/V/R/H/W over the ring and little), under the
- * fingers (E, M, N, T), on the fingertip (D, O). The parametric thumb below swings
+ * fingers (E, M, N, T), on the fingertip (D, O, flat O). The parametric thumb below swings
  * the tip out to the side on VRM thumbs, so these replace it for the named shapes.
  * Targets: scripts/fit_thumbs.mjs. Right hand; y and z mirror for the left.
  */
 const THUMB_POSES = {
   A: [[-0.179, 0.056, -0.6], [0.968, 0, 0.758], [0.622, 0, 0.663]],
   B: [[0.374, -0.507, -0.511], [1.237, 0, 0.863], [0.617, 0, 0.599]],
+  bent_b: [[0.374, -0.507, -0.511], [1.237, 0, 0.863], [0.617, 0, 0.599]], // B's thumb, across the palm
   C: [[0.139, -0.268, -0.118], [0.692, 0, 0.629], [0.399, 0, 0.442]],
   D: [[0.47, -0.101, 0.11], [0.847, 0, 0.656], [0.542, 0, 0.519]],
   E: [[0.259, -0.43, -0.301], [1.309, 0, 1.021], [1.166, 0, 0.809]],
@@ -246,6 +258,8 @@ const THUMB_POSES = {
   W: [[0.484, -0.872, 0.151], [0.836, 0, 0.573], [0.321, 0, 0.308]],
   X: [[0.461, -0.341, 0.046], [0.885, 0, 0.683], [0.51, 0, 0.502]],
   "1": [[0.674, -0.294, 0.129], [0.868, 0, 0.543], [0.555, 0, 0.494]],
+  // Pad against the index and middle tips (not a letter: fitted on the held handshape).
+  flat_o: [[0.37, -0.154, 0.029], [0.925, 0, 0.823], [0.175, 0, 0.148]],
 };
 
 /**
@@ -265,6 +279,9 @@ const FINGER_POSES = {
 
 
 function curlJoints(curl, profile) {
+  if (profile === "flat") {
+    return { proximal: curl * CURL_MAX, mid: curl * 0.25 * CURL_MAX, distal: curl * 0.15 * CURL_MAX };
+  }
   if (profile === "hook") {
     return { proximal: curl * 0.35 * CURL_MAX, mid: curl * 1.15 * CURL_MAX, distal: curl * 0.95 * CURL_MAX };
   }
@@ -325,7 +342,7 @@ export function solveHandshape(shapeId, side = "right") {
   const curls = { Index: f.index, Middle: f.middle, Ring: f.ring, Little: f.little };
 
   for (const finger of FINGERS) {
-    const joints = curlJoints(curls[finger], finger === "Index" ? profile : "full");
+    const joints = curlJoints(curls[finger], finger === "Index" || profile === "flat" ? profile : "full");
     // On VRM right-hand fingers, +y swings the finger toward the thumb side, so the
     // index spreads with +y and the ring and little with -y.
     let spread = 0;
@@ -397,6 +414,9 @@ const LOCATION_POSES = {
     arm(side, s, [-0.542, -0.248, 0.038], [0.35, 1.262, 0.05], [-0.122, 0.03, 0.263], [0.02, 0.04, 0.05]),
   "chest-front": (side, s) =>
     arm(side, s, [-0.209, 0.087, -0.253], [0.15, 1.926, 0.1], [-0.833, 0.023, 0.846], [0.06, 0.12, 0.08]),
+  // On the chest itself (ME, MY, PLEASE): index 0.01 cm off, palm 0.6°, fingers 0.7°
+  chest: (side, s) =>
+    arm(side, s, [0.188, -0.34, -0.206], [0.15, 1.957, 0.1], [-0.857, 0.126, 1.378], [0.06, 0.12, 0.08]),
   belly: (side, s) =>
     arm(side, s, [-0.012, 0.023, -0.182], [0.35, 1.337, 0.08], [-0.319, 0.42, 0.821], [0.04, 0.08, 0.04]),
   shoulder: (side, s) =>
@@ -802,6 +822,39 @@ export function solveMovePath(type, location, side = "right") {
     return out;
   });
 }
+
+/** How a hand is held, for the keys of fitted rows: a named orientation, palm:fingers, or natural. */
+export const offsetOf = (h) => (h.offset ? Object.entries(h.offset).map(([d, cm]) => `+${d}${cm}`).join("") : "");
+export const holdOf = (h) => h.orientation ?? (h.palm ? `${h.palm}:${h.fingers}${offsetOf(h)}` : "natural");
+const hands = (twoHanded) => (twoHanded ? "2h" : "1h");
+
+/** Keys of fitted rows (fitted.js). */
+export const turnKey = (location, h, twoHanded) => `turn|${location}|${h.palm}:${h.fingers}${offsetOf(h)}|${hands(twoHanded)}`;
+export const siteKey = (location, h, twoHanded) =>
+  `site|${location}|${holdOf(h)}|${[h.handshape].flat().join("+")}|${h.site}|${hands(twoHanded)}`;
+export const fittedPathKey = (location, h, twoHanded, move) => `path|${location}|${holdOf(h)}|${hands(twoHanded)}|${move}`;
+
+/** Fitted rows (fitted.js) as poses for one side, or null if not fitted yet. */
+export function solveFitted(key, side = "right") {
+  const keys = FITTED[key];
+  if (!keys) return null;
+  const s = side === "right" ? 1 : -1;
+  return keys.map((key) => {
+    const out = {};
+    for (const [bone, [x, y, z]] of Object.entries(key)) out[`${side}${bone}`] = euler(x, y * s, z * s);
+    return out;
+  });
+}
+
+export const solveFittedPath = solveFitted;
+export const isFitted = (key) => key in FITTED;
+
+/**
+ * Which way a hand lifts off a location in a tap, from the signer: away from the face and body,
+ * sideways off the side of the head, up off the base hand and forearm.
+ */
+export const AWAY = Object.freeze({ cheek: "ipsi", head: "ipsi", ear: "ipsi", "weak-hand": "up", forearm: "up" });
+export const awayFrom = (location) => AWAY[location] ?? "out";
 
 /**
  * Orientation at the fingerspelling station, as offsets from the station pose.

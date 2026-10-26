@@ -87,6 +87,22 @@ python3 -m http.server 8080
 
 Rendering drives your installed Chrome through Playwright, needs `ffmpeg`, and downloads the sample avatar from GitHub.
 
+## Fill out an ASL-LEX sign by hand
+
+ASL-LEX says which handshape, where and roughly how a sign moves, but not which way, which way the palm faces, or what part of the hand touches. The everyday signs are filled out by hand in `data/signs/ase/core.json`, under the same ids as their ASL-LEX rows, so their videos and links stay put.
+
+1. `python3 scripts/draft_core.py` drafts the signs of `data/sources/core_batch.json` that `core.json` lacks. The batch is the most-used ASL-LEX signs, with English meanings and parts of speech written by hand. Each draft carries a `todo` of what ASL-LEX leaves open. `--list` prints each sign's todo; `data/runs/core/round-N.txt` lists the rounds of 25.
+2. Fill out the sign in `core.json`. A hand can name its palm and fingers (`palm`, `fingers`: out, in, up, down, contra, ipsi, from the signer, or between them, such as `in+up`; `fingers` is the way the hand points from the wrist to the knuckles, so a bent hand's fingertips, as in a flat O, bend on toward the palm) and the part of it that touches (`site`: index, thumb, fingertips, palm, back, pinky-side). Movements play in order:
+   - `linear` and `arc` take a `direction` (`out+down`). `contact: "end"` (or a direction with `in`) arrives at the location instead of leaving it.
+   - `tap`, `nod` and `twist` take `reps`.
+   - `move` goes `to` another location, and `change` turns the hand into another handshape or palm where it is. Either can name the new handshape, `palm`, `fingers`, `site` and `offset` too; a move takes its own `offset` or none.
+   - A hand held off its location names an `offset` in centimetres per direction (`{"out": 5}`), with its palm and fingers.
+
+   Take each item off `todo` as it is filled in.
+3. Fit what the sign needs on the sample: `node scripts/fit_arm.mjs jobs --ids <ids>` writes the turns, sites and paths into `src/fitted.js`. It needs the server on port 8765.
+4. Preview: `node scripts/bake_clips.mjs --ids <ids> --out data/runs/core-preview`, then `MARIONET_CLIPS=data/runs/core-preview node scripts/render_clips.mjs http://127.0.0.1:8765 data/runs/core-preview-renders <id> <id> …` (ids space-separated here). The gallery opens with the filled-out signs: the sign as played, its meanings, notes and todo, and its ASL-LEX entry to compare with.
+5. When a person who knows the sign has checked it, set `review` to `{"status": "approved", "date", "reviewer"}` with an empty `todo`. Only approved signs are baked into `clips/` (and so drawn for glottosphere). `npm run check` refuses an approved sign with anything left to do or to fit.
+
 ## Dictionary videos and the embed
 
 [glottosphere](https://glottosphere.com) shows each sign as a video, and in a 3D tab that runs this player.
@@ -112,7 +128,8 @@ When the player changes, and not only a clip, redraw the videos and sync the emb
 | `src/compile.js` | SignDesc → MarionetClip |
 | `src/library.js` | Handshapes, locations, orientations and movements as bone rotations |
 | `src/ir.js`, `src/lexicon.js` | Validators; loading and searching sign packs |
-| `data/signs/` | Sign packs: `ase/fingerspelling.json`, `ase/i-love-you.json`, `gsm/gato.json`, `ase/asllex_signdesc.json` |
+| `data/signs/` | Sign packs: `ase/fingerspelling.json`, `ase/i-love-you.json`, `gsm/gato.json`, `ase/core.json` (ASL-LEX signs filled out by hand), `ase/asllex_signdesc.json` |
+| `src/fitted.js` | Turns, contact sites and paths fitted for the filled-out signs (written by `scripts/fit_arm.mjs jobs`) |
 | `clips/` | Baked clips for the finished signs, plus `index.json` |
 | `schemas/` | JSON Schemas for SignDesc, clips and pose files |
 | `scripts/bake_clips.mjs` | Compile and bake the finished signs |
@@ -124,6 +141,7 @@ When the player changes, and not only a clip, redraw the videos and sync the emb
 | `scripts/check_compiler.mjs` | Compiler and schema checks |
 | `scripts/capture_demo_gifs.mjs` | Regenerates the two GIFs above |
 | `scripts/ingest_asllex.py`, `scripts/ingest_signpuddle.py` | Build the ASL-LEX and SignPuddle sign data |
+| `scripts/draft_core.py`, `data/sources/core_batch.json` | Draft the everyday signs to fill out by hand |
 | `scripts/video_to_marionet.py`, `scripts/marionet_pose.py`, `scripts/phonology.py`, `python/marionet/` | Video → clip experiment (below) |
 | `data/sources/` | Licence allowlist and citations |
 | `dataingestplan.md` | Which data sources may be used, and how |
@@ -166,6 +184,6 @@ python3 scripts/ingest_signpuddle.py
 
 - **Retargeting places the hand, not the whole arm.** The hand is kept off the skin, but the forearm can still pass through a bigger chest. Hair isn't counted as body, so fingers on the forehead or temple go under fringes.
 - **Hand-on-hand contact is approximate on other avatars.** Each hand is fitted to the body on its own; two-handed spacing stays within about 1 cm of the sample's.
-- **ASL-LEX motion is generic.** The data says "straight", "arc" or "circle" but not which way, so every straight movement goes forward, every arc goes toward the midline and every circle runs in the body's plane.
+- **ASL-LEX motion is generic where a sign has not been filled out.** The data says "straight", "arc" or "circle" but not which way, so in the lexicon pack every straight movement goes forward, every arc goes toward the midline and every circle runs in the body's plane. Signs in `core.json` say which way.
 - **Some palm orientations can't be reached at some locations.** For example, palm-up with a fingertip on the face: the fit gets within about 50°.
 - **The face is coarse**: brow raise and furrow map to the "surprised" and "angry" presets.
