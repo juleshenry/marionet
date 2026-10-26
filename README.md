@@ -153,7 +153,7 @@ HaMeR hands need the MANO model, which is licensed for non-commercial research o
 
 Data comes in only through the licence gate in `dataingestplan.md`: official dumps, no scraping.
 
-- **ASL-LEX 2.0** (OSF files; CC BY 4.0 on OSF but CC BY-NC on asl-lex.org, so non-commercial until the authors confirm, #33) gives 2,723 signs in `data/signs/ase/asllex_signdesc.json`. 2,470 of them compile with today's vocabulary; the rest stay as data with no invented motion.
+- **ASL-LEX 2.0** (OSF files, used under CC BY 4.0 as the OSF deposit states; asl-lex.org says CC BY-NC. Decided 2026-10-24, #33) gives 2,723 signs in `data/signs/ase/asllex_signdesc.json`. 2,470 of them compile with today's vocabulary; the rest stay as data with no invented motion.
 - **SignPuddle** ASL notation (`sgn4.spml`) is used for gloss coverage.
 - Citations are in `data/sources/CITATIONS.md` and the allowlist is in `data/sources/allowlist.jsonl`.
 

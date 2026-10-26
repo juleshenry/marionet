@@ -142,8 +142,8 @@ def main() -> None:
         json.dumps(
             {
                 "dataset": "asl-lex-2.0",
-                "license": "CC-BY-NC-4.0",
-                "licenseNote": "Contested: OSF zpha4 says CC BY 4.0; asl-lex.org says CC BY-NC 4.0. Non-commercial until the authors confirm (#33).",
+                "license": "CC-BY-4.0",
+                "licenseNote": "CC BY 4.0, as the OSF deposit (zpha4) states; asl-lex.org says CC BY-NC 4.0. Decided 2026-10-24 (#33). Reference videos (© ASL-LEX.org) are not used.",
                 "n": len(signs),
                 "signs": signs,
             },

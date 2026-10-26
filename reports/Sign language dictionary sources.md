@@ -1,7 +1,7 @@
 # Open notation leads; permission emails unlock video
 
 Of the **163 ISO 639-3 sign-language codes**, **62 already have substantive Tier A material** Marionet can ingest under its gate (CC BY / BY-SA / CC0 / open dump). Another **33 have only thin Tier A** (token SignPuddle puddles, fingerspelling, or gloss lists without forms), **36 have only Tier B or C**, and **32 have nothing usable at A–C**. A further 29 varieties without their own ISO code (Georgian, Tajik, Azerbaijani, Bangla SL and others) also have A–C material. Most of that Tier A reach comes from one source: **SignPuddle's official SPML dumps** (144 puddles, about 338k SignWriting entries, CC BY-SA 3.0 at project level). Citation-form *video, mocap or phonology* under Tier A exists for only about two dozen languages. The standouts are ASL (3D-LEX, a CC0 StudioGalt mocap archive of about 2,587 signs, PopSign), NGT (Global Signbank, 3D-LEX), DGS and BSL (Ortega 2025, DGS norms), LSF (Elix and Lingua Libre on Commons), LSE (SWL-LSE), Chinese SL (NationalCSL-DP, 6,707 signs), Hong Kong SL (972 clips), Armenian SL (1,211 Commons clips) and Ghanaian SL (more than 1,200 signs). Four of Marionet's own allowlist assumptions are now wrong:
-- ASL-LEX's commercial status is contested.
+- ASL-LEX's commercial status is contested. (Decided 2026-10-24: Marionet follows the OSF deposit's CC BY 4.0, #33.)
 - ASL Signbank has moved to aslsignbank.com.
 - Wikisigns' "CC BY-SA video" is in fact YouTube embeds.
 - The BSL Corpus open-access data, which the ingest plan lists as Tier C, is in fact Tier A.
@@ -43,7 +43,7 @@ Every row in `data/sources/allowlist.jsonl` was checked against the research. Mo
 
 | Allowlist row | Current claim | What the research found | Change |
 |---|---|---|---|
-| `asl-lex-2.0` | A, CC BY 4.0 (OSF), commercial_ok true | OSF says CC BY 4.0; asl-lex.org says CC BY-NC 4.0 and bans commercial use; reference videos are © ASL-LEX.org | Mark **contested → B**, commercial_ok false; email asllexproject@gmail.com |
+| `asl-lex-2.0` | A, CC BY 4.0 (OSF), commercial_ok true | OSF says CC BY 4.0; asl-lex.org says CC BY-NC 4.0 and bans commercial use; reference videos are © ASL-LEX.org | Mark **contested → B**, commercial_ok false; email asllexproject@gmail.com. **Decided 2026-10-24:** kept at A under OSF's CC BY 4.0 (#33) |
 | `signpuddle-asl-sgn4` | A, BY-SA 3.0 | Verified on signwriting.org and the IETF draft (project level, not per puddle). sgn4 now has 12,277 entries; its `nextid` header is stale. Other ASL puddles: sgn28 9,974, sgn25 5,530, sgn105 2,409, sgn111 434 | Keep A. Cite signwriting.org + IETF, flag "project-level", add sgn25/28/105/111 deduplicated, drop `<video>` |
 | `signbank-ngt-public` | A, ~6.5k public glosses | 7,469 glosses, 6,862 public; example sentences are BY-NC-SA. Only 3 public datasets exist (NGT, Kata Kolok, EmblemsNL) ([Global Signbank](https://signbank.cls.ru.nl/datasets/available)) | Keep A; update count; exclude example-sentence media |
 | `3d-lex-v1` | A (licence from paper) | CC BY 4.0 verified on OSF. NGT_LLF.zip (10.3 MB) and ASL_LLF.zip (14.5 MB) fit the cap; GLB packs are 393–644 MB; no v2 exists | Keep A; fetch the LLF zips now |
