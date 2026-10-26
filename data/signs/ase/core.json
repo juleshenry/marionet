@@ -1,0 +1,8063 @@
+{
+ "dataset": "asl-lex-2.0",
+ "license": "CC-BY-4.0",
+ "licenseNote": "CC BY 4.0, as the OSF deposit (zpha4) states; asl-lex.org says CC BY-NC 4.0. Decided 2026-10-24 (#33). Reference videos (© ASL-LEX.org) are not used.",
+ "note": "Everyday ASL signs filled out by hand from ASL-LEX rows: real palm, movement and two-hand roles, English meanings, part of speech, a person's review. Same ids as the ASL-LEX rows they replace. Drafted by scripts/draft_core.py.",
+ "n": 100,
+ "signs": [
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/water",
+   "language": "ase",
+   "gloss": "WATER",
+   "spoken": [
+    "water"
+   ],
+   "meanings": [
+    {
+     "text": "water",
+     "pos": "noun"
+    }
+   ],
+   "handed": "1h",
+   "lexicalClass": "Noun",
+   "dominant": {
+    "handshape": "W",
+    "palm": "contra",
+    "fingers": "up",
+    "location": "chin",
+    "movement": [
+     {
+      "type": "tap",
+      "reps": 2
+     }
+    ]
+   },
+   "library": {
+    "handshape": "W",
+    "location": "chin"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "water",
+    "lemmaId": "water",
+    "code": "A_02_031",
+    "signbankLemmaId": "WATER",
+    "signbankAnnotationId": "WATER",
+    "aliases": [
+     "water",
+     "WATER"
+    ],
+    "phonology": {
+     "Handshape.2.0": "w",
+     "MarkedHandshape.2.0": "1",
+     "SelectedFingers.2.0": "p",
+     "Flexion.2.0": "Curved",
+     "FlexionChange.2.0": "0",
+     "Spread.2.0": "NA",
+     "SpreadChange.2.0": "NA",
+     "ThumbPosition.2.0": "Open",
+     "ThumbContact.2.0": "1",
+     "SignType.2.0": "OneHanded",
+     "Movement.2.0": "Straight",
+     "RepeatedMovement.2.0": "1",
+     "MajorLocation.2.0": "Head",
+     "MinorLocation.2.0": "Chin",
+     "SecondMinorLocation.2.0": "NA",
+     "Contact.2.0": "1",
+     "NonDominantHandshape.2.0": "NA",
+     "UlnarRotation.2.0": "0"
+    }
+   },
+   "review": {
+    "status": "approved",
+    "date": "2026-10-25",
+    "reviewer": "Claude (renders checked against ASL-LEX's coding and the common citation form; not yet checked by a signer)",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "W hand, palm to the left, index fingertip taps the chin twice."
+   },
+   "todo": []
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/you",
+   "language": "ase",
+   "gloss": "YOU",
+   "spoken": [
+    "you"
+   ],
+   "meanings": [
+    {
+     "text": "you",
+     "pos": "pronoun"
+    }
+   ],
+   "handed": "1h",
+   "lexicalClass": "Minor",
+   "dominant": {
+    "handshape": "1",
+    "palm": "down",
+    "fingers": "out",
+    "location": "neutral-space",
+    "movement": [
+     {
+      "type": "linear",
+      "direction": "out"
+     }
+    ]
+   },
+   "library": {
+    "handshape": "1",
+    "location": "neutral-space"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "you",
+    "lemmaId": "you",
+    "code": "D_02_065",
+    "signbankLemmaId": null,
+    "signbankAnnotationId": null,
+    "aliases": [
+     "you"
+    ],
+    "phonology": {
+     "Handshape.2.0": "1",
+     "MarkedHandshape.2.0": "0",
+     "SelectedFingers.2.0": "i",
+     "Flexion.2.0": "FullyOpen",
+     "FlexionChange.2.0": "0",
+     "Spread.2.0": "NA",
+     "SpreadChange.2.0": "NA",
+     "ThumbPosition.2.0": "Closed",
+     "ThumbContact.2.0": "0",
+     "SignType.2.0": "OneHanded",
+     "Movement.2.0": "Straight",
+     "RepeatedMovement.2.0": "0",
+     "MajorLocation.2.0": "Neutral",
+     "MinorLocation.2.0": "Neutral",
+     "SecondMinorLocation.2.0": "NA",
+     "Contact.2.0": "0",
+     "NonDominantHandshape.2.0": "NA",
+     "UlnarRotation.2.0": "0"
+    }
+   },
+   "review": {
+    "status": "approved",
+    "date": "2026-10-25",
+    "reviewer": "Claude (renders checked against ASL-LEX's coding and the common citation form; not yet checked by a signer)",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "Index points forward, at the person addressed."
+   },
+   "todo": []
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/yes",
+   "language": "ase",
+   "gloss": "YES",
+   "spoken": [
+    "yes"
+   ],
+   "meanings": [
+    {
+     "text": "yes",
+     "pos": "interjection"
+    }
+   ],
+   "handed": "1h",
+   "lexicalClass": "Minor",
+   "dominant": {
+    "handshape": "S",
+    "palm": "out",
+    "fingers": "up",
+    "location": "neutral-space",
+    "movement": [
+     {
+      "type": "nod",
+      "reps": 2
+     }
+    ]
+   },
+   "library": {
+    "handshape": "S",
+    "location": "neutral-space"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "yes",
+    "lemmaId": "yes",
+    "code": "G_03_074",
+    "signbankLemmaId": "YES",
+    "signbankAnnotationId": "YES",
+    "aliases": [
+     "yes",
+     "YES"
+    ],
+    "phonology": {
+     "Handshape.2.0": "s",
+     "MarkedHandshape.2.0": "0",
+     "SelectedFingers.2.0": "imrp",
+     "Flexion.2.0": "FullyClosed",
+     "FlexionChange.2.0": "0",
+     "Spread.2.0": "NA",
+     "SpreadChange.2.0": "0",
+     "ThumbPosition.2.0": "Closed",
+     "ThumbContact.2.0": "1",
+     "SignType.2.0": "OneHanded",
+     "Movement.2.0": "Straight",
+     "RepeatedMovement.2.0": "1",
+     "MajorLocation.2.0": "Neutral",
+     "MinorLocation.2.0": "Neutral",
+     "SecondMinorLocation.2.0": "NA",
+     "Contact.2.0": "0",
+     "NonDominantHandshape.2.0": "NA",
+     "UlnarRotation.2.0": "0"
+    }
+   },
+   "review": {
+    "status": "approved",
+    "date": "2026-10-25",
+    "reviewer": "Claude (renders checked against ASL-LEX's coding and the common citation form; not yet checked by a signer)",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "S hand nods at the wrist, twice."
+   },
+   "todo": []
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/eat-1",
+   "language": "ase",
+   "gloss": "EAT",
+   "spoken": [
+    "eat",
+    "food"
+   ],
+   "meanings": [
+    {
+     "text": "eat",
+     "pos": "verb"
+    },
+    {
+     "text": "food",
+     "pos": "noun"
+    }
+   ],
+   "handed": "1h",
+   "lexicalClass": "Verb",
+   "dominant": {
+    "handshape": "flat_o",
+    "palm": "in",
+    "fingers": "up",
+    "location": "mouth",
+    "site": "fingertips",
+    "movement": [
+     {
+      "type": "tap",
+      "reps": 2
+     }
+    ]
+   },
+   "library": {
+    "handshape": "O",
+    "location": "mouth"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "eat_1",
+    "lemmaId": "eat",
+    "code": "B_02_002",
+    "signbankLemmaId": "EAT",
+    "signbankAnnotationId": "EAT",
+    "aliases": [
+     "eat_1",
+     "eat",
+     "EAT",
+     "eat 1"
+    ],
+    "folds": [
+     "eat_2"
+    ],
+    "phonology": {
+     "Handshape.2.0": "o",
+     "MarkedHandshape.2.0": "0",
+     "SelectedFingers.2.0": "imrp",
+     "Flexion.2.0": "Curved",
+     "FlexionChange.2.0": "0",
+     "Spread.2.0": "0",
+     "SpreadChange.2.0": "0",
+     "ThumbPosition.2.0": "Open",
+     "ThumbContact.2.0": "1",
+     "SignType.2.0": "OneHanded",
+     "Movement.2.0": "Straight",
+     "RepeatedMovement.2.0": "1",
+     "MajorLocation.2.0": "Head",
+     "MinorLocation.2.0": "Mouth",
+     "SecondMinorLocation.2.0": "NA",
+     "Contact.2.0": "1",
+     "NonDominantHandshape.2.0": "NA",
+     "UlnarRotation.2.0": "0"
+    }
+   },
+   "review": {
+    "status": "approved",
+    "date": "2026-10-25",
+    "reviewer": "Claude (renders checked against ASL-LEX's coding and the common citation form; not yet checked by a signer)",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "Flat O, fingertips tap the lips twice. ASL-LEX codes O; the citation form is a flat O."
+   },
+   "todo": []
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/want-2",
+   "language": "ase",
+   "gloss": "WANT",
+   "spoken": [
+    "want"
+   ],
+   "meanings": [
+    {
+     "text": "want",
+     "pos": "verb"
+    }
+   ],
+   "handed": "2h-symmetric",
+   "lexicalClass": "Verb",
+   "dominant": {
+    "handshape": "5",
+    "palm": "up",
+    "fingers": "out",
+    "location": "neutral-space",
+    "offset": {
+     "out": 8
+    },
+    "movement": [
+     {
+      "type": "move",
+      "to": "neutral-space",
+      "handshape": "curved_5",
+      "palm": "up",
+      "fingers": "out"
+     }
+    ]
+   },
+   "library": {
+    "handshape": "5",
+    "location": "neutral-space"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "want_2",
+    "lemmaId": "want_2",
+    "code": "E_01_025",
+    "signbankLemmaId": null,
+    "signbankAnnotationId": null,
+    "aliases": [
+     "want_2",
+     "want 2"
+    ],
+    "folds": [
+     "want"
+    ],
+    "phonology": {
+     "Handshape.2.0": "5",
+     "MarkedHandshape.2.0": "0",
+     "SelectedFingers.2.0": "imrp",
+     "Flexion.2.0": "FullyOpen",
+     "FlexionChange.2.0": "1",
+     "Spread.2.0": "1",
+     "SpreadChange.2.0": "0",
+     "ThumbPosition.2.0": "Open",
+     "ThumbContact.2.0": "0",
+     "SignType.2.0": "SymmetricalOrAlternating",
+     "Movement.2.0": "Straight",
+     "RepeatedMovement.2.0": "0",
+     "MajorLocation.2.0": "Neutral",
+     "MinorLocation.2.0": "Neutral",
+     "SecondMinorLocation.2.0": "Neutral",
+     "Contact.2.0": "0",
+     "NonDominantHandshape.2.0": "5",
+     "UlnarRotation.2.0": "0"
+    }
+   },
+   "review": {
+    "status": "approved",
+    "date": "2026-10-25",
+    "reviewer": "Claude (renders checked against ASL-LEX's coding and the common citation form; not yet checked by a signer)",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "Open hands, palms up, pull toward the body, the fingers curling."
+   },
+   "todo": []
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/oh-i-see",
+   "language": "ase",
+   "gloss": "OH-I-SEE",
+   "spoken": [
+    "I see"
+   ],
+   "meanings": [
+    {
+     "text": "I see",
+     "pos": "phrase"
+    }
+   ],
+   "handed": "1h",
+   "lexicalClass": "Verb",
+   "dominant": {
+    "handshape": "Y",
+    "palm": "down",
+    "fingers": "out",
+    "location": "neutral-space",
+    "movement": [
+     {
+      "type": "nod",
+      "reps": 2
+     }
+    ]
+   },
+   "library": {
+    "handshape": "Y",
+    "location": "neutral-space"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "oh_I_see",
+    "lemmaId": "oh_i_see",
+    "code": "E_01_038",
+    "signbankLemmaId": null,
+    "signbankAnnotationId": null,
+    "aliases": [
+     "oh_I_see",
+     "oh_i_see",
+     "oh I see"
+    ],
+    "phonology": {
+     "Handshape.2.0": "y",
+     "MarkedHandshape.2.0": "1",
+     "SelectedFingers.2.0": "p",
+     "Flexion.2.0": "FullyOpen",
+     "FlexionChange.2.0": "0",
+     "Spread.2.0": "NA",
+     "SpreadChange.2.0": "NA",
+     "ThumbPosition.2.0": "Open",
+     "ThumbContact.2.0": "0",
+     "SignType.2.0": "OneHanded",
+     "Movement.2.0": "Straight",
+     "RepeatedMovement.2.0": "1",
+     "MajorLocation.2.0": "Neutral",
+     "MinorLocation.2.0": "Neutral",
+     "SecondMinorLocation.2.0": "Neutral",
+     "Contact.2.0": "0",
+     "NonDominantHandshape.2.0": "NA",
+     "UlnarRotation.2.0": "0"
+    }
+   },
+   "review": {
+    "status": "approved",
+    "date": "2026-10-25",
+    "reviewer": "Claude (renders checked against ASL-LEX's coding and the common citation form; not yet checked by a signer)",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "Y hand, palm down, bobs twice."
+   },
+   "todo": []
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/deaf-1",
+   "language": "ase",
+   "gloss": "DEAF",
+   "spoken": [
+    "deaf"
+   ],
+   "meanings": [
+    {
+     "text": "deaf",
+     "pos": "adjective"
+    }
+   ],
+   "handed": "1h",
+   "lexicalClass": "Adjective",
+   "dominant": {
+    "handshape": "1",
+    "palm": "contra",
+    "fingers": "in+up",
+    "location": "cheek",
+    "movement": [
+     {
+      "type": "move",
+      "to": "chin"
+     }
+    ],
+    "offset": {
+     "up": 2,
+     "ipsi": 2
+    }
+   },
+   "library": {
+    "handshape": "1",
+    "location": "head"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "deaf_1",
+    "lemmaId": "deaf",
+    "code": "F_03_038",
+    "signbankLemmaId": "DEAF",
+    "signbankAnnotationId": "DEAFix",
+    "aliases": [
+     "deaf_1",
+     "deaf",
+     "DEAF",
+     "deaf 1"
+    ],
+    "phonology": {
+     "Handshape.2.0": "1",
+     "MarkedHandshape.2.0": "0",
+     "SelectedFingers.2.0": "i",
+     "Flexion.2.0": "FullyOpen",
+     "FlexionChange.2.0": "0",
+     "Spread.2.0": "NA",
+     "SpreadChange.2.0": "NA",
+     "ThumbPosition.2.0": "Closed",
+     "ThumbContact.2.0": "0",
+     "SignType.2.0": "OneHanded",
+     "Movement.2.0": "Curved",
+     "RepeatedMovement.2.0": "0",
+     "MajorLocation.2.0": "Head",
+     "MinorLocation.2.0": "Other",
+     "SecondMinorLocation.2.0": "Chin",
+     "Contact.2.0": "1",
+     "NonDominantHandshape.2.0": "NA",
+     "UlnarRotation.2.0": "1"
+    }
+   },
+   "review": {
+    "status": "approved",
+    "date": "2026-10-25",
+    "reviewer": "Claude (renders checked against ASL-LEX's coding and the common citation form; not yet checked by a signer)",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "Index touches the cheek near the ear, then the chin."
+   },
+   "todo": []
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/me",
+   "language": "ase",
+   "gloss": "ME",
+   "spoken": [
+    "me",
+    "I"
+   ],
+   "meanings": [
+    {
+     "text": "me",
+     "pos": "pronoun"
+    },
+    {
+     "text": "I",
+     "pos": "pronoun"
+    }
+   ],
+   "handed": "1h",
+   "lexicalClass": "Minor",
+   "dominant": {
+    "handshape": "1",
+    "palm": "down",
+    "fingers": "in+contra",
+    "location": "chest",
+    "movement": [
+     {
+      "type": "tap"
+     }
+    ]
+   },
+   "library": {
+    "handshape": "1",
+    "location": "chest-front"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "me",
+    "lemmaId": "me",
+    "code": "B_01_068",
+    "signbankLemmaId": null,
+    "signbankAnnotationId": null,
+    "aliases": [
+     "me"
+    ],
+    "phonology": {
+     "Handshape.2.0": "1",
+     "MarkedHandshape.2.0": "0",
+     "SelectedFingers.2.0": "i",
+     "Flexion.2.0": "FullyOpen",
+     "FlexionChange.2.0": "0",
+     "Spread.2.0": "NA",
+     "SpreadChange.2.0": "NA",
+     "ThumbPosition.2.0": "Closed",
+     "ThumbContact.2.0": "0",
+     "SignType.2.0": "OneHanded",
+     "Movement.2.0": "Straight",
+     "RepeatedMovement.2.0": "0",
+     "MajorLocation.2.0": "Body",
+     "MinorLocation.2.0": "TorsoTop",
+     "SecondMinorLocation.2.0": "NA",
+     "Contact.2.0": "1",
+     "NonDominantHandshape.2.0": "NA",
+     "UlnarRotation.2.0": "0"
+    }
+   },
+   "review": {
+    "status": "approved",
+    "date": "2026-10-25",
+    "reviewer": "Claude (renders checked against ASL-LEX's coding and the common citation form; not yet checked by a signer)",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "Index points to and touches the chest."
+   },
+   "todo": []
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/work",
+   "language": "ase",
+   "gloss": "WORK",
+   "spoken": [
+    "work",
+    "job"
+   ],
+   "meanings": [
+    {
+     "text": "work",
+     "pos": "verb"
+    },
+    {
+     "text": "job",
+     "pos": "noun"
+    }
+   ],
+   "handed": "2h-asymmetric",
+   "lexicalClass": "Verb",
+   "dominant": {
+    "handshape": "S",
+    "palm": "down",
+    "fingers": "out",
+    "location": "weak-hand",
+    "site": "palm",
+    "movement": [
+     {
+      "type": "tap",
+      "reps": 2
+     }
+    ]
+   },
+   "nondominant": {
+    "handshape": "S",
+    "palm": "down",
+    "fingers": "out",
+    "location": "base-hand",
+    "role": "base"
+   },
+   "library": {
+    "handshape": "S",
+    "location": "weak-hand"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "work",
+    "lemmaId": "work",
+    "code": "B_03_059",
+    "signbankLemmaId": "WORK",
+    "signbankAnnotationId": "WORK",
+    "aliases": [
+     "work",
+     "WORK"
+    ],
+    "phonology": {
+     "Handshape.2.0": "s",
+     "MarkedHandshape.2.0": "0",
+     "SelectedFingers.2.0": "imrp",
+     "Flexion.2.0": "FullyClosed",
+     "FlexionChange.2.0": "0",
+     "Spread.2.0": "NA",
+     "SpreadChange.2.0": "0",
+     "ThumbPosition.2.0": "Closed",
+     "ThumbContact.2.0": "1",
+     "SignType.2.0": "AsymmetricalSameHandshape",
+     "Movement.2.0": "Straight",
+     "RepeatedMovement.2.0": "1",
+     "MajorLocation.2.0": "Hand",
+     "MinorLocation.2.0": "PalmBack",
+     "SecondMinorLocation.2.0": "NA",
+     "Contact.2.0": "1",
+     "NonDominantHandshape.2.0": "s",
+     "UlnarRotation.2.0": "0"
+    }
+   },
+   "review": {
+    "status": "approved",
+    "date": "2026-10-25",
+    "reviewer": "Claude (renders checked against ASL-LEX's coding and the common citation form; not yet checked by a signer)",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "S hands, palms down; the dominant taps the back of the base hand twice."
+   },
+   "todo": []
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/book",
+   "language": "ase",
+   "gloss": "BOOK",
+   "spoken": [
+    "book"
+   ],
+   "meanings": [
+    {
+     "text": "book",
+     "pos": "noun"
+    }
+   ],
+   "handed": "2h-symmetric",
+   "lexicalClass": "Noun",
+   "dominant": {
+    "handshape": "open_b",
+    "palm": "contra",
+    "fingers": "out",
+    "location": "neutral-space",
+    "offset": {
+     "contra": 8.5
+    },
+    "movement": [
+     {
+      "type": "change",
+      "palm": "up",
+      "fingers": "out",
+      "offset": {
+       "contra": 5
+      }
+     }
+    ]
+   },
+   "library": {
+    "handshape": "open_b",
+    "location": "neutral-space"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "book",
+    "lemmaId": "book",
+    "code": "A_01_027",
+    "signbankLemmaId": "BOOK",
+    "signbankAnnotationId": "BOOK",
+    "aliases": [
+     "book",
+     "BOOK"
+    ],
+    "phonology": {
+     "Handshape.2.0": "open_b",
+     "MarkedHandshape.2.0": "1",
+     "SelectedFingers.2.0": "imrp",
+     "Flexion.2.0": "FullyOpen",
+     "FlexionChange.2.0": "0",
+     "Spread.2.0": "0",
+     "SpreadChange.2.0": "0",
+     "ThumbPosition.2.0": "Open",
+     "ThumbContact.2.0": "0",
+     "SignType.2.0": "SymmetricalOrAlternating",
+     "Movement.2.0": "Curved",
+     "RepeatedMovement.2.0": "1",
+     "MajorLocation.2.0": "Neutral",
+     "MinorLocation.2.0": "Neutral",
+     "SecondMinorLocation.2.0": "Neutral",
+     "Contact.2.0": "1",
+     "NonDominantHandshape.2.0": "open_b",
+     "UlnarRotation.2.0": "1"
+    }
+   },
+   "review": {
+    "status": "approved",
+    "date": "2026-10-25",
+    "reviewer": "Claude (renders checked against ASL-LEX's coding and the common citation form; not yet checked by a signer)",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "Flat hands, palms together, open like a book."
+   },
+   "todo": []
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/mother",
+   "language": "ase",
+   "gloss": "MOTHER",
+   "spoken": [
+    "mother",
+    "mom"
+   ],
+   "meanings": [
+    {
+     "text": "mother",
+     "pos": "noun"
+    },
+    {
+     "text": "mom",
+     "pos": "noun"
+    }
+   ],
+   "handed": "1h",
+   "lexicalClass": "Noun",
+   "dominant": {
+    "handshape": "5",
+    "palm": "contra",
+    "fingers": "up",
+    "location": "chin",
+    "site": "thumb",
+    "movement": [
+     {
+      "type": "tap",
+      "reps": 2
+     }
+    ]
+   },
+   "library": {
+    "handshape": "5",
+    "location": "chin"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "mother",
+    "lemmaId": "mother",
+    "code": "B_02_008",
+    "signbankLemmaId": "MOTHER",
+    "signbankAnnotationId": "MOTHERstr",
+    "aliases": [
+     "mother",
+     "MOTHER"
+    ],
+    "phonology": {
+     "Handshape.2.0": "5",
+     "MarkedHandshape.2.0": "0",
+     "SelectedFingers.2.0": "imrp",
+     "Flexion.2.0": "FullyOpen",
+     "FlexionChange.2.0": "0",
+     "Spread.2.0": "1",
+     "SpreadChange.2.0": "0",
+     "ThumbPosition.2.0": "Open",
+     "ThumbContact.2.0": "0",
+     "SignType.2.0": "OneHanded",
+     "Movement.2.0": "Straight",
+     "RepeatedMovement.2.0": "1",
+     "MajorLocation.2.0": "Head",
+     "MinorLocation.2.0": "Chin",
+     "SecondMinorLocation.2.0": "NA",
+     "Contact.2.0": "1",
+     "NonDominantHandshape.2.0": "NA",
+     "UlnarRotation.2.0": "0"
+    }
+   },
+   "review": {
+    "status": "approved",
+    "date": "2026-10-25",
+    "reviewer": "Claude (renders checked against ASL-LEX's coding and the common citation form; not yet checked by a signer)",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "5 hand, thumb taps the chin twice."
+   },
+   "todo": []
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/sleep",
+   "language": "ase",
+   "gloss": "SLEEP",
+   "spoken": [
+    "sleep"
+   ],
+   "meanings": [
+    {
+     "text": "sleep",
+     "pos": "verb"
+    }
+   ],
+   "handed": "1h",
+   "lexicalClass": "Verb",
+   "dominant": {
+    "handshape": "5",
+    "palm": "in",
+    "fingers": "up",
+    "location": "nose",
+    "offset": {
+     "out": 5
+    },
+    "movement": [
+     {
+      "type": "move",
+      "to": "chin",
+      "handshape": "flat_o",
+      "palm": "in",
+      "fingers": "up",
+      "offset": {
+       "out": 4
+      }
+     }
+    ]
+   },
+   "library": {
+    "handshape": "5",
+    "location": "head"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "sleep",
+    "lemmaId": "sleep",
+    "code": "B_03_037",
+    "signbankLemmaId": "SLEEP",
+    "signbankAnnotationId": "SLEEP",
+    "aliases": [
+     "sleep",
+     "SLEEP"
+    ],
+    "phonology": {
+     "Handshape.2.0": "5",
+     "MarkedHandshape.2.0": "0",
+     "SelectedFingers.2.0": "imrp",
+     "Flexion.2.0": "FullyOpen",
+     "FlexionChange.2.0": "1",
+     "Spread.2.0": "1",
+     "SpreadChange.2.0": "1",
+     "ThumbPosition.2.0": "Open",
+     "ThumbContact.2.0": "1",
+     "SignType.2.0": "OneHanded",
+     "Movement.2.0": "Straight",
+     "RepeatedMovement.2.0": "0",
+     "MajorLocation.2.0": "Head",
+     "MinorLocation.2.0": "HeadAway",
+     "SecondMinorLocation.2.0": "HeadAway",
+     "Contact.2.0": "0",
+     "NonDominantHandshape.2.0": "NA",
+     "UlnarRotation.2.0": "0"
+    }
+   },
+   "review": {
+    "status": "approved",
+    "date": "2026-10-25",
+    "reviewer": "Claude (renders checked against ASL-LEX's coding and the common citation form; not yet checked by a signer)",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "Open hand in front of the face draws down to the chin, closing to a flat O."
+   },
+   "todo": []
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/teach-2",
+   "language": "ase",
+   "gloss": "TEACH",
+   "spoken": [
+    "teach"
+   ],
+   "meanings": [
+    {
+     "text": "teach",
+     "pos": "verb"
+    }
+   ],
+   "handed": "2h-symmetric",
+   "lexicalClass": "Verb",
+   "dominant": {
+    "handshape": "flat_o",
+    "palm": "contra",
+    "fingers": "out",
+    "location": "forehead",
+    "offset": {
+     "out": 8,
+     "ipsi": 7,
+     "up": 2
+    },
+    "movement": [
+     {
+      "type": "linear",
+      "direction": "out",
+      "reps": 2
+     }
+    ]
+   },
+   "library": {
+    "handshape": "flat_o",
+    "location": "head"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "teach_2",
+    "lemmaId": "teach_2",
+    "code": "K_02_055",
+    "signbankLemmaId": "~NEED-ID-GLOSS",
+    "signbankAnnotationId": "~TEACHfh",
+    "aliases": [
+     "teach_2",
+     "~NEED-ID-GLOSS",
+     "teach 2"
+    ],
+    "phonology": {
+     "Handshape.2.0": "flat_o",
+     "MarkedHandshape.2.0": "0",
+     "SelectedFingers.2.0": "imrp",
+     "Flexion.2.0": "Flat",
+     "FlexionChange.2.0": "0",
+     "Spread.2.0": "0",
+     "SpreadChange.2.0": "0",
+     "ThumbPosition.2.0": "Open",
+     "ThumbContact.2.0": "1",
+     "SignType.2.0": "SymmetricalOrAlternating",
+     "Movement.2.0": "Straight",
+     "RepeatedMovement.2.0": "1",
+     "MajorLocation.2.0": "Head",
+     "MinorLocation.2.0": "HeadAway",
+     "SecondMinorLocation.2.0": "HeadAway",
+     "Contact.2.0": "0",
+     "NonDominantHandshape.2.0": "flat_o",
+     "UlnarRotation.2.0": "0"
+    }
+   },
+   "review": {
+    "status": "approved",
+    "date": "2026-10-25",
+    "reviewer": "Claude (renders checked against ASL-LEX's coding and the common citation form; not yet checked by a signer)",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "Flat O hands held in front of the temples, fingertips forward, move forward twice."
+   },
+   "todo": []
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/thank-you",
+   "language": "ase",
+   "gloss": "THANK-YOU",
+   "spoken": [
+    "thank you",
+    "thanks"
+   ],
+   "meanings": [
+    {
+     "text": "thank you",
+     "pos": "phrase"
+    },
+    {
+     "text": "thanks",
+     "pos": "interjection"
+    }
+   ],
+   "handed": "1h",
+   "lexicalClass": "Verb",
+   "dominant": {
+    "handshape": "open_b",
+    "palm": "in",
+    "fingers": "up",
+    "location": "chin",
+    "site": "fingertips",
+    "movement": [
+     {
+      "type": "linear",
+      "direction": "out+down"
+     }
+    ]
+   },
+   "library": {
+    "handshape": "open_b",
+    "location": "mouth"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "thank_you",
+    "lemmaId": "thank_you",
+    "code": "H_02_053",
+    "signbankLemmaId": "THANK-YOU",
+    "signbankAnnotationId": "THANK-YOU",
+    "aliases": [
+     "thank_you",
+     "THANK-YOU",
+     "thank you"
+    ],
+    "phonology": {
+     "Handshape.2.0": "open_b",
+     "MarkedHandshape.2.0": "1",
+     "SelectedFingers.2.0": "imrp",
+     "Flexion.2.0": "FullyOpen",
+     "FlexionChange.2.0": "0",
+     "Spread.2.0": "0",
+     "SpreadChange.2.0": "0",
+     "ThumbPosition.2.0": "Open",
+     "ThumbContact.2.0": "0",
+     "SignType.2.0": "OneHanded",
+     "Movement.2.0": "Curved",
+     "RepeatedMovement.2.0": "0",
+     "MajorLocation.2.0": "Head",
+     "MinorLocation.2.0": "Mouth",
+     "SecondMinorLocation.2.0": "HeadAway",
+     "Contact.2.0": "1",
+     "NonDominantHandshape.2.0": "NA",
+     "UlnarRotation.2.0": "0"
+    }
+   },
+   "review": {
+    "status": "approved",
+    "date": "2026-10-25",
+    "reviewer": "Claude (renders checked against ASL-LEX's coding and the common citation form; not yet checked by a signer)",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "Fingertips at the chin, the flat hand moves out and down."
+   },
+   "todo": []
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/parents",
+   "language": "ase",
+   "gloss": "PARENTS",
+   "spoken": [
+    "parents"
+   ],
+   "meanings": [
+    {
+     "text": "parents",
+     "pos": "noun"
+    }
+   ],
+   "handed": "1h",
+   "lexicalClass": "Noun",
+   "dominant": {
+    "handshape": "5",
+    "palm": "contra",
+    "fingers": "up",
+    "location": "chin",
+    "site": "thumb",
+    "movement": [
+     {
+      "type": "tap"
+     },
+     {
+      "type": "move",
+      "to": "forehead"
+     },
+     {
+      "type": "tap"
+     }
+    ]
+   },
+   "library": {
+    "handshape": "5",
+    "location": "chin"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "parents",
+    "lemmaId": "parents",
+    "code": "B_03_044",
+    "signbankLemmaId": "PARENTS",
+    "signbankAnnotationId": "PARENTS",
+    "aliases": [
+     "parents",
+     "PARENTS"
+    ],
+    "phonology": {
+     "Handshape.2.0": "5",
+     "MarkedHandshape.2.0": "0",
+     "SelectedFingers.2.0": "imrp",
+     "Flexion.2.0": "FullyOpen",
+     "FlexionChange.2.0": "0",
+     "Spread.2.0": "1",
+     "SpreadChange.2.0": "0",
+     "ThumbPosition.2.0": "Open",
+     "ThumbContact.2.0": "0",
+     "SignType.2.0": "OneHanded",
+     "Movement.2.0": "None",
+     "RepeatedMovement.2.0": "0",
+     "MajorLocation.2.0": "Head",
+     "MinorLocation.2.0": "Chin",
+     "SecondMinorLocation.2.0": "NA",
+     "Contact.2.0": "1",
+     "NonDominantHandshape.2.0": "NA",
+     "UlnarRotation.2.0": "0"
+    }
+   },
+   "review": {
+    "status": "approved",
+    "date": "2026-10-25",
+    "reviewer": "Claude (renders checked against ASL-LEX's coding and the common citation form; not yet checked by a signer)",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "MOTHER then FATHER: the thumb touches the chin, then the forehead."
+   },
+   "todo": []
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/car",
+   "language": "ase",
+   "gloss": "CAR",
+   "spoken": [
+    "car",
+    "drive"
+   ],
+   "meanings": [
+    {
+     "text": "car",
+     "pos": "noun"
+    },
+    {
+     "text": "drive",
+     "pos": "verb"
+    }
+   ],
+   "handed": "2h-alternating",
+   "lexicalClass": "Noun",
+   "dominant": {
+    "handshape": "S",
+    "palm": "in",
+    "fingers": "up",
+    "location": "neutral-space",
+    "movement": [
+     {
+      "type": "linear",
+      "direction": "up",
+      "reps": 2
+     }
+    ]
+   },
+   "library": {
+    "handshape": "S",
+    "location": "neutral-space"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "car",
+    "lemmaId": "car",
+    "code": "D_02_043",
+    "signbankLemmaId": "CAR",
+    "signbankAnnotationId": "CAR",
+    "aliases": [
+     "car",
+     "CAR"
+    ],
+    "phonology": {
+     "Handshape.2.0": "s",
+     "MarkedHandshape.2.0": "0",
+     "SelectedFingers.2.0": "imrp",
+     "Flexion.2.0": "FullyClosed",
+     "FlexionChange.2.0": "0",
+     "Spread.2.0": "NA",
+     "SpreadChange.2.0": "0",
+     "ThumbPosition.2.0": "Closed",
+     "ThumbContact.2.0": "1",
+     "SignType.2.0": "SymmetricalOrAlternating",
+     "Movement.2.0": "Curved",
+     "RepeatedMovement.2.0": "1",
+     "MajorLocation.2.0": "Neutral",
+     "MinorLocation.2.0": "Neutral",
+     "SecondMinorLocation.2.0": "Neutral",
+     "Contact.2.0": "0",
+     "NonDominantHandshape.2.0": "s",
+     "UlnarRotation.2.0": "0"
+    }
+   },
+   "review": {
+    "status": "approved",
+    "date": "2026-10-25",
+    "reviewer": "Claude (renders checked against ASL-LEX's coding and the common citation form; not yet checked by a signer)",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "S hands hold a steering wheel and steer, moving up and down alternately."
+   },
+   "todo": []
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/evening",
+   "language": "ase",
+   "gloss": "NIGHT",
+   "spoken": [
+    "night",
+    "evening"
+   ],
+   "meanings": [
+    {
+     "text": "night",
+     "pos": "noun"
+    },
+    {
+     "text": "evening",
+     "pos": "noun"
+    }
+   ],
+   "handed": "2h-asymmetric",
+   "lexicalClass": "Noun",
+   "dominant": {
+    "handshape": "bent_b",
+    "palm": "down",
+    "fingers": "contra",
+    "location": "weak-hand",
+    "site": "fingertips",
+    "movement": [
+     {
+      "type": "tap",
+      "reps": 2
+     }
+    ]
+   },
+   "nondominant": {
+    "handshape": "flat_b",
+    "palm": "down",
+    "fingers": "contra",
+    "location": "base-hand",
+    "role": "base"
+   },
+   "library": {
+    "handshape": "flat_b",
+    "location": "weak-hand"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "evening",
+    "lemmaId": "night",
+    "code": "D_02_047",
+    "signbankLemmaId": "NIGHT",
+    "signbankAnnotationId": "NIGHT",
+    "aliases": [
+     "evening",
+     "night",
+     "NIGHT"
+    ],
+    "folds": [
+     "night"
+    ],
+    "phonology": {
+     "Handshape.2.0": "flat_b",
+     "MarkedHandshape.2.0": "1",
+     "SelectedFingers.2.0": "imrp",
+     "Flexion.2.0": "Flat",
+     "FlexionChange.2.0": "0",
+     "Spread.2.0": "0",
+     "SpreadChange.2.0": "0",
+     "ThumbPosition.2.0": "Open",
+     "ThumbContact.2.0": "0",
+     "SignType.2.0": "AsymmetricalSameHandshape",
+     "Movement.2.0": "Straight",
+     "RepeatedMovement.2.0": "1",
+     "MajorLocation.2.0": "Hand",
+     "MinorLocation.2.0": "PalmBack",
+     "SecondMinorLocation.2.0": "NA",
+     "Contact.2.0": "1",
+     "NonDominantHandshape.2.0": "flat_b",
+     "UlnarRotation.2.0": "0"
+    }
+   },
+   "review": {
+    "status": "approved",
+    "date": "2026-10-25",
+    "reviewer": "Claude (renders checked against ASL-LEX's coding and the common citation form; not yet checked by a signer)",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "NIGHT: the bent dominant hand, fingers down, taps over the back of the base wrist twice."
+   },
+   "todo": []
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/love",
+   "language": "ase",
+   "gloss": "LOVE",
+   "spoken": [
+    "love"
+   ],
+   "meanings": [
+    {
+     "text": "love",
+     "pos": "verb"
+    }
+   ],
+   "handed": "2h-asymmetric",
+   "lexicalClass": "Verb",
+   "dominant": {
+    "handshape": "S",
+    "palm": "in",
+    "fingers": "contra",
+    "location": "chest",
+    "offset": {
+     "contra": 9,
+     "out": 3
+    },
+    "movement": []
+   },
+   "library": {
+    "handshape": "A",
+    "location": "chest-front"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "love",
+    "lemmaId": "love",
+    "code": "G_01_068",
+    "signbankLemmaId": "LOVE",
+    "signbankAnnotationId": "LOVEs",
+    "aliases": [
+     "love",
+     "LOVE"
+    ],
+    "phonology": {
+     "Handshape.2.0": "a",
+     "MarkedHandshape.2.0": "0",
+     "SelectedFingers.2.0": "t",
+     "Flexion.2.0": "NA",
+     "FlexionChange.2.0": "NA",
+     "Spread.2.0": "NA",
+     "SpreadChange.2.0": "NA",
+     "ThumbPosition.2.0": "Open",
+     "ThumbContact.2.0": "NA",
+     "SignType.2.0": "SymmetricalOrAlternating",
+     "Movement.2.0": "None",
+     "RepeatedMovement.2.0": "0",
+     "MajorLocation.2.0": "Body",
+     "MinorLocation.2.0": "TorsoTop",
+     "SecondMinorLocation.2.0": "NA",
+     "Contact.2.0": "1",
+     "NonDominantHandshape.2.0": "a",
+     "UlnarRotation.2.0": "0"
+    }
+   },
+   "review": {
+    "status": "approved",
+    "date": "2026-10-25",
+    "reviewer": "Claude (renders checked against ASL-LEX's coding and the common citation form; not yet checked by a signer)",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "Fists crossed over the chest, the arms crossed, right in front."
+   },
+   "todo": [],
+   "nondominant": {
+    "handshape": "S",
+    "palm": "in",
+    "fingers": "contra",
+    "location": "chest",
+    "offset": {
+     "contra": 9
+    }
+   }
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/tired",
+   "language": "ase",
+   "gloss": "TIRED",
+   "spoken": [
+    "tired"
+   ],
+   "meanings": [
+    {
+     "text": "tired",
+     "pos": "adjective"
+    }
+   ],
+   "handed": "2h-symmetric",
+   "lexicalClass": "Adjective",
+   "dominant": {
+    "handshape": "C",
+    "palm": "in",
+    "fingers": "contra",
+    "location": "chest",
+    "site": "fingertips",
+    "movement": [
+     {
+      "type": "change",
+      "palm": "up",
+      "fingers": "in"
+     }
+    ]
+   },
+   "library": {
+    "handshape": "C",
+    "location": "chest-front"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "tired",
+    "lemmaId": "tired",
+    "code": "D_02_050",
+    "signbankLemmaId": "TIRED",
+    "signbankAnnotationId": "TIRED",
+    "aliases": [
+     "tired",
+     "TIRED"
+    ],
+    "phonology": {
+     "Handshape.2.0": "c",
+     "MarkedHandshape.2.0": "0",
+     "SelectedFingers.2.0": "imrp",
+     "Flexion.2.0": "Curved",
+     "FlexionChange.2.0": "0",
+     "Spread.2.0": "0",
+     "SpreadChange.2.0": "0",
+     "ThumbPosition.2.0": "Open",
+     "ThumbContact.2.0": "0",
+     "SignType.2.0": "SymmetricalOrAlternating",
+     "Movement.2.0": "Curved",
+     "RepeatedMovement.2.0": "0",
+     "MajorLocation.2.0": "Body",
+     "MinorLocation.2.0": "Clavicle",
+     "SecondMinorLocation.2.0": "NA",
+     "Contact.2.0": "1",
+     "NonDominantHandshape.2.0": "c",
+     "UlnarRotation.2.0": "0"
+    }
+   },
+   "review": {
+    "status": "approved",
+    "date": "2026-10-25",
+    "reviewer": "Claude (renders checked against ASL-LEX's coding and the common citation form; not yet checked by a signer)",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "Bent hands, fingertips on the chest, droop down."
+   },
+   "todo": []
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/hello",
+   "language": "ase",
+   "gloss": "HELLO",
+   "spoken": [
+    "hello",
+    "hi"
+   ],
+   "meanings": [
+    {
+     "text": "hello",
+     "pos": "interjection"
+    },
+    {
+     "text": "hi",
+     "pos": "interjection"
+    }
+   ],
+   "handed": "1h",
+   "lexicalClass": "Minor",
+   "dominant": {
+    "handshape": "B",
+    "palm": "out",
+    "fingers": "up+contra",
+    "location": "forehead",
+    "offset": {
+     "ipsi": 5
+    },
+    "movement": [
+     {
+      "type": "linear",
+      "direction": "out+ipsi"
+     }
+    ]
+   },
+   "library": {
+    "handshape": "B",
+    "location": "forehead"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "hello",
+    "lemmaId": "hello",
+    "code": "D_02_055",
+    "signbankLemmaId": "HELLO",
+    "signbankAnnotationId": "HELLO",
+    "aliases": [
+     "hello",
+     "HELLO"
+    ],
+    "phonology": {
+     "Handshape.2.0": "closed_b",
+     "MarkedHandshape.2.0": "0",
+     "SelectedFingers.2.0": "imrp",
+     "Flexion.2.0": "FullyOpen",
+     "FlexionChange.2.0": "0",
+     "Spread.2.0": "0",
+     "SpreadChange.2.0": "0",
+     "ThumbPosition.2.0": "Closed",
+     "ThumbContact.2.0": "0",
+     "SignType.2.0": "OneHanded",
+     "Movement.2.0": "Straight",
+     "RepeatedMovement.2.0": "0",
+     "MajorLocation.2.0": "Head",
+     "MinorLocation.2.0": "Forehead",
+     "SecondMinorLocation.2.0": "HeadAway",
+     "Contact.2.0": "1",
+     "NonDominantHandshape.2.0": "NA",
+     "UlnarRotation.2.0": "0"
+    }
+   },
+   "review": {
+    "status": "approved",
+    "date": "2026-10-25",
+    "reviewer": "Claude (renders checked against ASL-LEX's coding and the common citation form; not yet checked by a signer)",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "B hand at the forehead moves out and away to the side, a salute."
+   },
+   "todo": []
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/this-it",
+   "language": "ase",
+   "gloss": "IX",
+   "spoken": [
+    "he",
+    "she",
+    "it",
+    "this",
+    "that"
+   ],
+   "meanings": [
+    {
+     "text": "he",
+     "pos": "pronoun"
+    },
+    {
+     "text": "she",
+     "pos": "pronoun"
+    },
+    {
+     "text": "it",
+     "pos": "pronoun"
+    },
+    {
+     "text": "this",
+     "pos": "pronoun"
+    },
+    {
+     "text": "that",
+     "pos": "pronoun"
+    }
+   ],
+   "handed": "1h",
+   "lexicalClass": "Minor",
+   "dominant": {
+    "handshape": "1",
+    "palm": "down",
+    "fingers": "out",
+    "location": "neutral-space",
+    "movement": [
+     {
+      "type": "linear",
+      "direction": "out+ipsi"
+     }
+    ]
+   },
+   "library": {
+    "handshape": "1",
+    "location": "neutral-space"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "this/it",
+    "lemmaId": "this/it",
+    "code": "F_01_035",
+    "signbankLemmaId": "IX",
+    "signbankAnnotationId": "IX",
+    "aliases": [
+     "this/it",
+     "IX"
+    ],
+    "folds": [
+     "he"
+    ],
+    "phonology": {
+     "Handshape.2.0": "1",
+     "MarkedHandshape.2.0": "0",
+     "SelectedFingers.2.0": "i",
+     "Flexion.2.0": "FullyOpen",
+     "FlexionChange.2.0": "0",
+     "Spread.2.0": "NA",
+     "SpreadChange.2.0": "NA",
+     "ThumbPosition.2.0": "Closed",
+     "ThumbContact.2.0": "0",
+     "SignType.2.0": "OneHanded",
+     "Movement.2.0": "Straight",
+     "RepeatedMovement.2.0": "0",
+     "MajorLocation.2.0": "Neutral",
+     "MinorLocation.2.0": "Neutral",
+     "SecondMinorLocation.2.0": "Neutral",
+     "Contact.2.0": "0",
+     "NonDominantHandshape.2.0": "NA",
+     "UlnarRotation.2.0": "0"
+    }
+   },
+   "review": {
+    "status": "approved",
+    "date": "2026-10-25",
+    "reviewer": "Claude (renders checked against ASL-LEX's coding and the common citation form; not yet checked by a signer)",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "IX: the index points to a place for the person or thing."
+   },
+   "todo": []
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/ok",
+   "language": "ase",
+   "gloss": "OK",
+   "spoken": [
+    "OK",
+    "okay"
+   ],
+   "meanings": [
+    {
+     "text": "OK",
+     "pos": "interjection"
+    },
+    {
+     "text": "okay",
+     "pos": "interjection"
+    }
+   ],
+   "handed": "1h",
+   "lexicalClass": "Minor",
+   "dominant": {
+    "handshape": "O",
+    "palm": "out",
+    "fingers": "up",
+    "location": "neutral-space",
+    "movement": [
+     {
+      "type": "change",
+      "handshape": "K"
+     }
+    ]
+   },
+   "library": {
+    "handshape": "O",
+    "location": "neutral-space"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "ok",
+    "lemmaId": "ok",
+    "code": "F_03_080",
+    "signbankLemmaId": null,
+    "signbankAnnotationId": null,
+    "aliases": [
+     "ok"
+    ],
+    "phonology": {
+     "Handshape.2.0": "o",
+     "MarkedHandshape.2.0": "0",
+     "SelectedFingers.2.0": "imrp",
+     "Flexion.2.0": "Curved",
+     "FlexionChange.2.0": "NA",
+     "Spread.2.0": "0",
+     "SpreadChange.2.0": "NA",
+     "ThumbPosition.2.0": "Open",
+     "ThumbContact.2.0": "1",
+     "SignType.2.0": "OneHanded",
+     "Movement.2.0": "Straight",
+     "RepeatedMovement.2.0": "0",
+     "MajorLocation.2.0": "Neutral",
+     "MinorLocation.2.0": "Neutral",
+     "SecondMinorLocation.2.0": "Neutral",
+     "Contact.2.0": "0",
+     "NonDominantHandshape.2.0": "NA",
+     "UlnarRotation.2.0": "0"
+    }
+   },
+   "review": {
+    "status": "approved",
+    "date": "2026-10-25",
+    "reviewer": "Claude (renders checked against ASL-LEX's coding and the common citation form; not yet checked by a signer)",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "Fingerspelled O-K, a loan sign."
+   },
+   "todo": []
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/let-me-see",
+   "language": "ase",
+   "gloss": "WE'LL-SEE",
+   "spoken": [
+    "we'll see",
+    "let me see"
+   ],
+   "meanings": [
+    {
+     "text": "we'll see",
+     "pos": "phrase"
+    },
+    {
+     "text": "let me see",
+     "pos": "phrase"
+    }
+   ],
+   "handed": "1h",
+   "lexicalClass": "Verb",
+   "dominant": {
+    "handshape": "V",
+    "palm": "in",
+    "fingers": "up",
+    "location": "eye",
+    "site": "index",
+    "movement": [
+     {
+      "type": "tap",
+      "reps": 2
+     }
+    ],
+    "offset": {
+     "down": 2
+    }
+   },
+   "library": {
+    "handshape": "P",
+    "location": "eye"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "let_me_see",
+    "lemmaId": "let_me_see",
+    "code": "E_01_092",
+    "signbankLemmaId": "SEE-SEE",
+    "signbankAnnotationId": "SEE-SEE",
+    "aliases": [
+     "let_me_see",
+     "SEE-SEE",
+     "let me see"
+    ],
+    "folds": [
+     "we_will_see"
+    ],
+    "phonology": {
+     "Handshape.2.0": "p",
+     "MarkedHandshape.2.0": "1",
+     "SelectedFingers.2.0": "im",
+     "Flexion.2.0": "Stacked",
+     "FlexionChange.2.0": "0",
+     "Spread.2.0": "NA",
+     "SpreadChange.2.0": "NA",
+     "ThumbPosition.2.0": "Open",
+     "ThumbContact.2.0": "1",
+     "SignType.2.0": "OneHanded",
+     "Movement.2.0": "Straight",
+     "RepeatedMovement.2.0": "1",
+     "MajorLocation.2.0": "Head",
+     "MinorLocation.2.0": "Eye",
+     "SecondMinorLocation.2.0": "NA",
+     "Contact.2.0": "1",
+     "NonDominantHandshape.2.0": "NA",
+     "UlnarRotation.2.0": "0"
+    }
+   },
+   "review": {
+    "status": "draft",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "WE'LL-SEE: the V hand taps beside the eye."
+   },
+   "todo": [
+    "check the form against ASL-LEX: handshape (ASL-LEX: P) and where it taps"
+   ]
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/paper",
+   "language": "ase",
+   "gloss": "PAPER",
+   "spoken": [
+    "paper"
+   ],
+   "meanings": [
+    {
+     "text": "paper",
+     "pos": "noun"
+    }
+   ],
+   "handed": "2h-asymmetric",
+   "lexicalClass": "Noun",
+   "dominant": {
+    "handshape": "open_b",
+    "palm": "down",
+    "fingers": "contra",
+    "location": "weak-hand",
+    "site": "palm",
+    "movement": [
+     {
+      "type": "linear",
+      "direction": "in",
+      "reps": 2
+     }
+    ]
+   },
+   "nondominant": {
+    "handshape": "open_b",
+    "palm": "up",
+    "fingers": "out",
+    "location": "base-hand",
+    "role": "base"
+   },
+   "library": {
+    "handshape": "5",
+    "location": "weak-hand"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "paper",
+    "lemmaId": "paper",
+    "code": "A_01_026",
+    "signbankLemmaId": "PAPER",
+    "signbankAnnotationId": "PAPER",
+    "aliases": [
+     "paper",
+     "PAPER"
+    ],
+    "phonology": {
+     "Handshape.2.0": "5",
+     "MarkedHandshape.2.0": "0",
+     "SelectedFingers.2.0": "imrp",
+     "Flexion.2.0": "FullyOpen",
+     "FlexionChange.2.0": "0",
+     "Spread.2.0": "1",
+     "SpreadChange.2.0": "0",
+     "ThumbPosition.2.0": "Open",
+     "ThumbContact.2.0": "0",
+     "SignType.2.0": "AsymmetricalSameHandshape",
+     "Movement.2.0": "Curved",
+     "RepeatedMovement.2.0": "1",
+     "MajorLocation.2.0": "Hand",
+     "MinorLocation.2.0": "Palm",
+     "SecondMinorLocation.2.0": "HandAway",
+     "Contact.2.0": "1",
+     "NonDominantHandshape.2.0": "5",
+     "UlnarRotation.2.0": "0"
+    }
+   },
+   "review": {
+    "status": "approved",
+    "date": "2026-10-25",
+    "reviewer": "Claude (renders checked against ASL-LEX's coding and the common citation form; not yet checked by a signer)",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "The heel of the dominant palm brushes back across the base palm twice."
+   },
+   "todo": []
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/home",
+   "language": "ase",
+   "gloss": "HOME",
+   "spoken": [
+    "home"
+   ],
+   "meanings": [
+    {
+     "text": "home",
+     "pos": "noun"
+    }
+   ],
+   "handed": "1h",
+   "lexicalClass": "Adverb",
+   "dominant": {
+    "handshape": "flat_o",
+    "palm": "in",
+    "fingers": "up",
+    "location": "mouth",
+    "site": "fingertips",
+    "movement": [
+     {
+      "type": "move",
+      "to": "cheek"
+     },
+     {
+      "type": "tap"
+     }
+    ]
+   },
+   "library": {
+    "handshape": "O",
+    "location": "chin"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "home",
+    "lemmaId": "home",
+    "code": "B_03_063",
+    "signbankLemmaId": "HOME",
+    "signbankAnnotationId": "HOME",
+    "aliases": [
+     "home",
+     "HOME"
+    ],
+    "phonology": {
+     "Handshape.2.0": "o",
+     "MarkedHandshape.2.0": "0",
+     "SelectedFingers.2.0": "imrp",
+     "Flexion.2.0": "Curved",
+     "FlexionChange.2.0": "0",
+     "Spread.2.0": "0",
+     "SpreadChange.2.0": "0",
+     "ThumbPosition.2.0": "Open",
+     "ThumbContact.2.0": "1",
+     "SignType.2.0": "OneHanded",
+     "Movement.2.0": "Straight",
+     "RepeatedMovement.2.0": "0",
+     "MajorLocation.2.0": "Head",
+     "MinorLocation.2.0": "Chin",
+     "SecondMinorLocation.2.0": "NA",
+     "Contact.2.0": "1",
+     "NonDominantHandshape.2.0": "NA",
+     "UlnarRotation.2.0": "0"
+    }
+   },
+   "review": {
+    "status": "approved",
+    "date": "2026-10-25",
+    "reviewer": "Claude (renders checked against ASL-LEX's coding and the common citation form; not yet checked by a signer)",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "Flat O touches by the mouth, then the cheek."
+   },
+   "todo": []
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/more",
+   "language": "ase",
+   "gloss": "MORE",
+   "spoken": [
+    "more"
+   ],
+   "meanings": [
+    {
+     "text": "more",
+     "pos": "determiner"
+    }
+   ],
+   "handed": "2h-symmetric",
+   "lexicalClass": "Minor",
+   "dominant": {
+    "handshape": "flat_o",
+    "palm": "contra",
+    "fingers": "up",
+    "location": "neutral-space",
+    "offset": {
+     "contra": 6
+    },
+    "movement": [
+     {
+      "type": "linear",
+      "direction": "contra",
+      "contact": "end",
+      "reps": 2
+     }
+    ]
+   },
+   "library": {
+    "handshape": "O",
+    "location": "neutral-space"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "more",
+    "lemmaId": "more",
+    "code": "B_03_032",
+    "signbankLemmaId": "MORE",
+    "signbankAnnotationId": "MORE",
+    "aliases": [
+     "more",
+     "MORE"
+    ],
+    "phonology": {
+     "Handshape.2.0": "o",
+     "MarkedHandshape.2.0": "0",
+     "SelectedFingers.2.0": "imrp",
+     "Flexion.2.0": "Curved",
+     "FlexionChange.2.0": "0",
+     "Spread.2.0": "0",
+     "SpreadChange.2.0": "0",
+     "ThumbPosition.2.0": "Open",
+     "ThumbContact.2.0": "1",
+     "SignType.2.0": "SymmetricalOrAlternating",
+     "Movement.2.0": "Straight",
+     "RepeatedMovement.2.0": "1",
+     "MajorLocation.2.0": "Neutral",
+     "MinorLocation.2.0": "Neutral",
+     "SecondMinorLocation.2.0": "Neutral",
+     "Contact.2.0": "1",
+     "NonDominantHandshape.2.0": "o",
+     "UlnarRotation.2.0": "0"
+    }
+   },
+   "review": {
+    "status": "approved",
+    "date": "2026-10-25",
+    "reviewer": "Claude (renders checked against ASL-LEX's coding and the common citation form; not yet checked by a signer)",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "Flat O hands, fingertips facing, come together twice."
+   },
+   "todo": []
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/good",
+   "language": "ase",
+   "gloss": "GOOD",
+   "spoken": [
+    "good"
+   ],
+   "meanings": [
+    {
+     "text": "good",
+     "pos": "adjective"
+    }
+   ],
+   "handed": "1h",
+   "lexicalClass": "Adjective",
+   "dominant": {
+    "handshape": "open_b",
+    "palm": "in",
+    "fingers": "up",
+    "location": "chin",
+    "site": "fingertips",
+    "movement": [
+     {
+      "type": "linear",
+      "direction": "out+down"
+     }
+    ]
+   },
+   "library": {
+    "handshape": "open_b",
+    "location": "chin"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "good",
+    "lemmaId": "good",
+    "code": "B_01_052",
+    "signbankLemmaId": "GOOD",
+    "signbankAnnotationId": "GOOD",
+    "aliases": [
+     "good",
+     "GOOD"
+    ],
+    "phonology": {
+     "Handshape.2.0": "open_b",
+     "MarkedHandshape.2.0": "1",
+     "SelectedFingers.2.0": "imrp",
+     "Flexion.2.0": "FullyOpen",
+     "FlexionChange.2.0": "0",
+     "Spread.2.0": "0",
+     "SpreadChange.2.0": "0",
+     "ThumbPosition.2.0": "Open",
+     "ThumbContact.2.0": "0",
+     "SignType.2.0": "OneHanded",
+     "Movement.2.0": "Straight",
+     "RepeatedMovement.2.0": "0",
+     "MajorLocation.2.0": "Head",
+     "MinorLocation.2.0": "Chin",
+     "SecondMinorLocation.2.0": "HeadAway",
+     "Contact.2.0": "1",
+     "NonDominantHandshape.2.0": "NA",
+     "UlnarRotation.2.0": "0"
+    }
+   },
+   "review": {
+    "status": "approved",
+    "date": "2026-10-25",
+    "reviewer": "Claude (renders checked against ASL-LEX's coding and the common citation form; not yet checked by a signer)",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "Fingertips at the chin, the flat hand moves out and down (one-handed GOOD, as ASL-LEX codes it)."
+   },
+   "todo": []
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/what-1",
+   "language": "ase",
+   "gloss": "WHAT",
+   "spoken": [
+    "what"
+   ],
+   "meanings": [
+    {
+     "text": "what",
+     "pos": "pronoun"
+    }
+   ],
+   "handed": "2h-symmetric",
+   "lexicalClass": "Minor",
+   "dominant": {
+    "handshape": "5",
+    "palm": "up",
+    "fingers": "out",
+    "location": "neutral-space",
+    "movement": [
+     {
+      "type": "linear",
+      "direction": "ipsi",
+      "reps": 2
+     }
+    ]
+   },
+   "library": {
+    "handshape": "5",
+    "location": "neutral-space"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "what_1",
+    "lemmaId": "what_1",
+    "code": "D_02_084",
+    "signbankLemmaId": "WHAT",
+    "signbankAnnotationId": "WHAT",
+    "aliases": [
+     "what_1",
+     "WHAT",
+     "what 1"
+    ],
+    "phonology": {
+     "Handshape.2.0": "5",
+     "MarkedHandshape.2.0": "0",
+     "SelectedFingers.2.0": "imrp",
+     "Flexion.2.0": "FullyOpen",
+     "FlexionChange.2.0": "0",
+     "Spread.2.0": "1",
+     "SpreadChange.2.0": "0",
+     "ThumbPosition.2.0": "Open",
+     "ThumbContact.2.0": "0",
+     "SignType.2.0": "SymmetricalOrAlternating",
+     "Movement.2.0": "Straight",
+     "RepeatedMovement.2.0": "1",
+     "MajorLocation.2.0": "Neutral",
+     "MinorLocation.2.0": "Neutral",
+     "SecondMinorLocation.2.0": "Neutral",
+     "Contact.2.0": "0",
+     "NonDominantHandshape.2.0": "5",
+     "UlnarRotation.2.0": "0"
+    }
+   },
+   "review": {
+    "status": "approved",
+    "date": "2026-10-25",
+    "reviewer": "Claude (renders checked against ASL-LEX's coding and the common citation form; not yet checked by a signer)",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "Open hands, palms up, shake out to the sides."
+   },
+   "todo": []
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/must",
+   "language": "ase",
+   "gloss": "MUST",
+   "spoken": [
+    "must",
+    "have to"
+   ],
+   "meanings": [
+    {
+     "text": "must",
+     "pos": "verb"
+    },
+    {
+     "text": "have to",
+     "pos": "phrase"
+    }
+   ],
+   "handed": "1h",
+   "lexicalClass": "Verb",
+   "dominant": {
+    "handshape": "X",
+    "palm": "down",
+    "fingers": "out",
+    "location": "neutral-space",
+    "movement": [
+     {
+      "type": "linear",
+      "direction": "down"
+     }
+    ]
+   },
+   "library": {
+    "handshape": "X",
+    "location": "neutral-space"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "must",
+    "lemmaId": "must",
+    "code": "F_02_004",
+    "signbankLemmaId": "MUST",
+    "signbankAnnotationId": "MUST",
+    "aliases": [
+     "must",
+     "MUST"
+    ],
+    "phonology": {
+     "Handshape.2.0": "bent_1",
+     "MarkedHandshape.2.0": "1",
+     "SelectedFingers.2.0": "i",
+     "Flexion.2.0": "Bent",
+     "FlexionChange.2.0": "0",
+     "Spread.2.0": "NA",
+     "SpreadChange.2.0": "NA",
+     "ThumbPosition.2.0": "Closed",
+     "ThumbContact.2.0": "0",
+     "SignType.2.0": "OneHanded",
+     "Movement.2.0": "Curved",
+     "RepeatedMovement.2.0": "0",
+     "MajorLocation.2.0": "Neutral",
+     "MinorLocation.2.0": "Neutral",
+     "SecondMinorLocation.2.0": "Neutral",
+     "Contact.2.0": "0",
+     "NonDominantHandshape.2.0": "NA",
+     "UlnarRotation.2.0": "0"
+    }
+   },
+   "review": {
+    "status": "approved",
+    "date": "2026-10-25",
+    "reviewer": "Claude (renders checked against ASL-LEX's coding and the common citation form; not yet checked by a signer)",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "X hand, palm down, moves down sharply once."
+   },
+   "todo": []
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/today",
+   "language": "ase",
+   "gloss": "TODAY",
+   "spoken": [
+    "today"
+   ],
+   "meanings": [
+    {
+     "text": "today",
+     "pos": "adverb"
+    }
+   ],
+   "handed": "2h-symmetric",
+   "lexicalClass": "Noun",
+   "dominant": {
+    "handshape": "Y",
+    "palm": "up",
+    "fingers": "out",
+    "location": "neutral-space",
+    "movement": [
+     {
+      "type": "linear",
+      "direction": "down",
+      "reps": 2
+     }
+    ]
+   },
+   "library": {
+    "handshape": "Y",
+    "location": "neutral-space"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "today",
+    "lemmaId": "today",
+    "code": "E_02_006",
+    "signbankLemmaId": "TODAY",
+    "signbankAnnotationId": "TODAY",
+    "aliases": [
+     "today",
+     "TODAY"
+    ],
+    "phonology": {
+     "Handshape.2.0": "y",
+     "MarkedHandshape.2.0": "1",
+     "SelectedFingers.2.0": "p",
+     "Flexion.2.0": "FullyOpen",
+     "FlexionChange.2.0": "0",
+     "Spread.2.0": "NA",
+     "SpreadChange.2.0": "NA",
+     "ThumbPosition.2.0": "Open",
+     "ThumbContact.2.0": "0",
+     "SignType.2.0": "SymmetricalOrAlternating",
+     "Movement.2.0": "Straight",
+     "RepeatedMovement.2.0": "1",
+     "MajorLocation.2.0": "Neutral",
+     "MinorLocation.2.0": "Neutral",
+     "SecondMinorLocation.2.0": "Neutral",
+     "Contact.2.0": "0",
+     "NonDominantHandshape.2.0": "y",
+     "UlnarRotation.2.0": "0"
+    }
+   },
+   "review": {
+    "status": "approved",
+    "date": "2026-10-25",
+    "reviewer": "Claude (renders checked against ASL-LEX's coding and the common citation form; not yet checked by a signer)",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "NOW-NOW: Y hands, palms up, drop twice."
+   },
+   "todo": []
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/school",
+   "language": "ase",
+   "gloss": "SCHOOL",
+   "spoken": [
+    "school"
+   ],
+   "meanings": [
+    {
+     "text": "school",
+     "pos": "noun"
+    }
+   ],
+   "handed": "2h-asymmetric",
+   "lexicalClass": "Noun",
+   "dominant": {
+    "handshape": "open_b",
+    "palm": "down",
+    "fingers": "contra",
+    "location": "weak-hand",
+    "site": "palm",
+    "offset": {
+     "down": 3
+    },
+    "movement": [
+     {
+      "type": "tap",
+      "reps": 2
+     }
+    ]
+   },
+   "nondominant": {
+    "handshape": "open_b",
+    "palm": "up",
+    "fingers": "out",
+    "location": "base-hand",
+    "role": "base"
+   },
+   "library": {
+    "handshape": "5",
+    "location": "weak-hand"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "school",
+    "lemmaId": "school",
+    "code": "C_03_089",
+    "signbankLemmaId": "SCHOOL",
+    "signbankAnnotationId": "SCHOOL",
+    "aliases": [
+     "school",
+     "SCHOOL"
+    ],
+    "phonology": {
+     "Handshape.2.0": "5",
+     "MarkedHandshape.2.0": "0",
+     "SelectedFingers.2.0": "imrp",
+     "Flexion.2.0": "FullyOpen",
+     "FlexionChange.2.0": "0",
+     "Spread.2.0": "1",
+     "SpreadChange.2.0": "0",
+     "ThumbPosition.2.0": "Open",
+     "ThumbContact.2.0": "0",
+     "SignType.2.0": "AsymmetricalSameHandshape",
+     "Movement.2.0": "Straight",
+     "RepeatedMovement.2.0": "1",
+     "MajorLocation.2.0": "Hand",
+     "MinorLocation.2.0": "Palm",
+     "SecondMinorLocation.2.0": "NA",
+     "Contact.2.0": "1",
+     "NonDominantHandshape.2.0": "5",
+     "UlnarRotation.2.0": "0"
+    }
+   },
+   "review": {
+    "status": "approved",
+    "date": "2026-10-25",
+    "reviewer": "Claude (renders checked against ASL-LEX's coding and the common citation form; not yet checked by a signer)",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "Clap: the flat dominant hand claps the upturned base palm twice. ASL-LEX codes 5 hands."
+   },
+   "todo": []
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/do-do",
+   "language": "ase",
+   "gloss": "WHAT-DO",
+   "spoken": [
+    "what to do",
+    "do"
+   ],
+   "meanings": [
+    {
+     "text": "what to do",
+     "pos": "phrase"
+    },
+    {
+     "text": "do",
+     "pos": "verb"
+    }
+   ],
+   "handed": "2h-symmetric",
+   "lexicalClass": "Verb",
+   "dominant": {
+    "handshape": "baby_o",
+    "palm": "down",
+    "fingers": "out",
+    "location": "neutral-space",
+    "movement": [
+     {
+      "type": "linear",
+      "direction": "ipsi",
+      "reps": 2
+     }
+    ]
+   },
+   "library": {
+    "handshape": "D",
+    "location": "neutral-space"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "do_do",
+    "lemmaId": "do_do",
+    "code": "E_01_096",
+    "signbankLemmaId": "WHAT-DO",
+    "signbankAnnotationId": "WHAT-DO",
+    "aliases": [
+     "do_do",
+     "WHAT-DO",
+     "do do"
+    ],
+    "phonology": {
+     "Handshape.2.0": "d",
+     "MarkedHandshape.2.0": "0",
+     "SelectedFingers.2.0": "m",
+     "Flexion.2.0": "Curved",
+     "FlexionChange.2.0": "0",
+     "Spread.2.0": "NA",
+     "SpreadChange.2.0": "NA",
+     "ThumbPosition.2.0": "Open",
+     "ThumbContact.2.0": "1",
+     "SignType.2.0": "SymmetricalOrAlternating",
+     "Movement.2.0": "None",
+     "RepeatedMovement.2.0": "0",
+     "MajorLocation.2.0": "Neutral",
+     "MinorLocation.2.0": "Neutral",
+     "SecondMinorLocation.2.0": "NA",
+     "Contact.2.0": "0",
+     "NonDominantHandshape.2.0": "1",
+     "UlnarRotation.2.0": "0"
+    }
+   },
+   "review": {
+    "status": "draft",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "Both hands, index pinched to thumb, palms down, move side to side."
+   },
+   "todo": [
+    "check: DO-DO's hands move side to side together; here they move apart and back",
+    "check the handshape against ASL-LEX (D)"
+   ]
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/read",
+   "language": "ase",
+   "gloss": "READ",
+   "spoken": [
+    "read"
+   ],
+   "meanings": [
+    {
+     "text": "read",
+     "pos": "verb"
+    }
+   ],
+   "handed": "2h-asymmetric",
+   "lexicalClass": "Verb",
+   "dominant": {
+    "handshape": "V",
+    "palm": "in",
+    "fingers": "down",
+    "location": "weak-hand",
+    "offset": {
+     "up": 4
+    },
+    "movement": [
+     {
+      "type": "linear",
+      "direction": "in",
+      "reps": 2
+     }
+    ]
+   },
+   "nondominant": {
+    "handshape": "open_b",
+    "palm": "up",
+    "fingers": "out",
+    "location": "base-hand",
+    "role": "base"
+   },
+   "library": {
+    "handshape": "V",
+    "location": "weak-hand"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "read",
+    "lemmaId": "read",
+    "code": "A_01_022",
+    "signbankLemmaId": "READ",
+    "signbankAnnotationId": "READ",
+    "aliases": [
+     "read",
+     "READ"
+    ],
+    "phonology": {
+     "Handshape.2.0": "v",
+     "MarkedHandshape.2.0": "1",
+     "SelectedFingers.2.0": "im",
+     "Flexion.2.0": "FullyOpen",
+     "FlexionChange.2.0": "0",
+     "Spread.2.0": "1",
+     "SpreadChange.2.0": "0",
+     "ThumbPosition.2.0": "Closed",
+     "ThumbContact.2.0": "0",
+     "SignType.2.0": "AsymmetricalDifferentHandshape",
+     "Movement.2.0": "Straight",
+     "RepeatedMovement.2.0": "1",
+     "MajorLocation.2.0": "Hand",
+     "MinorLocation.2.0": "HandAway",
+     "SecondMinorLocation.2.0": "HandAway",
+     "Contact.2.0": "0",
+     "NonDominantHandshape.2.0": "B",
+     "UlnarRotation.2.0": "0"
+    }
+   },
+   "review": {
+    "status": "approved",
+    "date": "2026-10-25",
+    "reviewer": "Claude (renders checked against ASL-LEX's coding and the common citation form; not yet checked by a signer)",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "V fingers point down at the base palm and move from its fingers to its heel, twice."
+   },
+   "todo": []
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/coffee",
+   "language": "ase",
+   "gloss": "COFFEE",
+   "spoken": [
+    "coffee"
+   ],
+   "meanings": [
+    {
+     "text": "coffee",
+     "pos": "noun"
+    }
+   ],
+   "handed": "2h-asymmetric",
+   "lexicalClass": "Noun",
+   "dominant": {
+    "handshape": "S",
+    "palm": "contra",
+    "fingers": "out",
+    "location": "weak-hand",
+    "site": "pinky-side",
+    "movement": [
+     {
+      "type": "twist",
+      "reps": 2
+     }
+    ]
+   },
+   "nondominant": {
+    "handshape": "S",
+    "palm": "contra",
+    "fingers": "out",
+    "location": "base-hand",
+    "role": "base"
+   },
+   "library": {
+    "handshape": "S",
+    "location": "weak-hand"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "coffee",
+    "lemmaId": "coffee",
+    "code": "A_01_032",
+    "signbankLemmaId": "COFFEE",
+    "signbankAnnotationId": "COFFEE",
+    "aliases": [
+     "coffee",
+     "COFFEE"
+    ],
+    "phonology": {
+     "Handshape.2.0": "s",
+     "MarkedHandshape.2.0": "0",
+     "SelectedFingers.2.0": "imrp",
+     "Flexion.2.0": "FullyClosed",
+     "FlexionChange.2.0": "0",
+     "Spread.2.0": "NA",
+     "SpreadChange.2.0": "0",
+     "ThumbPosition.2.0": "Closed",
+     "ThumbContact.2.0": "1",
+     "SignType.2.0": "AsymmetricalSameHandshape",
+     "Movement.2.0": "Circular",
+     "RepeatedMovement.2.0": "1",
+     "MajorLocation.2.0": "Hand",
+     "MinorLocation.2.0": "FingerRadial",
+     "SecondMinorLocation.2.0": "FingerRadial",
+     "Contact.2.0": "1",
+     "NonDominantHandshape.2.0": "s",
+     "UlnarRotation.2.0": "0"
+    }
+   },
+   "review": {
+    "status": "approved",
+    "date": "2026-10-25",
+    "reviewer": "Claude (renders checked against ASL-LEX's coding and the common citation form; not yet checked by a signer)",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "Grinding: the dominant fist turns back and forth on top of the base fist."
+   },
+   "todo": []
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/time",
+   "language": "ase",
+   "gloss": "TIME",
+   "spoken": [
+    "time"
+   ],
+   "meanings": [
+    {
+     "text": "time",
+     "pos": "noun"
+    }
+   ],
+   "handed": "2h-asymmetric",
+   "lexicalClass": "Noun",
+   "dominant": {
+    "handshape": "X",
+    "palm": "down",
+    "fingers": "out",
+    "location": "weak-hand",
+    "site": "index",
+    "movement": [
+     {
+      "type": "tap",
+      "reps": 2
+     }
+    ]
+   },
+   "library": {
+    "handshape": "X",
+    "location": "weak-hand"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "time",
+    "lemmaId": "time",
+    "code": "B_02_080",
+    "signbankLemmaId": "TIME",
+    "signbankAnnotationId": "TIME",
+    "aliases": [
+     "time",
+     "TIME"
+    ],
+    "phonology": {
+     "Handshape.2.0": "bent_1",
+     "MarkedHandshape.2.0": "1",
+     "SelectedFingers.2.0": "i",
+     "Flexion.2.0": "Bent",
+     "FlexionChange.2.0": "0",
+     "Spread.2.0": "NA",
+     "SpreadChange.2.0": "NA",
+     "ThumbPosition.2.0": "Closed",
+     "ThumbContact.2.0": "0",
+     "SignType.2.0": "OneHanded",
+     "Movement.2.0": "Straight",
+     "RepeatedMovement.2.0": "1",
+     "MajorLocation.2.0": "Arm",
+     "MinorLocation.2.0": "WristBack",
+     "SecondMinorLocation.2.0": "NA",
+     "Contact.2.0": "1",
+     "NonDominantHandshape.2.0": "NA",
+     "UlnarRotation.2.0": "0"
+    }
+   },
+   "review": {
+    "status": "approved",
+    "date": "2026-10-25",
+    "reviewer": "Claude (renders checked against ASL-LEX's coding and the common citation form; not yet checked by a signer)",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "X index taps the back of the base wrist twice. ASL-LEX codes it one-handed on the wrist."
+   },
+   "todo": [],
+   "nondominant": {
+    "handshape": "S",
+    "palm": "down",
+    "fingers": "contra",
+    "location": "base-hand",
+    "role": "base"
+   }
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/change",
+   "language": "ase",
+   "gloss": "CHANGE",
+   "spoken": [
+    "change"
+   ],
+   "meanings": [
+    {
+     "text": "change",
+     "pos": "verb"
+    }
+   ],
+   "handed": "2h-symmetric",
+   "lexicalClass": "Verb",
+   "dominant": {
+    "handshape": "X",
+    "palm": "contra",
+    "fingers": "out",
+    "location": "neutral-space",
+    "offset": {
+     "contra": 6
+    },
+    "movement": [
+     {
+      "type": "twist"
+     }
+    ]
+   },
+   "library": {
+    "handshape": "X",
+    "location": "neutral-space"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "change",
+    "lemmaId": "change",
+    "code": "E_01_031",
+    "signbankLemmaId": "CHANGE",
+    "signbankAnnotationId": "CHANGEx",
+    "aliases": [
+     "change",
+     "CHANGE"
+    ],
+    "phonology": {
+     "Handshape.2.0": "bent_1",
+     "MarkedHandshape.2.0": "1",
+     "SelectedFingers.2.0": "i",
+     "Flexion.2.0": "Bent",
+     "FlexionChange.2.0": "0",
+     "Spread.2.0": "NA",
+     "SpreadChange.2.0": "NA",
+     "ThumbPosition.2.0": "Closed",
+     "ThumbContact.2.0": "0",
+     "SignType.2.0": "SymmetricalOrAlternating",
+     "Movement.2.0": "Curved",
+     "RepeatedMovement.2.0": "0",
+     "MajorLocation.2.0": "Neutral",
+     "MinorLocation.2.0": "Neutral",
+     "SecondMinorLocation.2.0": "Neutral",
+     "Contact.2.0": "1",
+     "NonDominantHandshape.2.0": "bent_1",
+     "UlnarRotation.2.0": "1"
+    }
+   },
+   "review": {
+    "status": "draft",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "X hands, knuckles together, turn over each other."
+   },
+   "todo": [
+    "check: the hands should swap places as they turn"
+   ]
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/better",
+   "language": "ase",
+   "gloss": "BETTER",
+   "spoken": [
+    "better"
+   ],
+   "meanings": [
+    {
+     "text": "better",
+     "pos": "adjective"
+    }
+   ],
+   "handed": "1h",
+   "lexicalClass": "Adjective",
+   "dominant": {
+    "handshape": "open_b",
+    "palm": "in",
+    "fingers": "contra",
+    "location": "chin",
+    "movement": [
+     {
+      "type": "move",
+      "to": "neutral-space-high",
+      "handshape": "A",
+      "palm": "contra",
+      "fingers": "up"
+     }
+    ]
+   },
+   "library": {
+    "handshape": "open_b",
+    "location": "chin"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "better",
+    "lemmaId": "better",
+    "code": "F_01_062",
+    "signbankLemmaId": "BETTER",
+    "signbankAnnotationId": "BETTER",
+    "aliases": [
+     "better",
+     "BETTER"
+    ],
+    "phonology": {
+     "Handshape.2.0": "open_b",
+     "MarkedHandshape.2.0": "1",
+     "SelectedFingers.2.0": "imrp",
+     "Flexion.2.0": "FullyOpen",
+     "FlexionChange.2.0": "1",
+     "Spread.2.0": "0",
+     "SpreadChange.2.0": "0",
+     "ThumbPosition.2.0": "Open",
+     "ThumbContact.2.0": "0",
+     "SignType.2.0": "OneHanded",
+     "Movement.2.0": "Curved",
+     "RepeatedMovement.2.0": "0",
+     "MajorLocation.2.0": "Head",
+     "MinorLocation.2.0": "Chin",
+     "SecondMinorLocation.2.0": "HeadAway",
+     "Contact.2.0": "1",
+     "NonDominantHandshape.2.0": "NA",
+     "UlnarRotation.2.0": "0"
+    }
+   },
+   "review": {
+    "status": "approved",
+    "date": "2026-10-25",
+    "reviewer": "Claude (renders checked against ASL-LEX's coding and the common citation form; not yet checked by a signer)",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "Flat hand at the chin moves up and out, closing to A (thumb up)."
+   },
+   "todo": []
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/ready",
+   "language": "ase",
+   "gloss": "READY",
+   "spoken": [
+    "ready"
+   ],
+   "meanings": [
+    {
+     "text": "ready",
+     "pos": "adjective"
+    }
+   ],
+   "handed": "2h-symmetric",
+   "lexicalClass": "Adjective",
+   "dominant": {
+    "handshape": "R",
+    "palm": "down",
+    "fingers": "out",
+    "location": "neutral-space",
+    "offset": {
+     "contra": 4
+    },
+    "movement": [
+     {
+      "type": "linear",
+      "direction": "ipsi"
+     }
+    ]
+   },
+   "library": {
+    "handshape": "R",
+    "location": "neutral-space"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "ready",
+    "lemmaId": "ready",
+    "code": "F_03_042",
+    "signbankLemmaId": "READY",
+    "signbankAnnotationId": "BE-READY",
+    "aliases": [
+     "ready",
+     "READY"
+    ],
+    "phonology": {
+     "Handshape.2.0": "r",
+     "MarkedHandshape.2.0": "1",
+     "SelectedFingers.2.0": "im",
+     "Flexion.2.0": "Crossed",
+     "FlexionChange.2.0": "0",
+     "Spread.2.0": "0",
+     "SpreadChange.2.0": "0",
+     "ThumbPosition.2.0": "Closed",
+     "ThumbContact.2.0": "0",
+     "SignType.2.0": "SymmetricalOrAlternating",
+     "Movement.2.0": "Straight",
+     "RepeatedMovement.2.0": "0",
+     "MajorLocation.2.0": "Neutral",
+     "MinorLocation.2.0": "Neutral",
+     "SecondMinorLocation.2.0": "Neutral",
+     "Contact.2.0": "0",
+     "NonDominantHandshape.2.0": "r",
+     "UlnarRotation.2.0": "0"
+    }
+   },
+   "review": {
+    "status": "approved",
+    "date": "2026-10-25",
+    "reviewer": "Claude (renders checked against ASL-LEX's coding and the common citation form; not yet checked by a signer)",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "R hands, palms down, move apart to the sides."
+   },
+   "todo": []
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/father",
+   "language": "ase",
+   "gloss": "FATHER",
+   "spoken": [
+    "father",
+    "dad"
+   ],
+   "meanings": [
+    {
+     "text": "father",
+     "pos": "noun"
+    },
+    {
+     "text": "dad",
+     "pos": "noun"
+    }
+   ],
+   "handed": "1h",
+   "lexicalClass": "Noun",
+   "dominant": {
+    "handshape": "5",
+    "palm": "contra",
+    "fingers": "up",
+    "location": "forehead",
+    "site": "thumb",
+    "movement": [
+     {
+      "type": "tap",
+      "reps": 2
+     }
+    ]
+   },
+   "library": {
+    "handshape": "5",
+    "location": "forehead"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "father",
+    "lemmaId": "father",
+    "code": "B_01_077",
+    "signbankLemmaId": "FATHER",
+    "signbankAnnotationId": "FATHERstr",
+    "aliases": [
+     "father",
+     "FATHER"
+    ],
+    "phonology": {
+     "Handshape.2.0": "5",
+     "MarkedHandshape.2.0": "0",
+     "SelectedFingers.2.0": "imrp",
+     "Flexion.2.0": "FullyOpen",
+     "FlexionChange.2.0": "0",
+     "Spread.2.0": "1",
+     "SpreadChange.2.0": "0",
+     "ThumbPosition.2.0": "Open",
+     "ThumbContact.2.0": "0",
+     "SignType.2.0": "OneHanded",
+     "Movement.2.0": "Straight",
+     "RepeatedMovement.2.0": "1",
+     "MajorLocation.2.0": "Head",
+     "MinorLocation.2.0": "Forehead",
+     "SecondMinorLocation.2.0": "NA",
+     "Contact.2.0": "1",
+     "NonDominantHandshape.2.0": "NA",
+     "UlnarRotation.2.0": "0"
+    }
+   },
+   "review": {
+    "status": "approved",
+    "date": "2026-10-25",
+    "reviewer": "Claude (renders checked against ASL-LEX's coding and the common citation form; not yet checked by a signer)",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "5 hand, thumb taps the forehead twice."
+   },
+   "todo": []
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/drink",
+   "language": "ase",
+   "gloss": "DRINK",
+   "spoken": [
+    "drink"
+   ],
+   "meanings": [
+    {
+     "text": "drink",
+     "pos": "verb"
+    },
+    {
+     "text": "drink",
+     "pos": "noun"
+    }
+   ],
+   "handed": "1h",
+   "lexicalClass": "Noun",
+   "dominant": {
+    "handshape": "C",
+    "palm": "contra",
+    "fingers": "out",
+    "location": "mouth",
+    "site": "thumb",
+    "movement": [
+     {
+      "type": "change",
+      "palm": "contra",
+      "fingers": "out+up"
+     }
+    ]
+   },
+   "library": {
+    "handshape": "C",
+    "location": "head"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "drink",
+    "lemmaId": "drink",
+    "code": "B_02_012",
+    "signbankLemmaId": "DRINK",
+    "signbankAnnotationId": "DRINKc",
+    "aliases": [
+     "drink",
+     "DRINK"
+    ],
+    "phonology": {
+     "Handshape.2.0": "c",
+     "MarkedHandshape.2.0": "0",
+     "SelectedFingers.2.0": "imrp",
+     "Flexion.2.0": "Curved",
+     "FlexionChange.2.0": "0",
+     "Spread.2.0": "0",
+     "SpreadChange.2.0": "0",
+     "ThumbPosition.2.0": "Open",
+     "ThumbContact.2.0": "0",
+     "SignType.2.0": "OneHanded",
+     "Movement.2.0": "Straight",
+     "RepeatedMovement.2.0": "0",
+     "MajorLocation.2.0": "Head",
+     "MinorLocation.2.0": "HeadAway",
+     "SecondMinorLocation.2.0": "HeadAway",
+     "Contact.2.0": "0",
+     "NonDominantHandshape.2.0": "NA",
+     "UlnarRotation.2.0": "1"
+    }
+   },
+   "review": {
+    "status": "approved",
+    "date": "2026-10-25",
+    "reviewer": "Claude (renders checked against ASL-LEX's coding and the common citation form; not yet checked by a signer)",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "C hand holds a cup at the mouth and tips it up."
+   },
+   "todo": []
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/tomorrow",
+   "language": "ase",
+   "gloss": "TOMORROW",
+   "spoken": [
+    "tomorrow"
+   ],
+   "meanings": [
+    {
+     "text": "tomorrow",
+     "pos": "adverb"
+    }
+   ],
+   "handed": "1h",
+   "lexicalClass": "Noun",
+   "dominant": {
+    "handshape": "A",
+    "palm": "contra",
+    "fingers": "up",
+    "location": "cheek",
+    "site": "thumb",
+    "movement": [
+     {
+      "type": "arc",
+      "direction": "out"
+     }
+    ]
+   },
+   "library": {
+    "handshape": "A",
+    "location": "cheek"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "tomorrow",
+    "lemmaId": "tomorrow",
+    "code": "F_02_040",
+    "signbankLemmaId": "TOMORROW",
+    "signbankAnnotationId": "TOMORROW",
+    "aliases": [
+     "tomorrow",
+     "TOMORROW"
+    ],
+    "phonology": {
+     "Handshape.2.0": "a",
+     "MarkedHandshape.2.0": "0",
+     "SelectedFingers.2.0": "t",
+     "Flexion.2.0": "NA",
+     "FlexionChange.2.0": "NA",
+     "Spread.2.0": "NA",
+     "SpreadChange.2.0": "NA",
+     "ThumbPosition.2.0": "Open",
+     "ThumbContact.2.0": "NA",
+     "SignType.2.0": "OneHanded",
+     "Movement.2.0": "Curved",
+     "RepeatedMovement.2.0": "0",
+     "MajorLocation.2.0": "Head",
+     "MinorLocation.2.0": "CheekNose",
+     "SecondMinorLocation.2.0": "HeadAway",
+     "Contact.2.0": "0",
+     "NonDominantHandshape.2.0": "NA",
+     "UlnarRotation.2.0": "0"
+    }
+   },
+   "review": {
+    "status": "approved",
+    "date": "2026-10-25",
+    "reviewer": "Claude (renders checked against ASL-LEX's coding and the common citation form; not yet checked by a signer)",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "A hand, thumb at the cheek, arcs forward."
+   },
+   "todo": []
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/see",
+   "language": "ase",
+   "gloss": "SEE",
+   "spoken": [
+    "see"
+   ],
+   "meanings": [
+    {
+     "text": "see",
+     "pos": "verb"
+    }
+   ],
+   "handed": "1h",
+   "lexicalClass": "Verb",
+   "dominant": {
+    "handshape": "V",
+    "palm": "in",
+    "fingers": "up",
+    "location": "eye",
+    "site": "index",
+    "offset": {
+     "down": 2
+    },
+    "movement": [
+     {
+      "type": "linear",
+      "direction": "out"
+     }
+    ]
+   },
+   "library": {
+    "handshape": "P",
+    "location": "eye"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "see",
+    "lemmaId": "see",
+    "code": "C_02_030",
+    "signbankLemmaId": "SEE",
+    "signbankAnnotationId": "SEE",
+    "aliases": [
+     "see",
+     "SEE"
+    ],
+    "phonology": {
+     "Handshape.2.0": "p",
+     "MarkedHandshape.2.0": "1",
+     "SelectedFingers.2.0": "im",
+     "Flexion.2.0": "Stacked",
+     "FlexionChange.2.0": "0",
+     "Spread.2.0": "NA",
+     "SpreadChange.2.0": "NA",
+     "ThumbPosition.2.0": "Open",
+     "ThumbContact.2.0": "1",
+     "SignType.2.0": "OneHanded",
+     "Movement.2.0": "Straight",
+     "RepeatedMovement.2.0": "0",
+     "MajorLocation.2.0": "Head",
+     "MinorLocation.2.0": "Eye",
+     "SecondMinorLocation.2.0": "HeadAway",
+     "Contact.2.0": "1",
+     "NonDominantHandshape.2.0": "NA",
+     "UlnarRotation.2.0": "0"
+    }
+   },
+   "review": {
+    "status": "approved",
+    "date": "2026-10-25",
+    "reviewer": "Claude (renders checked against ASL-LEX's coding and the common citation form; not yet checked by a signer)",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "V hand at the eyes moves out. ASL-LEX codes a P hand; SEE is usually V."
+   },
+   "todo": []
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/door",
+   "language": "ase",
+   "gloss": "DOOR",
+   "spoken": [
+    "door"
+   ],
+   "meanings": [
+    {
+     "text": "door",
+     "pos": "noun"
+    }
+   ],
+   "handed": "2h-asymmetric",
+   "lexicalClass": "Noun",
+   "dominant": {
+    "handshape": "B",
+    "palm": "out",
+    "fingers": "up",
+    "location": "neutral-space",
+    "offset": {
+     "contra": 5,
+     "down": 3,
+     "in": 2
+    },
+    "movement": [
+     {
+      "type": "twist",
+      "reps": 2
+     }
+    ]
+   },
+   "nondominant": {
+    "handshape": "B",
+    "palm": "out",
+    "fingers": "up",
+    "location": "base-hand",
+    "role": "base"
+   },
+   "library": {
+    "handshape": "B",
+    "location": "weak-hand"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "door",
+    "lemmaId": "door",
+    "code": "A_03_052",
+    "signbankLemmaId": "DOOR",
+    "signbankAnnotationId": "DOORb",
+    "aliases": [
+     "door",
+     "DOOR"
+    ],
+    "phonology": {
+     "Handshape.2.0": "closed_b",
+     "MarkedHandshape.2.0": "0",
+     "SelectedFingers.2.0": "imrp",
+     "Flexion.2.0": "FullyOpen",
+     "FlexionChange.2.0": "0",
+     "Spread.2.0": "0",
+     "SpreadChange.2.0": "0",
+     "ThumbPosition.2.0": "Closed",
+     "ThumbContact.2.0": "0",
+     "SignType.2.0": "AsymmetricalSameHandshape",
+     "Movement.2.0": "Curved",
+     "RepeatedMovement.2.0": "1",
+     "MajorLocation.2.0": "Hand",
+     "MinorLocation.2.0": "FingerRadial",
+     "SecondMinorLocation.2.0": "HandAway",
+     "Contact.2.0": "1",
+     "NonDominantHandshape.2.0": "closed_b",
+     "UlnarRotation.2.0": "1"
+    }
+   },
+   "review": {
+    "status": "approved",
+    "date": "2026-10-25",
+    "reviewer": "Claude (renders checked against ASL-LEX's coding and the common citation form; not yet checked by a signer)",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "B hands side by side, palms out; the dominant swings open on its little-finger edge, twice."
+   },
+   "todo": []
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/nothing",
+   "language": "ase",
+   "gloss": "NOTHING",
+   "spoken": [
+    "nothing"
+   ],
+   "meanings": [
+    {
+     "text": "nothing",
+     "pos": "pronoun"
+    }
+   ],
+   "handed": "2h-symmetric",
+   "lexicalClass": "Noun",
+   "dominant": {
+    "handshape": "O",
+    "palm": "out",
+    "fingers": "up",
+    "location": "neutral-space",
+    "offset": {
+     "contra": 4
+    },
+    "movement": [
+     {
+      "type": "linear",
+      "direction": "out+ipsi",
+      "reps": 2
+     }
+    ]
+   },
+   "library": {
+    "handshape": "O",
+    "location": "neutral-space"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "nothing",
+    "lemmaId": "nothing",
+    "code": "B_01_079",
+    "signbankLemmaId": "NOTHING",
+    "signbankAnnotationId": "NOTHING",
+    "aliases": [
+     "nothing",
+     "NOTHING"
+    ],
+    "phonology": {
+     "Handshape.2.0": "o",
+     "MarkedHandshape.2.0": "0",
+     "SelectedFingers.2.0": "imrp",
+     "Flexion.2.0": "Curved",
+     "FlexionChange.2.0": "0",
+     "Spread.2.0": "0",
+     "SpreadChange.2.0": "0",
+     "ThumbPosition.2.0": "Open",
+     "ThumbContact.2.0": "1",
+     "SignType.2.0": "SymmetricalOrAlternating",
+     "Movement.2.0": "Straight",
+     "RepeatedMovement.2.0": "1",
+     "MajorLocation.2.0": "Neutral",
+     "MinorLocation.2.0": "Neutral",
+     "SecondMinorLocation.2.0": "Neutral",
+     "Contact.2.0": "0",
+     "NonDominantHandshape.2.0": "o",
+     "UlnarRotation.2.0": "0"
+    }
+   },
+   "review": {
+    "status": "approved",
+    "date": "2026-10-25",
+    "reviewer": "Claude (renders checked against ASL-LEX's coding and the common citation form; not yet checked by a signer)",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "O hands, palms out, move apart and forward twice."
+   },
+   "todo": []
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/friday",
+   "language": "ase",
+   "gloss": "FRIDAY",
+   "spoken": [
+    "Friday"
+   ],
+   "meanings": [
+    {
+     "text": "Friday",
+     "pos": "proper noun"
+    }
+   ],
+   "handed": "1h",
+   "lexicalClass": "Name",
+   "dominant": {
+    "handshape": "F",
+    "palm": "in",
+    "fingers": "up",
+    "location": "neutral-space",
+    "offset": {
+     "up": 6
+    },
+    "movement": [
+     {
+      "type": "circle",
+      "reps": 2
+     }
+    ]
+   },
+   "library": {
+    "handshape": "F",
+    "location": "neutral-space"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "friday",
+    "lemmaId": "friday",
+    "code": "B_02_020",
+    "signbankLemmaId": "FRIDAY",
+    "signbankAnnotationId": "FRIDAY",
+    "aliases": [
+     "friday",
+     "FRIDAY"
+    ],
+    "phonology": {
+     "Handshape.2.0": "f",
+     "MarkedHandshape.2.0": "1",
+     "SelectedFingers.2.0": "i",
+     "Flexion.2.0": "Curved",
+     "FlexionChange.2.0": "0",
+     "Spread.2.0": "NA",
+     "SpreadChange.2.0": "NA",
+     "ThumbPosition.2.0": "Open",
+     "ThumbContact.2.0": "1",
+     "SignType.2.0": "OneHanded",
+     "Movement.2.0": "Circular",
+     "RepeatedMovement.2.0": "1",
+     "MajorLocation.2.0": "Neutral",
+     "MinorLocation.2.0": "Neutral",
+     "SecondMinorLocation.2.0": "Neutral",
+     "Contact.2.0": "0",
+     "NonDominantHandshape.2.0": "NA",
+     "UlnarRotation.2.0": "0"
+    }
+   },
+   "review": {
+    "status": "approved",
+    "date": "2026-10-25",
+    "reviewer": "Claude (renders checked against ASL-LEX's coding and the common citation form; not yet checked by a signer)",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "F hand, palm in, circles."
+   },
+   "todo": []
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/category",
+   "language": "ase",
+   "gloss": "CLASS",
+   "spoken": [
+    "class",
+    "group",
+    "category"
+   ],
+   "meanings": [
+    {
+     "text": "class",
+     "pos": "noun"
+    },
+    {
+     "text": "group",
+     "pos": "noun"
+    },
+    {
+     "text": "category",
+     "pos": "noun"
+    }
+   ],
+   "handed": "2h-symmetric",
+   "lexicalClass": "Noun",
+   "dominant": {
+    "handshape": "C",
+    "palm": "out",
+    "fingers": "up",
+    "location": "neutral-space",
+    "offset": {
+     "contra": 6
+    },
+    "movement": [
+     {
+      "type": "change",
+      "palm": "in",
+      "fingers": "up",
+      "offset": {
+       "contra": 6,
+       "in": 8
+      }
+     }
+    ]
+   },
+   "library": {
+    "handshape": "C",
+    "location": "neutral-space"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "category",
+    "lemmaId": "category",
+    "code": "E_01_034",
+    "signbankLemmaId": "CLASS",
+    "signbankAnnotationId": "CLASS",
+    "aliases": [
+     "category",
+     "CLASS"
+    ],
+    "phonology": {
+     "Handshape.2.0": "c",
+     "MarkedHandshape.2.0": "0",
+     "SelectedFingers.2.0": "imrp",
+     "Flexion.2.0": "Curved",
+     "FlexionChange.2.0": "0",
+     "Spread.2.0": "0",
+     "SpreadChange.2.0": "0",
+     "ThumbPosition.2.0": "Open",
+     "ThumbContact.2.0": "0",
+     "SignType.2.0": "SymmetricalOrAlternating",
+     "Movement.2.0": "Curved",
+     "RepeatedMovement.2.0": "0",
+     "MajorLocation.2.0": "Neutral",
+     "MinorLocation.2.0": "Neutral",
+     "SecondMinorLocation.2.0": "Neutral",
+     "Contact.2.0": "0",
+     "NonDominantHandshape.2.0": "c",
+     "UlnarRotation.2.0": "0"
+    }
+   },
+   "review": {
+    "status": "approved",
+    "date": "2026-10-25",
+    "reviewer": "Claude (renders checked against ASL-LEX's coding and the common citation form; not yet checked by a signer)",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "CLASS: C hands, thumbs together, palms out, sweep around to meet at the little fingers, palms in."
+   },
+   "todo": []
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/my",
+   "language": "ase",
+   "gloss": "MY",
+   "spoken": [
+    "my",
+    "mine"
+   ],
+   "meanings": [
+    {
+     "text": "my",
+     "pos": "determiner"
+    },
+    {
+     "text": "mine",
+     "pos": "pronoun"
+    }
+   ],
+   "handed": "1h",
+   "lexicalClass": "Minor",
+   "dominant": {
+    "handshape": "open_b",
+    "palm": "in",
+    "fingers": "up",
+    "location": "chest",
+    "site": "palm",
+    "movement": [
+     {
+      "type": "linear",
+      "direction": "in"
+     }
+    ]
+   },
+   "library": {
+    "handshape": "open_b",
+    "location": "chest-front"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "my",
+    "lemmaId": "my",
+    "code": "C_01_060",
+    "signbankLemmaId": null,
+    "signbankAnnotationId": null,
+    "aliases": [
+     "my"
+    ],
+    "phonology": {
+     "Handshape.2.0": "open_b",
+     "MarkedHandshape.2.0": "1",
+     "SelectedFingers.2.0": "imrp",
+     "Flexion.2.0": "FullyOpen",
+     "FlexionChange.2.0": "0",
+     "Spread.2.0": "0",
+     "SpreadChange.2.0": "0",
+     "ThumbPosition.2.0": "Open",
+     "ThumbContact.2.0": "0",
+     "SignType.2.0": "OneHanded",
+     "Movement.2.0": "Straight",
+     "RepeatedMovement.2.0": "0",
+     "MajorLocation.2.0": "Body",
+     "MinorLocation.2.0": "TorsoTop",
+     "SecondMinorLocation.2.0": "NA",
+     "Contact.2.0": "1",
+     "NonDominantHandshape.2.0": "NA",
+     "UlnarRotation.2.0": "0"
+    }
+   },
+   "review": {
+    "status": "approved",
+    "date": "2026-10-25",
+    "reviewer": "Claude (renders checked against ASL-LEX's coding and the common citation form; not yet checked by a signer)",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "Flat hand placed on the chest."
+   },
+   "todo": []
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/hot",
+   "language": "ase",
+   "gloss": "HOT",
+   "spoken": [
+    "hot"
+   ],
+   "meanings": [
+    {
+     "text": "hot",
+     "pos": "adjective"
+    }
+   ],
+   "handed": "1h",
+   "lexicalClass": "Adjective",
+   "dominant": {
+    "handshape": "curved_5",
+    "palm": "in",
+    "fingers": "up",
+    "location": "mouth",
+    "offset": {
+     "out": 4
+    },
+    "movement": [
+     {
+      "type": "twist"
+     },
+     {
+      "type": "linear",
+      "direction": "out+down"
+     }
+    ]
+   },
+   "library": {
+    "handshape": "5",
+    "location": "head"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "hot",
+    "lemmaId": "hot",
+    "code": "F_02_093",
+    "signbankLemmaId": "HOT",
+    "signbankAnnotationId": "HOT",
+    "aliases": [
+     "hot",
+     "HOT"
+    ],
+    "phonology": {
+     "Handshape.2.0": "flatspread_5",
+     "MarkedHandshape.2.0": "1",
+     "SelectedFingers.2.0": "imrp",
+     "Flexion.2.0": "Flat",
+     "FlexionChange.2.0": "0",
+     "Spread.2.0": "1",
+     "SpreadChange.2.0": "0",
+     "ThumbPosition.2.0": "Open",
+     "ThumbContact.2.0": "0",
+     "SignType.2.0": "OneHanded",
+     "Movement.2.0": "Curved",
+     "RepeatedMovement.2.0": "0",
+     "MajorLocation.2.0": "Head",
+     "MinorLocation.2.0": "HeadAway",
+     "SecondMinorLocation.2.0": "HeadAway",
+     "Contact.2.0": "0",
+     "NonDominantHandshape.2.0": "NA",
+     "UlnarRotation.2.0": "1"
+    }
+   },
+   "review": {
+    "status": "approved",
+    "date": "2026-10-25",
+    "reviewer": "Claude (renders checked against ASL-LEX's coding and the common citation form; not yet checked by a signer)",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "Claw hand at the mouth twists away, palm out, and drops."
+   },
+   "todo": []
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/light-2",
+   "language": "ase",
+   "gloss": "LIGHT",
+   "spoken": [
+    "light"
+   ],
+   "meanings": [
+    {
+     "text": "light",
+     "pos": "noun"
+    }
+   ],
+   "handed": "1h",
+   "lexicalClass": "Verb",
+   "dominant": {
+    "handshape": "8",
+    "palm": "in",
+    "fingers": "up",
+    "location": "chin",
+    "offset": {
+     "down": 3
+    },
+    "movement": [
+     {
+      "type": "change",
+      "handshape": "5"
+     }
+    ]
+   },
+   "library": {
+    "handshape": "8",
+    "location": "chin"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "light_2",
+    "lemmaId": "light_2",
+    "code": "K_01_102",
+    "signbankLemmaId": "LIGHT",
+    "signbankAnnotationId": "LIGHT",
+    "aliases": [
+     "light_2",
+     "LIGHT",
+     "light 2"
+    ],
+    "phonology": {
+     "Handshape.2.0": "8",
+     "MarkedHandshape.2.0": "0",
+     "SelectedFingers.2.0": "m",
+     "Flexion.2.0": "Curved",
+     "FlexionChange.2.0": "1",
+     "Spread.2.0": "NA",
+     "SpreadChange.2.0": "NA",
+     "ThumbPosition.2.0": "Open",
+     "ThumbContact.2.0": "1",
+     "SignType.2.0": "OneHanded",
+     "Movement.2.0": "None",
+     "RepeatedMovement.2.0": "0",
+     "MajorLocation.2.0": "Head",
+     "MinorLocation.2.0": "UnderChin",
+     "SecondMinorLocation.2.0": "HeadAway",
+     "Contact.2.0": "1",
+     "NonDominantHandshape.2.0": "NA",
+     "UlnarRotation.2.0": "0"
+    }
+   },
+   "review": {
+    "status": "draft",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "8 hand under the chin flicks the middle finger open."
+   },
+   "todo": [
+    "meaning: ASL-LEX codes an 8-hand flick under the chin; check which LIGHT this is"
+   ]
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/bed-2",
+   "language": "ase",
+   "gloss": "BED",
+   "spoken": [
+    "bed"
+   ],
+   "meanings": [
+    {
+     "text": "bed",
+     "pos": "noun"
+    }
+   ],
+   "handed": "1h",
+   "lexicalClass": "Noun",
+   "dominant": {
+    "handshape": "open_b",
+    "palm": "in",
+    "fingers": "up",
+    "location": "cheek",
+    "site": "palm",
+    "movement": [
+     {
+      "type": "linear",
+      "direction": "in"
+     }
+    ]
+   },
+   "library": {
+    "handshape": "open_b",
+    "location": "head"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "bed_2",
+    "lemmaId": "bed_2",
+    "code": "K_03_004",
+    "signbankLemmaId": "BED",
+    "signbankAnnotationId": "BEDsym",
+    "aliases": [
+     "bed_2",
+     "BED",
+     "bed 2"
+    ],
+    "folds": [
+     "bed"
+    ],
+    "phonology": {
+     "Handshape.2.0": "open_b",
+     "MarkedHandshape.2.0": "1",
+     "SelectedFingers.2.0": "imrp",
+     "Flexion.2.0": "FullyOpen",
+     "FlexionChange.2.0": "0",
+     "Spread.2.0": "0",
+     "SpreadChange.2.0": "0",
+     "ThumbPosition.2.0": "Open",
+     "ThumbContact.2.0": "0",
+     "SignType.2.0": "SymmetricalOrAlternating",
+     "Movement.2.0": "Straight",
+     "RepeatedMovement.2.0": "0",
+     "MajorLocation.2.0": "Head",
+     "MinorLocation.2.0": "Other",
+     "SecondMinorLocation.2.0": "NA",
+     "Contact.2.0": "1",
+     "NonDominantHandshape.2.0": "open_b",
+     "UlnarRotation.2.0": "0"
+    }
+   },
+   "review": {
+    "status": "approved",
+    "date": "2026-10-25",
+    "reviewer": "Claude (renders checked against ASL-LEX's coding and the common citation form; not yet checked by a signer)",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "One hand as a pillow against the cheek, head tilted. ASL-LEX codes both hands."
+   },
+   "todo": [],
+   "body": {
+    "head": "tilt-right"
+   }
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/why",
+   "language": "ase",
+   "gloss": "WHY",
+   "spoken": [
+    "why"
+   ],
+   "meanings": [
+    {
+     "text": "why",
+     "pos": "adverb"
+    }
+   ],
+   "handed": "1h",
+   "lexicalClass": "Minor",
+   "dominant": {
+    "handshape": "B",
+    "palm": "in",
+    "fingers": "up+contra",
+    "location": "head",
+    "site": "fingertips",
+    "movement": [
+     {
+      "type": "move",
+      "to": "neutral-space-high",
+      "handshape": "Y",
+      "palm": "in",
+      "fingers": "up"
+     }
+    ]
+   },
+   "library": {
+    "handshape": "Y",
+    "location": "forehead"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "why",
+    "lemmaId": "why",
+    "code": "D_01_067",
+    "signbankLemmaId": "WHY",
+    "signbankAnnotationId": "WHY",
+    "aliases": [
+     "why",
+     "WHY"
+    ],
+    "phonology": {
+     "Handshape.2.0": "y",
+     "MarkedHandshape.2.0": "1",
+     "SelectedFingers.2.0": "imr",
+     "Flexion.2.0": "FullyOpen",
+     "FlexionChange.2.0": "1",
+     "Spread.2.0": "0",
+     "SpreadChange.2.0": "0",
+     "ThumbPosition.2.0": "Open",
+     "ThumbContact.2.0": "0",
+     "SignType.2.0": "OneHanded",
+     "Movement.2.0": "Straight",
+     "RepeatedMovement.2.0": "0",
+     "MajorLocation.2.0": "Head",
+     "MinorLocation.2.0": "Forehead",
+     "SecondMinorLocation.2.0": "HeadAway",
+     "Contact.2.0": "0",
+     "NonDominantHandshape.2.0": "NA",
+     "UlnarRotation.2.0": "0"
+    }
+   },
+   "review": {
+    "status": "approved",
+    "date": "2026-10-25",
+    "reviewer": "Claude (renders checked against ASL-LEX's coding and the common citation form; not yet checked by a signer)",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "Fingertips touch the temple (as in KNOW), then the hand moves out and becomes a Y."
+   },
+   "todo": []
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/picture",
+   "language": "ase",
+   "gloss": "PICTURE",
+   "spoken": [
+    "picture",
+    "photo"
+   ],
+   "meanings": [
+    {
+     "text": "picture",
+     "pos": "noun"
+    },
+    {
+     "text": "photo",
+     "pos": "noun"
+    }
+   ],
+   "handed": "2h-asymmetric",
+   "lexicalClass": "Noun",
+   "dominant": {
+    "handshape": "C",
+    "palm": "contra",
+    "fingers": "up",
+    "location": "cheek",
+    "offset": {
+     "ipsi": 4,
+     "out": 2
+    },
+    "movement": [
+     {
+      "type": "move",
+      "to": "weak-hand",
+      "palm": "contra",
+      "fingers": "up",
+      "site": "fingertips"
+     }
+    ]
+   },
+   "library": {
+    "handshape": "C",
+    "location": "eye"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "picture",
+    "lemmaId": "picture",
+    "code": "A_02_042",
+    "signbankLemmaId": "PICTURE",
+    "signbankAnnotationId": "PICTURE",
+    "aliases": [
+     "picture",
+     "PICTURE"
+    ],
+    "phonology": {
+     "Handshape.2.0": "c",
+     "MarkedHandshape.2.0": "0",
+     "SelectedFingers.2.0": "imrp",
+     "Flexion.2.0": "Curved",
+     "FlexionChange.2.0": "0",
+     "Spread.2.0": "0",
+     "SpreadChange.2.0": "0",
+     "ThumbPosition.2.0": "Open",
+     "ThumbContact.2.0": "0",
+     "SignType.2.0": "OneHanded",
+     "Movement.2.0": "None",
+     "RepeatedMovement.2.0": "0",
+     "MajorLocation.2.0": "Head",
+     "MinorLocation.2.0": "Eye",
+     "SecondMinorLocation.2.0": "NA",
+     "Contact.2.0": "1",
+     "NonDominantHandshape.2.0": "NA",
+     "UlnarRotation.2.0": "0"
+    }
+   },
+   "review": {
+    "status": "approved",
+    "date": "2026-10-25",
+    "reviewer": "Claude (renders checked against ASL-LEX's coding and the common citation form; not yet checked by a signer)",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "C hand beside the face, like a camera, moves down onto the upright base palm."
+   },
+   "todo": [],
+   "nondominant": {
+    "handshape": "open_b",
+    "palm": "contra",
+    "fingers": "up",
+    "location": "base-hand",
+    "role": "base"
+   }
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/soon-1",
+   "language": "ase",
+   "gloss": "SOON",
+   "spoken": [
+    "soon"
+   ],
+   "meanings": [
+    {
+     "text": "soon",
+     "pos": "adverb"
+    }
+   ],
+   "handed": "1h",
+   "lexicalClass": "Adjective",
+   "dominant": {
+    "handshape": "F",
+    "palm": "contra",
+    "fingers": "up",
+    "location": "chin",
+    "site": "index",
+    "movement": [
+     {
+      "type": "tap",
+      "reps": 2
+     }
+    ]
+   },
+   "library": {
+    "handshape": "F",
+    "location": "chin"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "soon_1",
+    "lemmaId": "soon_1",
+    "code": "G_01_004",
+    "signbankLemmaId": "SOON",
+    "signbankAnnotationId": "SOONch",
+    "aliases": [
+     "soon_1",
+     "SOON",
+     "soon 1"
+    ],
+    "phonology": {
+     "Handshape.2.0": "f",
+     "MarkedHandshape.2.0": "1",
+     "SelectedFingers.2.0": "i",
+     "Flexion.2.0": "Curved",
+     "FlexionChange.2.0": "0",
+     "Spread.2.0": "NA",
+     "SpreadChange.2.0": "NA",
+     "ThumbPosition.2.0": "Open",
+     "ThumbContact.2.0": "1",
+     "SignType.2.0": "OneHanded",
+     "Movement.2.0": "Straight",
+     "RepeatedMovement.2.0": "1",
+     "MajorLocation.2.0": "Head",
+     "MinorLocation.2.0": "Chin",
+     "SecondMinorLocation.2.0": "NA",
+     "Contact.2.0": "1",
+     "NonDominantHandshape.2.0": "NA",
+     "UlnarRotation.2.0": "0"
+    }
+   },
+   "review": {
+    "status": "approved",
+    "date": "2026-10-25",
+    "reviewer": "Claude (renders checked against ASL-LEX's coding and the common citation form; not yet checked by a signer)",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "F hand, the index and thumb circle brushes the chin twice."
+   },
+   "todo": []
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/dog",
+   "language": "ase",
+   "gloss": "DOG",
+   "spoken": [
+    "dog"
+   ],
+   "meanings": [
+    {
+     "text": "dog",
+     "pos": "noun"
+    }
+   ],
+   "handed": "1h",
+   "lexicalClass": "Noun",
+   "dominant": {
+    "handshape": "8",
+    "palm": "up",
+    "fingers": "out",
+    "location": "neutral-space",
+    "movement": [
+     {
+      "type": "change",
+      "handshape": "open_8",
+      "reps": 2
+     }
+    ]
+   },
+   "library": {
+    "handshape": "D",
+    "location": "neutral-space"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "dog",
+    "lemmaId": "dog",
+    "code": "A_01_056",
+    "signbankLemmaId": "DOG",
+    "signbankAnnotationId": "DOGsnap",
+    "aliases": [
+     "dog",
+     "DOG"
+    ],
+    "phonology": {
+     "Handshape.2.0": "d",
+     "MarkedHandshape.2.0": "1",
+     "SelectedFingers.2.0": "mrp",
+     "Flexion.2.0": "Curved",
+     "FlexionChange.2.0": "NA",
+     "Spread.2.0": "0",
+     "SpreadChange.2.0": "NA",
+     "ThumbPosition.2.0": "Open",
+     "ThumbContact.2.0": "1",
+     "SignType.2.0": "OneHanded",
+     "Movement.2.0": "None",
+     "RepeatedMovement.2.0": "1",
+     "MajorLocation.2.0": "Neutral",
+     "MinorLocation.2.0": "Neutral",
+     "SecondMinorLocation.2.0": "NA",
+     "Contact.2.0": "0",
+     "NonDominantHandshape.2.0": "NA",
+     "UlnarRotation.2.0": "0"
+    }
+   },
+   "review": {
+    "status": "draft",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "Snap: the middle finger flicks off the thumb, twice."
+   },
+   "todo": [
+    "check: DOG is a finger snap (ASL-LEX codes D); here the middle finger flicks"
+   ]
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/where",
+   "language": "ase",
+   "gloss": "WHERE",
+   "spoken": [
+    "where"
+   ],
+   "meanings": [
+    {
+     "text": "where",
+     "pos": "adverb"
+    }
+   ],
+   "handed": "1h",
+   "lexicalClass": "Minor",
+   "dominant": {
+    "handshape": "1",
+    "palm": "out",
+    "fingers": "up",
+    "location": "neutral-space",
+    "offset": {
+     "up": 8
+    },
+    "movement": [
+     {
+      "type": "linear",
+      "direction": "contra",
+      "reps": 2
+     }
+    ]
+   },
+   "library": {
+    "handshape": "1",
+    "location": "neutral-space"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "where",
+    "lemmaId": "where",
+    "code": "B_02_035",
+    "signbankLemmaId": "WHERE",
+    "signbankAnnotationId": "WHERE",
+    "aliases": [
+     "where",
+     "WHERE"
+    ],
+    "phonology": {
+     "Handshape.2.0": "1",
+     "MarkedHandshape.2.0": "0",
+     "SelectedFingers.2.0": "i",
+     "Flexion.2.0": "FullyOpen",
+     "FlexionChange.2.0": "0",
+     "Spread.2.0": "NA",
+     "SpreadChange.2.0": "NA",
+     "ThumbPosition.2.0": "Closed",
+     "ThumbContact.2.0": "0",
+     "SignType.2.0": "OneHanded",
+     "Movement.2.0": "Straight",
+     "RepeatedMovement.2.0": "1",
+     "MajorLocation.2.0": "Neutral",
+     "MinorLocation.2.0": "Neutral",
+     "SecondMinorLocation.2.0": "NA",
+     "Contact.2.0": "0",
+     "NonDominantHandshape.2.0": "NA",
+     "UlnarRotation.2.0": "0"
+    }
+   },
+   "review": {
+    "status": "approved",
+    "date": "2026-10-25",
+    "reviewer": "Claude (renders checked against ASL-LEX's coding and the common citation form; not yet checked by a signer)",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "Index up, palm out, wags side to side."
+   },
+   "todo": []
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/milk",
+   "language": "ase",
+   "gloss": "MILK",
+   "spoken": [
+    "milk"
+   ],
+   "meanings": [
+    {
+     "text": "milk",
+     "pos": "noun"
+    }
+   ],
+   "handed": "1h",
+   "lexicalClass": "Noun",
+   "dominant": {
+    "handshape": "C",
+    "palm": "contra",
+    "fingers": "out",
+    "location": "neutral-space",
+    "movement": [
+     {
+      "type": "change",
+      "handshape": "S",
+      "reps": 2
+     }
+    ]
+   },
+   "library": {
+    "handshape": "S",
+    "location": "neutral-space"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "milk",
+    "lemmaId": "milk",
+    "code": "A_01_051",
+    "signbankLemmaId": "MILK",
+    "signbankAnnotationId": "MILKasym",
+    "aliases": [
+     "milk",
+     "MILK"
+    ],
+    "phonology": {
+     "Handshape.2.0": "s",
+     "MarkedHandshape.2.0": "0",
+     "SelectedFingers.2.0": "imrp",
+     "Flexion.2.0": "FullyClosed",
+     "FlexionChange.2.0": "1",
+     "Spread.2.0": "NA",
+     "SpreadChange.2.0": "0",
+     "ThumbPosition.2.0": "Open",
+     "ThumbContact.2.0": "1",
+     "SignType.2.0": "OneHanded",
+     "Movement.2.0": "None",
+     "RepeatedMovement.2.0": "1",
+     "MajorLocation.2.0": "Neutral",
+     "MinorLocation.2.0": "Neutral",
+     "SecondMinorLocation.2.0": "NA",
+     "Contact.2.0": "0",
+     "NonDominantHandshape.2.0": "NA",
+     "UlnarRotation.2.0": "0"
+    }
+   },
+   "review": {
+    "status": "approved",
+    "date": "2026-10-25",
+    "reviewer": "Claude (renders checked against ASL-LEX's coding and the common citation form; not yet checked by a signer)",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "Milking: the hand squeezes from C to S, twice."
+   },
+   "todo": []
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/who",
+   "language": "ase",
+   "gloss": "WHO",
+   "spoken": [
+    "who"
+   ],
+   "meanings": [
+    {
+     "text": "who",
+     "pos": "pronoun"
+    }
+   ],
+   "handed": "1h",
+   "lexicalClass": "Minor",
+   "dominant": {
+    "handshape": "L",
+    "palm": "contra",
+    "fingers": "up",
+    "location": "chin",
+    "site": "thumb",
+    "movement": [
+     {
+      "type": "nod",
+      "reps": 2
+     }
+    ]
+   },
+   "library": {
+    "handshape": "L",
+    "location": "chin"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "who",
+    "lemmaId": "who",
+    "code": "C_01_041",
+    "signbankLemmaId": "WHO",
+    "signbankAnnotationId": "WHObent",
+    "aliases": [
+     "who",
+     "WHO"
+    ],
+    "phonology": {
+     "Handshape.2.0": "l",
+     "MarkedHandshape.2.0": "0",
+     "SelectedFingers.2.0": "i",
+     "Flexion.2.0": "FullyOpen",
+     "FlexionChange.2.0": "1",
+     "Spread.2.0": "NA",
+     "SpreadChange.2.0": "NA",
+     "ThumbPosition.2.0": "Open",
+     "ThumbContact.2.0": "0",
+     "SignType.2.0": "OneHanded",
+     "Movement.2.0": "None",
+     "RepeatedMovement.2.0": "1",
+     "MajorLocation.2.0": "Head",
+     "MinorLocation.2.0": "Chin",
+     "SecondMinorLocation.2.0": "NA",
+     "Contact.2.0": "1",
+     "NonDominantHandshape.2.0": "NA",
+     "UlnarRotation.2.0": "0"
+    }
+   },
+   "review": {
+    "status": "approved",
+    "date": "2026-10-25",
+    "reviewer": "Claude (renders checked against ASL-LEX's coding and the common citation form; not yet checked by a signer)",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "L thumb on the chin, the index bends twice."
+   },
+   "todo": []
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/shop-2",
+   "language": "ase",
+   "gloss": "STORE",
+   "spoken": [
+    "store",
+    "shop",
+    "sell"
+   ],
+   "meanings": [
+    {
+     "text": "store",
+     "pos": "noun"
+    },
+    {
+     "text": "shop",
+     "pos": "noun"
+    },
+    {
+     "text": "sell",
+     "pos": "verb"
+    }
+   ],
+   "handed": "2h-symmetric",
+   "lexicalClass": "Noun",
+   "dominant": {
+    "handshape": "flat_o",
+    "palm": "down",
+    "fingers": "out",
+    "location": "neutral-space",
+    "movement": [
+     {
+      "type": "nod",
+      "reps": 2
+     }
+    ]
+   },
+   "library": {
+    "handshape": "flat_o",
+    "location": "neutral-space"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "shop_2",
+    "lemmaId": "shop_2",
+    "code": "D_03_058",
+    "signbankLemmaId": "SHOP_2",
+    "signbankAnnotationId": "SHOP",
+    "aliases": [
+     "shop_2",
+     "SHOP_2",
+     "shop 2"
+    ],
+    "phonology": {
+     "Handshape.2.0": "flat_o",
+     "MarkedHandshape.2.0": "0",
+     "SelectedFingers.2.0": "imrp",
+     "Flexion.2.0": "Flat",
+     "FlexionChange.2.0": "0",
+     "Spread.2.0": "0",
+     "SpreadChange.2.0": "0",
+     "ThumbPosition.2.0": "Open",
+     "ThumbContact.2.0": "1",
+     "SignType.2.0": "SymmetricalOrAlternating",
+     "Movement.2.0": "Curved",
+     "RepeatedMovement.2.0": "1",
+     "MajorLocation.2.0": "Neutral",
+     "MinorLocation.2.0": "Neutral",
+     "SecondMinorLocation.2.0": "Neutral",
+     "Contact.2.0": "0",
+     "NonDominantHandshape.2.0": "flat_o",
+     "UlnarRotation.2.0": "1"
+    }
+   },
+   "review": {
+    "status": "approved",
+    "date": "2026-10-25",
+    "reviewer": "Claude (renders checked against ASL-LEX's coding and the common citation form; not yet checked by a signer)",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "STORE: flat O hands, fingertips down, swing from the wrists twice."
+   },
+   "todo": []
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/your",
+   "language": "ase",
+   "gloss": "YOUR",
+   "spoken": [
+    "your",
+    "yours"
+   ],
+   "meanings": [
+    {
+     "text": "your",
+     "pos": "determiner"
+    },
+    {
+     "text": "yours",
+     "pos": "pronoun"
+    }
+   ],
+   "handed": "1h",
+   "lexicalClass": "Minor",
+   "dominant": {
+    "handshape": "open_b",
+    "palm": "out",
+    "fingers": "up",
+    "location": "neutral-space",
+    "movement": [
+     {
+      "type": "linear",
+      "direction": "out"
+     }
+    ]
+   },
+   "library": {
+    "handshape": "5",
+    "location": "neutral-space"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "your",
+    "lemmaId": "your",
+    "code": "F_01_052",
+    "signbankLemmaId": null,
+    "signbankAnnotationId": null,
+    "aliases": [
+     "your"
+    ],
+    "phonology": {
+     "Handshape.2.0": "5",
+     "MarkedHandshape.2.0": "0",
+     "SelectedFingers.2.0": "imrp",
+     "Flexion.2.0": "FullyOpen",
+     "FlexionChange.2.0": "0",
+     "Spread.2.0": "1",
+     "SpreadChange.2.0": "0",
+     "ThumbPosition.2.0": "Open",
+     "ThumbContact.2.0": "0",
+     "SignType.2.0": "OneHanded",
+     "Movement.2.0": "Straight",
+     "RepeatedMovement.2.0": "0",
+     "MajorLocation.2.0": "Neutral",
+     "MinorLocation.2.0": "Neutral",
+     "SecondMinorLocation.2.0": "Neutral",
+     "Contact.2.0": "0",
+     "NonDominantHandshape.2.0": "NA",
+     "UlnarRotation.2.0": "0"
+    }
+   },
+   "review": {
+    "status": "approved",
+    "date": "2026-10-25",
+    "reviewer": "Claude (renders checked against ASL-LEX's coding and the common citation form; not yet checked by a signer)",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "Flat hand, palm out, pushes toward the person."
+   },
+   "todo": []
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/like",
+   "language": "ase",
+   "gloss": "LIKE",
+   "spoken": [
+    "like"
+   ],
+   "meanings": [
+    {
+     "text": "like",
+     "pos": "verb"
+    }
+   ],
+   "handed": "1h",
+   "lexicalClass": "Verb",
+   "dominant": {
+    "handshape": "open_8",
+    "palm": "in",
+    "fingers": "contra",
+    "location": "chest-front",
+    "offset": {
+     "in": 2
+    },
+    "movement": [
+     {
+      "type": "move",
+      "to": "neutral-space",
+      "handshape": "8",
+      "palm": "in",
+      "fingers": "contra"
+     }
+    ]
+   },
+   "library": {
+    "handshape": "8",
+    "location": "chest-front"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "like",
+    "lemmaId": "like",
+    "code": "F_03_063",
+    "signbankLemmaId": null,
+    "signbankAnnotationId": "LIKE",
+    "aliases": [
+     "like"
+    ],
+    "phonology": {
+     "Handshape.2.0": "8",
+     "MarkedHandshape.2.0": "1",
+     "SelectedFingers.2.0": "m",
+     "Flexion.2.0": "Flat",
+     "FlexionChange.2.0": "1",
+     "Spread.2.0": "NA",
+     "SpreadChange.2.0": "NA",
+     "ThumbPosition.2.0": "Open",
+     "ThumbContact.2.0": "1",
+     "SignType.2.0": "OneHanded",
+     "Movement.2.0": "Straight",
+     "RepeatedMovement.2.0": "0",
+     "MajorLocation.2.0": "Body",
+     "MinorLocation.2.0": "TorsoTop",
+     "SecondMinorLocation.2.0": "BodyAway",
+     "Contact.2.0": "1",
+     "NonDominantHandshape.2.0": "NA",
+     "UlnarRotation.2.0": "0"
+    }
+   },
+   "review": {
+    "status": "approved",
+    "date": "2026-10-25",
+    "reviewer": "Claude (renders checked against ASL-LEX's coding and the common citation form; not yet checked by a signer)",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "Middle finger and thumb at the chest pull out and close together."
+   },
+   "todo": []
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/learn",
+   "language": "ase",
+   "gloss": "LEARN",
+   "spoken": [
+    "learn"
+   ],
+   "meanings": [
+    {
+     "text": "learn",
+     "pos": "verb"
+    }
+   ],
+   "handed": "2h-asymmetric",
+   "lexicalClass": "Verb",
+   "dominant": {
+    "handshape": "5",
+    "palm": "down",
+    "fingers": "out",
+    "location": "weak-hand",
+    "site": "fingertips",
+    "offset": {
+     "down": 2
+    },
+    "movement": [
+     {
+      "type": "change",
+      "handshape": "flat_o"
+     },
+     {
+      "type": "move",
+      "to": "head",
+      "palm": "in",
+      "fingers": "up+contra",
+      "site": "fingertips"
+     }
+    ]
+   },
+   "nondominant": {
+    "handshape": "open_b",
+    "palm": "up",
+    "fingers": "out",
+    "location": "base-hand",
+    "role": "base"
+   },
+   "library": {
+    "handshape": "5",
+    "location": "weak-hand"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "learn",
+    "lemmaId": "learn",
+    "code": "B_01_042",
+    "signbankLemmaId": "LEARN",
+    "signbankAnnotationId": "LEARN",
+    "aliases": [
+     "learn",
+     "LEARN"
+    ],
+    "phonology": {
+     "Handshape.2.0": "flatspread_5",
+     "MarkedHandshape.2.0": "1",
+     "SelectedFingers.2.0": "imrp",
+     "Flexion.2.0": "Flat",
+     "FlexionChange.2.0": "1",
+     "Spread.2.0": "1",
+     "SpreadChange.2.0": "1",
+     "ThumbPosition.2.0": "Open",
+     "ThumbContact.2.0": "0",
+     "SignType.2.0": "AsymmetricalDifferentHandshape",
+     "Movement.2.0": "None",
+     "RepeatedMovement.2.0": "0",
+     "MajorLocation.2.0": "Hand",
+     "MinorLocation.2.0": "Palm",
+     "SecondMinorLocation.2.0": "NA",
+     "Contact.2.0": "1",
+     "NonDominantHandshape.2.0": "B",
+     "UlnarRotation.2.0": "0"
+    }
+   },
+   "review": {
+    "status": "approved",
+    "date": "2026-10-25",
+    "reviewer": "Claude (renders checked against ASL-LEX's coding and the common citation form; not yet checked by a signer)",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "Fingers pick something up off the base palm, close to a flat O, and put it to the temple."
+   },
+   "todo": []
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/technology",
+   "language": "ase",
+   "gloss": "TECH",
+   "spoken": [
+    "technology"
+   ],
+   "meanings": [
+    {
+     "text": "technology",
+     "pos": "noun"
+    }
+   ],
+   "handed": "2h-asymmetric",
+   "lexicalClass": "Noun",
+   "dominant": {
+    "handshape": "open_8",
+    "palm": "up",
+    "fingers": "contra",
+    "location": "weak-hand",
+    "offset": {
+     "down": 14
+    },
+    "movement": [
+     {
+      "type": "tap",
+      "reps": 2
+     }
+    ]
+   },
+   "nondominant": {
+    "handshape": "open_b",
+    "palm": "contra",
+    "fingers": "out",
+    "location": "base-hand",
+    "role": "base"
+   },
+   "library": {
+    "handshape": "open_8",
+    "location": "weak-hand"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "technology",
+    "lemmaId": "technology",
+    "code": "E_03_017",
+    "signbankLemmaId": "TECH",
+    "signbankAnnotationId": "TECH",
+    "aliases": [
+     "technology",
+     "TECH"
+    ],
+    "phonology": {
+     "Handshape.2.0": "open_8",
+     "MarkedHandshape.2.0": "1",
+     "SelectedFingers.2.0": "m",
+     "Flexion.2.0": "Flat",
+     "FlexionChange.2.0": "0",
+     "Spread.2.0": "NA",
+     "SpreadChange.2.0": "NA",
+     "ThumbPosition.2.0": "Open",
+     "ThumbContact.2.0": "0",
+     "SignType.2.0": "AsymmetricalDifferentHandshape",
+     "Movement.2.0": "Straight",
+     "RepeatedMovement.2.0": "1",
+     "MajorLocation.2.0": "Hand",
+     "MinorLocation.2.0": "FingerUlnar",
+     "SecondMinorLocation.2.0": "NA",
+     "Contact.2.0": "1",
+     "NonDominantHandshape.2.0": "S",
+     "UlnarRotation.2.0": "0"
+    }
+   },
+   "review": {
+    "status": "draft",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "Bent middle finger taps the edge of the base hand twice. ASL-LEX codes the base as S."
+   },
+   "todo": [
+    "check: the bent middle finger should tap the little-finger edge of the base hand"
+   ]
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/fine-2",
+   "language": "ase",
+   "gloss": "FINE",
+   "spoken": [
+    "fine"
+   ],
+   "meanings": [
+    {
+     "text": "fine",
+     "pos": "adjective"
+    }
+   ],
+   "handed": "1h",
+   "lexicalClass": "Adjective",
+   "dominant": {
+    "handshape": "5",
+    "palm": "contra",
+    "fingers": "up",
+    "location": "chest",
+    "site": "thumb",
+    "movement": [
+     {
+      "type": "tap",
+      "reps": 2
+     }
+    ]
+   },
+   "library": {
+    "handshape": "5",
+    "location": "chest-front"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "fine_2",
+    "lemmaId": "fine",
+    "code": "D_02_067",
+    "signbankLemmaId": "FINE",
+    "signbankAnnotationId": "FINE",
+    "aliases": [
+     "fine_2",
+     "fine",
+     "FINE",
+     "fine 2"
+    ],
+    "folds": [
+     "fine_1"
+    ],
+    "phonology": {
+     "Handshape.2.0": "5",
+     "MarkedHandshape.2.0": "0",
+     "SelectedFingers.2.0": "imrp",
+     "Flexion.2.0": "FullyOpen",
+     "FlexionChange.2.0": "0",
+     "Spread.2.0": "1",
+     "SpreadChange.2.0": "0",
+     "ThumbPosition.2.0": "Open",
+     "ThumbContact.2.0": "0",
+     "SignType.2.0": "OneHanded",
+     "Movement.2.0": "Straight",
+     "RepeatedMovement.2.0": "1",
+     "MajorLocation.2.0": "Body",
+     "MinorLocation.2.0": "TorsoTop",
+     "SecondMinorLocation.2.0": "NA",
+     "Contact.2.0": "1",
+     "NonDominantHandshape.2.0": "NA",
+     "UlnarRotation.2.0": "0"
+    }
+   },
+   "review": {
+    "status": "approved",
+    "date": "2026-10-25",
+    "reviewer": "Claude (renders checked against ASL-LEX's coding and the common citation form; not yet checked by a signer)",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "5 hand, thumb taps the chest twice."
+   },
+   "todo": []
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/bring",
+   "language": "ase",
+   "gloss": "BRING",
+   "spoken": [
+    "bring"
+   ],
+   "meanings": [
+    {
+     "text": "bring",
+     "pos": "verb"
+    }
+   ],
+   "handed": "2h-symmetric",
+   "lexicalClass": "Verb",
+   "dominant": {
+    "handshape": "open_b",
+    "palm": "up",
+    "fingers": "out",
+    "location": "neutral-space",
+    "movement": [
+     {
+      "type": "linear",
+      "direction": "in"
+     }
+    ]
+   },
+   "library": {
+    "handshape": "open_b",
+    "location": "neutral-space"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "bring",
+    "lemmaId": "bring",
+    "code": "F_03_004",
+    "signbankLemmaId": "BRING",
+    "signbankAnnotationId": "BRING",
+    "aliases": [
+     "bring",
+     "BRING"
+    ],
+    "phonology": {
+     "Handshape.2.0": "open_b",
+     "MarkedHandshape.2.0": "1",
+     "SelectedFingers.2.0": "imrp",
+     "Flexion.2.0": "FullyOpen",
+     "FlexionChange.2.0": "0",
+     "Spread.2.0": "0",
+     "SpreadChange.2.0": "0",
+     "ThumbPosition.2.0": "Open",
+     "ThumbContact.2.0": "0",
+     "SignType.2.0": "SymmetricalOrAlternating",
+     "Movement.2.0": "Straight",
+     "RepeatedMovement.2.0": "0",
+     "MajorLocation.2.0": "Neutral",
+     "MinorLocation.2.0": "Neutral",
+     "SecondMinorLocation.2.0": "Neutral",
+     "Contact.2.0": "0",
+     "NonDominantHandshape.2.0": "open_b",
+     "UlnarRotation.2.0": "0"
+    }
+   },
+   "review": {
+    "status": "approved",
+    "date": "2026-10-25",
+    "reviewer": "Claude (renders checked against ASL-LEX's coding and the common citation form; not yet checked by a signer)",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "Flat hands, palms up, move in toward the signer."
+   },
+   "todo": []
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/will",
+   "language": "ase",
+   "gloss": "WILL",
+   "spoken": [
+    "will",
+    "future"
+   ],
+   "meanings": [
+    {
+     "text": "will",
+     "pos": "verb"
+    },
+    {
+     "text": "future",
+     "pos": "noun"
+    }
+   ],
+   "handed": "1h",
+   "lexicalClass": "Verb",
+   "dominant": {
+    "handshape": "open_b",
+    "palm": "contra",
+    "fingers": "up",
+    "location": "cheek",
+    "offset": {
+     "ipsi": 4
+    },
+    "movement": [
+     {
+      "type": "arc",
+      "direction": "out"
+     }
+    ]
+   },
+   "library": {
+    "handshape": "open_b",
+    "location": "cheek"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "will",
+    "lemmaId": "will",
+    "code": "F_03_025",
+    "signbankLemmaId": null,
+    "signbankAnnotationId": null,
+    "aliases": [
+     "will"
+    ],
+    "phonology": {
+     "Handshape.2.0": "open_b",
+     "MarkedHandshape.2.0": "1",
+     "SelectedFingers.2.0": "imrp",
+     "Flexion.2.0": "FullyOpen",
+     "FlexionChange.2.0": "0",
+     "Spread.2.0": "0",
+     "SpreadChange.2.0": "0",
+     "ThumbPosition.2.0": "Open",
+     "ThumbContact.2.0": "0",
+     "SignType.2.0": "OneHanded",
+     "Movement.2.0": "Curved",
+     "RepeatedMovement.2.0": "0",
+     "MajorLocation.2.0": "Head",
+     "MinorLocation.2.0": "CheekNose",
+     "SecondMinorLocation.2.0": "HeadAway",
+     "Contact.2.0": "0",
+     "NonDominantHandshape.2.0": "NA",
+     "UlnarRotation.2.0": "0"
+    }
+   },
+   "review": {
+    "status": "approved",
+    "date": "2026-10-25",
+    "reviewer": "Claude (renders checked against ASL-LEX's coding and the common citation form; not yet checked by a signer)",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "FUTURE: flat hand beside the cheek arcs forward."
+   },
+   "todo": []
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/internet",
+   "language": "ase",
+   "gloss": "INTERNET",
+   "spoken": [
+    "internet"
+   ],
+   "meanings": [
+    {
+     "text": "internet",
+     "pos": "noun"
+    }
+   ],
+   "handed": "2h-symmetric",
+   "lexicalClass": "Noun",
+   "dominant": {
+    "handshape": "open_8",
+    "palm": "contra",
+    "fingers": "up",
+    "location": "neutral-space",
+    "offset": {
+     "contra": 5
+    },
+    "movement": [
+     {
+      "type": "twist",
+      "reps": 2
+     }
+    ]
+   },
+   "library": {
+    "handshape": "open_8",
+    "location": "neutral-space"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "internet",
+    "lemmaId": "internet",
+    "code": "C_02_032",
+    "signbankLemmaId": "INTERNET",
+    "signbankAnnotationId": "INTERNET",
+    "aliases": [
+     "internet",
+     "INTERNET"
+    ],
+    "phonology": {
+     "Handshape.2.0": "open_8",
+     "MarkedHandshape.2.0": "1",
+     "SelectedFingers.2.0": "m",
+     "Flexion.2.0": "Flat",
+     "FlexionChange.2.0": "0",
+     "Spread.2.0": "NA",
+     "SpreadChange.2.0": "NA",
+     "ThumbPosition.2.0": "Open",
+     "ThumbContact.2.0": "0",
+     "SignType.2.0": "SymmetricalOrAlternating",
+     "Movement.2.0": "None",
+     "RepeatedMovement.2.0": "1",
+     "MajorLocation.2.0": "Neutral",
+     "MinorLocation.2.0": "Neutral",
+     "SecondMinorLocation.2.0": "Neutral",
+     "Contact.2.0": "1",
+     "NonDominantHandshape.2.0": "open_8",
+     "UlnarRotation.2.0": "1"
+    }
+   },
+   "review": {
+    "status": "draft",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "Middle fingers touch and the hands turn back and forth."
+   },
+   "todo": [
+    "check: middle fingertips touching, the hands turn about them"
+   ]
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/pet-2",
+   "language": "ase",
+   "gloss": "PET",
+   "spoken": [
+    "pet"
+   ],
+   "meanings": [
+    {
+     "text": "pet",
+     "pos": "verb"
+    }
+   ],
+   "handed": "2h-asymmetric",
+   "lexicalClass": "Verb",
+   "dominant": {
+    "handshape": "flat_b",
+    "palm": "down",
+    "fingers": "out",
+    "location": "weak-hand",
+    "site": "palm",
+    "offset": {
+     "down": 2
+    },
+    "movement": [
+     {
+      "type": "linear",
+      "direction": "in",
+      "reps": 2
+     }
+    ]
+   },
+   "nondominant": {
+    "handshape": "flat_b",
+    "palm": "down",
+    "fingers": "contra",
+    "location": "base-hand",
+    "role": "base"
+   },
+   "library": {
+    "handshape": "flat_b",
+    "location": "weak-hand"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "pet_2",
+    "lemmaId": "pet_2",
+    "code": "K_02_085",
+    "signbankLemmaId": "PET",
+    "signbankAnnotationId": "PET",
+    "aliases": [
+     "pet_2",
+     "PET",
+     "pet 2"
+    ],
+    "phonology": {
+     "Handshape.2.0": "flat_b",
+     "MarkedHandshape.2.0": "1",
+     "SelectedFingers.2.0": "imrp",
+     "Flexion.2.0": "Flat",
+     "FlexionChange.2.0": "1",
+     "Spread.2.0": "0",
+     "SpreadChange.2.0": "0",
+     "ThumbPosition.2.0": "Open",
+     "ThumbContact.2.0": "0",
+     "SignType.2.0": "AsymmetricalSameHandshape",
+     "Movement.2.0": "Straight",
+     "RepeatedMovement.2.0": "1",
+     "MajorLocation.2.0": "Hand",
+     "MinorLocation.2.0": "PalmBack",
+     "SecondMinorLocation.2.0": "HandAway",
+     "Contact.2.0": "1",
+     "NonDominantHandshape.2.0": "flat_b",
+     "UlnarRotation.2.0": "0"
+    }
+   },
+   "review": {
+    "status": "approved",
+    "date": "2026-10-25",
+    "reviewer": "Claude (renders checked against ASL-LEX's coding and the common citation form; not yet checked by a signer)",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "The flat hand strokes the back of the base hand twice."
+   },
+   "todo": []
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/please",
+   "language": "ase",
+   "gloss": "PLEASE",
+   "spoken": [
+    "please"
+   ],
+   "meanings": [
+    {
+     "text": "please",
+     "pos": "adverb"
+    }
+   ],
+   "handed": "1h",
+   "lexicalClass": "Adverb",
+   "dominant": {
+    "handshape": "open_b",
+    "palm": "in",
+    "fingers": "up+contra",
+    "location": "chest-front",
+    "offset": {
+     "in": 5
+    },
+    "movement": [
+     {
+      "type": "circle",
+      "reps": 2
+     }
+    ]
+   },
+   "library": {
+    "handshape": "open_b",
+    "location": "chest-front"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "please",
+    "lemmaId": "please",
+    "code": "B_02_007",
+    "signbankLemmaId": "PLEASE",
+    "signbankAnnotationId": "PLEASE",
+    "aliases": [
+     "please",
+     "PLEASE"
+    ],
+    "phonology": {
+     "Handshape.2.0": "open_b",
+     "MarkedHandshape.2.0": "1",
+     "SelectedFingers.2.0": "imrp",
+     "Flexion.2.0": "FullyOpen",
+     "FlexionChange.2.0": "0",
+     "Spread.2.0": "0",
+     "SpreadChange.2.0": "0",
+     "ThumbPosition.2.0": "Open",
+     "ThumbContact.2.0": "0",
+     "SignType.2.0": "OneHanded",
+     "Movement.2.0": "Circular",
+     "RepeatedMovement.2.0": "1",
+     "MajorLocation.2.0": "Body",
+     "MinorLocation.2.0": "TorsoTop",
+     "SecondMinorLocation.2.0": "TorsoTop",
+     "Contact.2.0": "1",
+     "NonDominantHandshape.2.0": "NA",
+     "UlnarRotation.2.0": "0"
+    }
+   },
+   "review": {
+    "status": "approved",
+    "date": "2026-10-25",
+    "reviewer": "Claude (renders checked against ASL-LEX's coding and the common citation form; not yet checked by a signer)",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "Flat hand on the chest circles."
+   },
+   "todo": []
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/boy",
+   "language": "ase",
+   "gloss": "BOY",
+   "spoken": [
+    "boy"
+   ],
+   "meanings": [
+    {
+     "text": "boy",
+     "pos": "noun"
+    }
+   ],
+   "handed": "1h",
+   "lexicalClass": "Noun",
+   "dominant": {
+    "handshape": "open_b",
+    "palm": "down",
+    "fingers": "out",
+    "location": "forehead",
+    "offset": {
+     "out": 10,
+     "up": 2
+    },
+    "movement": [
+     {
+      "type": "change",
+      "handshape": "flat_o",
+      "reps": 2
+     }
+    ]
+   },
+   "library": {
+    "handshape": "flat_o",
+    "location": "forehead"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "boy",
+    "lemmaId": "boy",
+    "code": "B_02_090",
+    "signbankLemmaId": "BOY",
+    "signbankAnnotationId": "BOY",
+    "aliases": [
+     "boy",
+     "BOY"
+    ],
+    "phonology": {
+     "Handshape.2.0": "flat_o",
+     "MarkedHandshape.2.0": "0",
+     "SelectedFingers.2.0": "imrp",
+     "Flexion.2.0": "Flat",
+     "FlexionChange.2.0": "1",
+     "Spread.2.0": "0",
+     "SpreadChange.2.0": "0",
+     "ThumbPosition.2.0": "Open",
+     "ThumbContact.2.0": "1",
+     "SignType.2.0": "OneHanded",
+     "Movement.2.0": "None",
+     "RepeatedMovement.2.0": "1",
+     "MajorLocation.2.0": "Head",
+     "MinorLocation.2.0": "Forehead",
+     "SecondMinorLocation.2.0": "NA",
+     "Contact.2.0": "0",
+     "NonDominantHandshape.2.0": "NA",
+     "UlnarRotation.2.0": "0"
+    }
+   },
+   "review": {
+    "status": "approved",
+    "date": "2026-10-25",
+    "reviewer": "Claude (renders checked against ASL-LEX's coding and the common citation form; not yet checked by a signer)",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "A cap's brim: the hand at the forehead closes to a flat O twice."
+   },
+   "todo": []
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/help",
+   "language": "ase",
+   "gloss": "HELP",
+   "spoken": [
+    "help"
+   ],
+   "meanings": [
+    {
+     "text": "help",
+     "pos": "verb"
+    }
+   ],
+   "handed": "2h-asymmetric",
+   "lexicalClass": "Verb",
+   "dominant": {
+    "handshape": "A",
+    "palm": "contra",
+    "fingers": "out",
+    "location": "weak-hand",
+    "site": "pinky-side",
+    "offset": {
+     "down": 3
+    },
+    "movement": [
+     {
+      "type": "linear",
+      "direction": "up",
+      "reps": 2
+     }
+    ]
+   },
+   "nondominant": {
+    "handshape": "open_b",
+    "palm": "up",
+    "fingers": "out",
+    "location": "base-hand",
+    "role": "base"
+   },
+   "library": {
+    "handshape": "A",
+    "location": "weak-hand"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "help",
+    "lemmaId": "help",
+    "code": "D_01_042",
+    "signbankLemmaId": "HELP",
+    "signbankAnnotationId": "HELPpa",
+    "aliases": [
+     "help",
+     "HELP"
+    ],
+    "phonology": {
+     "Handshape.2.0": "a",
+     "MarkedHandshape.2.0": "0",
+     "SelectedFingers.2.0": "t",
+     "Flexion.2.0": "NA",
+     "FlexionChange.2.0": "NA",
+     "Spread.2.0": "NA",
+     "SpreadChange.2.0": "NA",
+     "ThumbPosition.2.0": "Open",
+     "ThumbContact.2.0": "NA",
+     "SignType.2.0": "AsymmetricalDifferentHandshape",
+     "Movement.2.0": "Straight",
+     "RepeatedMovement.2.0": "1",
+     "MajorLocation.2.0": "Hand",
+     "MinorLocation.2.0": "Palm",
+     "SecondMinorLocation.2.0": "NA",
+     "Contact.2.0": "1",
+     "NonDominantHandshape.2.0": "B",
+     "UlnarRotation.2.0": "0"
+    }
+   },
+   "review": {
+    "status": "approved",
+    "date": "2026-10-25",
+    "reviewer": "Claude (renders checked against ASL-LEX's coding and the common citation form; not yet checked by a signer)",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "A hand (thumb up) on the base palm lifts. The base hand should lift with it."
+   },
+   "todo": []
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/interpreter",
+   "language": "ase",
+   "gloss": "INTERPRETER",
+   "spoken": [
+    "interpreter"
+   ],
+   "meanings": [
+    {
+     "text": "interpreter",
+     "pos": "noun"
+    }
+   ],
+   "handed": "2h-symmetric",
+   "lexicalClass": "Noun",
+   "dominant": {
+    "handshape": "F",
+    "palm": "out",
+    "fingers": "up",
+    "location": "neutral-space",
+    "offset": {
+     "contra": 6
+    },
+    "movement": [
+     {
+      "type": "twist",
+      "reps": 2
+     }
+    ]
+   },
+   "library": {
+    "handshape": "F",
+    "location": "weak-hand"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "interpreter",
+    "lemmaId": "interpreter",
+    "code": "D_02_066",
+    "signbankLemmaId": "INTERPRETER",
+    "signbankAnnotationId": "INTERPRETER",
+    "aliases": [
+     "interpreter",
+     "INTERPRETER"
+    ],
+    "phonology": {
+     "Handshape.2.0": "f",
+     "MarkedHandshape.2.0": "1",
+     "SelectedFingers.2.0": "i",
+     "Flexion.2.0": "Curved",
+     "FlexionChange.2.0": "0",
+     "Spread.2.0": "NA",
+     "SpreadChange.2.0": "NA",
+     "ThumbPosition.2.0": "Open",
+     "ThumbContact.2.0": "1",
+     "SignType.2.0": "DominanceViolation",
+     "Movement.2.0": "None",
+     "RepeatedMovement.2.0": "1",
+     "MajorLocation.2.0": "Hand",
+     "MinorLocation.2.0": "FingerTip",
+     "SecondMinorLocation.2.0": "NA",
+     "Contact.2.0": "1",
+     "NonDominantHandshape.2.0": "DominanceConditionViolation",
+     "UlnarRotation.2.0": "1"
+    }
+   },
+   "review": {
+    "status": "draft",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "INTERPRET: F hands, circles touching, turn back and forth."
+   },
+   "todo": [
+    "check: the person ending (-ER) is left out"
+   ]
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/one",
+   "language": "ase",
+   "gloss": "ONE",
+   "spoken": [
+    "one"
+   ],
+   "meanings": [
+    {
+     "text": "one",
+     "pos": "numeral"
+    }
+   ],
+   "handed": "1h",
+   "lexicalClass": "Noun",
+   "dominant": {
+    "handshape": "1",
+    "palm": "in",
+    "fingers": "up",
+    "location": "neutral-space",
+    "offset": {
+     "up": 8
+    },
+    "movement": []
+   },
+   "library": {
+    "handshape": "1",
+    "location": "neutral-space"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "one",
+    "lemmaId": "one",
+    "code": "F_03_012",
+    "signbankLemmaId": "ONE",
+    "signbankAnnotationId": "ONE",
+    "aliases": [
+     "one",
+     "ONE"
+    ],
+    "phonology": {
+     "Handshape.2.0": "1",
+     "MarkedHandshape.2.0": "0",
+     "SelectedFingers.2.0": "i",
+     "Flexion.2.0": "FullyOpen",
+     "FlexionChange.2.0": "0",
+     "Spread.2.0": "NA",
+     "SpreadChange.2.0": "NA",
+     "ThumbPosition.2.0": "Closed",
+     "ThumbContact.2.0": "0",
+     "SignType.2.0": "OneHanded",
+     "Movement.2.0": "Straight",
+     "RepeatedMovement.2.0": "0",
+     "MajorLocation.2.0": "Neutral",
+     "MinorLocation.2.0": "Neutral",
+     "SecondMinorLocation.2.0": "NA",
+     "Contact.2.0": "0",
+     "NonDominantHandshape.2.0": "NA",
+     "UlnarRotation.2.0": "0"
+    }
+   },
+   "review": {
+    "status": "approved",
+    "date": "2026-10-25",
+    "reviewer": "Claude (renders checked against ASL-LEX's coding and the common citation form; not yet checked by a signer)",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "Index up, palm in."
+   },
+   "todo": []
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/hug",
+   "language": "ase",
+   "gloss": "HUG",
+   "spoken": [
+    "hug"
+   ],
+   "meanings": [
+    {
+     "text": "hug",
+     "pos": "verb"
+    }
+   ],
+   "handed": "2h-asymmetric",
+   "lexicalClass": "Verb",
+   "dominant": {
+    "handshape": "A",
+    "palm": "in",
+    "fingers": "contra",
+    "location": "chest",
+    "offset": {
+     "contra": 12,
+     "up": 6,
+     "out": 3
+    },
+    "movement": []
+   },
+   "library": {
+    "handshape": "A",
+    "location": "chest-front"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "hug",
+    "lemmaId": "hug",
+    "code": "G_02_036",
+    "signbankLemmaId": "HUG",
+    "signbankAnnotationId": "HUG",
+    "aliases": [
+     "hug",
+     "HUG"
+    ],
+    "phonology": {
+     "Handshape.2.0": "a",
+     "MarkedHandshape.2.0": "0",
+     "SelectedFingers.2.0": "t",
+     "Flexion.2.0": "NA",
+     "FlexionChange.2.0": "NA",
+     "Spread.2.0": "NA",
+     "SpreadChange.2.0": "NA",
+     "ThumbPosition.2.0": "Open",
+     "ThumbContact.2.0": "NA",
+     "SignType.2.0": "SymmetricalOrAlternating",
+     "Movement.2.0": "None",
+     "RepeatedMovement.2.0": "0",
+     "MajorLocation.2.0": "Body",
+     "MinorLocation.2.0": "TorsoTop",
+     "SecondMinorLocation.2.0": "NA",
+     "Contact.2.0": "1",
+     "NonDominantHandshape.2.0": "a",
+     "UlnarRotation.2.0": "0"
+    }
+   },
+   "review": {
+    "status": "approved",
+    "date": "2026-10-25",
+    "reviewer": "Claude (renders checked against ASL-LEX's coding and the common citation form; not yet checked by a signer)",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "Arms crossed in a hug, each hand on the other shoulder, right arm in front."
+   },
+   "todo": [],
+   "nondominant": {
+    "handshape": "A",
+    "palm": "in",
+    "fingers": "contra",
+    "location": "chest",
+    "offset": {
+     "contra": 12,
+     "up": 6
+    }
+   }
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/dont-know",
+   "language": "ase",
+   "gloss": "DON'T-KNOW",
+   "spoken": [
+    "don't know"
+   ],
+   "meanings": [
+    {
+     "text": "don't know",
+     "pos": "phrase"
+    }
+   ],
+   "handed": "1h",
+   "lexicalClass": "Verb",
+   "dominant": {
+    "handshape": "open_b",
+    "palm": "in",
+    "fingers": "up+contra",
+    "location": "head",
+    "site": "fingertips",
+    "movement": [
+     {
+      "type": "move",
+      "to": "neutral-space-high",
+      "palm": "out",
+      "fingers": "up"
+     }
+    ]
+   },
+   "library": {
+    "handshape": "open_b",
+    "location": "forehead"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "dont_know",
+    "lemmaId": "dont_know",
+    "code": "E_03_049",
+    "signbankLemmaId": "DON'T-KNOW",
+    "signbankAnnotationId": "DON'T-KNOW",
+    "aliases": [
+     "dont_know",
+     "DON'T-KNOW",
+     "dont know"
+    ],
+    "phonology": {
+     "Handshape.2.0": "open_b",
+     "MarkedHandshape.2.0": "1",
+     "SelectedFingers.2.0": "imrp",
+     "Flexion.2.0": "FullyOpen",
+     "FlexionChange.2.0": "0",
+     "Spread.2.0": "0",
+     "SpreadChange.2.0": "0",
+     "ThumbPosition.2.0": "Open",
+     "ThumbContact.2.0": "0",
+     "SignType.2.0": "SymmetricalOrAlternating",
+     "Movement.2.0": "None",
+     "RepeatedMovement.2.0": "0",
+     "MajorLocation.2.0": "Head",
+     "MinorLocation.2.0": "Forehead",
+     "SecondMinorLocation.2.0": "NA",
+     "Contact.2.0": "1",
+     "NonDominantHandshape.2.0": "open_b",
+     "UlnarRotation.2.0": "0"
+    }
+   },
+   "review": {
+    "status": "approved",
+    "date": "2026-10-25",
+    "reviewer": "Claude (renders checked against ASL-LEX's coding and the common citation form; not yet checked by a signer)",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "Fingertips at the temple (KNOW), then the hand moves out, palm turning out. ASL-LEX codes both hands."
+   },
+   "todo": []
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/have",
+   "language": "ase",
+   "gloss": "HAVE",
+   "spoken": [
+    "have"
+   ],
+   "meanings": [
+    {
+     "text": "have",
+     "pos": "verb"
+    }
+   ],
+   "handed": "2h-symmetric",
+   "lexicalClass": "Verb",
+   "dominant": {
+    "handshape": "C",
+    "palm": "in",
+    "fingers": "contra",
+    "location": "chest",
+    "site": "fingertips",
+    "offset": {
+     "ipsi": 4
+    },
+    "movement": [
+     {
+      "type": "linear",
+      "direction": "in"
+     }
+    ]
+   },
+   "library": {
+    "handshape": "flat_b",
+    "location": "chest-front"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "have",
+    "lemmaId": "have",
+    "code": "B_03_057",
+    "signbankLemmaId": "HAVE",
+    "signbankAnnotationId": "HAVE",
+    "aliases": [
+     "have",
+     "HAVE"
+    ],
+    "phonology": {
+     "Handshape.2.0": "flat_b",
+     "MarkedHandshape.2.0": "1",
+     "SelectedFingers.2.0": "imrp",
+     "Flexion.2.0": "Flat",
+     "FlexionChange.2.0": "0",
+     "Spread.2.0": "0",
+     "SpreadChange.2.0": "0",
+     "ThumbPosition.2.0": "Open",
+     "ThumbContact.2.0": "0",
+     "SignType.2.0": "SymmetricalOrAlternating",
+     "Movement.2.0": "Straight",
+     "RepeatedMovement.2.0": "0",
+     "MajorLocation.2.0": "Body",
+     "MinorLocation.2.0": "TorsoTop",
+     "SecondMinorLocation.2.0": "NA",
+     "Contact.2.0": "1",
+     "NonDominantHandshape.2.0": "flat_b",
+     "UlnarRotation.2.0": "0"
+    }
+   },
+   "review": {
+    "status": "approved",
+    "date": "2026-10-25",
+    "reviewer": "Claude (renders checked against ASL-LEX's coding and the common citation form; not yet checked by a signer)",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "Bent hands, fingertips come to the chest."
+   },
+   "todo": []
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/walk",
+   "language": "ase",
+   "gloss": "WALK",
+   "spoken": [
+    "walk"
+   ],
+   "meanings": [
+    {
+     "text": "walk",
+     "pos": "verb"
+    }
+   ],
+   "handed": "2h-alternating",
+   "lexicalClass": "Verb",
+   "dominant": {
+    "handshape": "open_b",
+    "palm": "down",
+    "fingers": "out",
+    "location": "neutral-space",
+    "movement": [
+     {
+      "type": "linear",
+      "direction": "out",
+      "reps": 2
+     }
+    ]
+   },
+   "library": {
+    "handshape": "open_b",
+    "location": "neutral-space"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "walk",
+    "lemmaId": "walk",
+    "code": "D_02_057",
+    "signbankLemmaId": "WALK",
+    "signbankAnnotationId": "WALKb",
+    "aliases": [
+     "walk",
+     "WALK"
+    ],
+    "phonology": {
+     "Handshape.2.0": "open_b",
+     "MarkedHandshape.2.0": "1",
+     "SelectedFingers.2.0": "imrp",
+     "Flexion.2.0": "FullyOpen",
+     "FlexionChange.2.0": "1",
+     "Spread.2.0": "0",
+     "SpreadChange.2.0": "0",
+     "ThumbPosition.2.0": "Open",
+     "ThumbContact.2.0": "0",
+     "SignType.2.0": "SymmetricalOrAlternating",
+     "Movement.2.0": "Curved",
+     "RepeatedMovement.2.0": "1",
+     "MajorLocation.2.0": "Neutral",
+     "MinorLocation.2.0": "Neutral",
+     "SecondMinorLocation.2.0": "Neutral",
+     "Contact.2.0": "0",
+     "NonDominantHandshape.2.0": "open_b",
+     "UlnarRotation.2.0": "0"
+    }
+   },
+   "review": {
+    "status": "approved",
+    "date": "2026-10-25",
+    "reviewer": "Claude (renders checked against ASL-LEX's coding and the common citation form; not yet checked by a signer)",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "Flat hands, palms down, step forward in turn."
+   },
+   "todo": []
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/dont-like",
+   "language": "ase",
+   "gloss": "DON'T-LIKE",
+   "spoken": [
+    "don't like"
+   ],
+   "meanings": [
+    {
+     "text": "don't like",
+     "pos": "phrase"
+    }
+   ],
+   "handed": "1h",
+   "lexicalClass": "Verb",
+   "dominant": {
+    "handshape": "open_8",
+    "palm": "in",
+    "fingers": "contra",
+    "location": "chest-front",
+    "offset": {
+     "in": 2
+    },
+    "movement": [
+     {
+      "type": "move",
+      "to": "neutral-space",
+      "handshape": "8",
+      "palm": "in",
+      "fingers": "contra"
+     },
+     {
+      "type": "change",
+      "handshape": "5",
+      "palm": "down",
+      "fingers": "out"
+     }
+    ]
+   },
+   "library": {
+    "handshape": "8",
+    "location": "chest-front"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "dont_like",
+    "lemmaId": "dont_like",
+    "code": "F_01_033",
+    "signbankLemmaId": "DON'T-LIKE",
+    "signbankAnnotationId": "DON'T-LIKE",
+    "aliases": [
+     "dont_like",
+     "DON'T-LIKE",
+     "dont like"
+    ],
+    "phonology": {
+     "Handshape.2.0": "8",
+     "MarkedHandshape.2.0": "1",
+     "SelectedFingers.2.0": "m",
+     "Flexion.2.0": "Flat",
+     "FlexionChange.2.0": "1",
+     "Spread.2.0": "NA",
+     "SpreadChange.2.0": "NA",
+     "ThumbPosition.2.0": "Open",
+     "ThumbContact.2.0": "1",
+     "SignType.2.0": "OneHanded",
+     "Movement.2.0": "Straight",
+     "RepeatedMovement.2.0": "0",
+     "MajorLocation.2.0": "Body",
+     "MinorLocation.2.0": "TorsoTop",
+     "SecondMinorLocation.2.0": "BodyAway",
+     "Contact.2.0": "1",
+     "NonDominantHandshape.2.0": "NA",
+     "UlnarRotation.2.0": "0"
+    }
+   },
+   "review": {
+    "status": "approved",
+    "date": "2026-10-25",
+    "reviewer": "Claude (renders checked against ASL-LEX's coding and the common citation form; not yet checked by a signer)",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "LIKE, then the hand turns down and flicks open."
+   },
+   "todo": []
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/should",
+   "language": "ase",
+   "gloss": "NEED",
+   "spoken": [
+    "need",
+    "should"
+   ],
+   "meanings": [
+    {
+     "text": "need",
+     "pos": "verb"
+    },
+    {
+     "text": "should",
+     "pos": "verb"
+    }
+   ],
+   "handed": "1h",
+   "lexicalClass": "Verb",
+   "dominant": {
+    "handshape": "X",
+    "palm": "down",
+    "fingers": "out",
+    "location": "neutral-space",
+    "movement": [
+     {
+      "type": "nod",
+      "reps": 2
+     }
+    ]
+   },
+   "library": {
+    "handshape": "X",
+    "location": "neutral-space"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "should",
+    "lemmaId": "should",
+    "code": "G_02_079",
+    "signbankLemmaId": "NEED",
+    "signbankAnnotationId": "NEED",
+    "aliases": [
+     "should",
+     "NEED"
+    ],
+    "phonology": {
+     "Handshape.2.0": "bent_1",
+     "MarkedHandshape.2.0": "1",
+     "SelectedFingers.2.0": "i",
+     "Flexion.2.0": "Bent",
+     "FlexionChange.2.0": "0",
+     "Spread.2.0": "NA",
+     "SpreadChange.2.0": "NA",
+     "ThumbPosition.2.0": "Closed",
+     "ThumbContact.2.0": "0",
+     "SignType.2.0": "OneHanded",
+     "Movement.2.0": "Straight",
+     "RepeatedMovement.2.0": "1",
+     "MajorLocation.2.0": "Neutral",
+     "MinorLocation.2.0": "Neutral",
+     "SecondMinorLocation.2.0": "Neutral",
+     "Contact.2.0": "0",
+     "NonDominantHandshape.2.0": "NA",
+     "UlnarRotation.2.0": "0"
+    }
+   },
+   "review": {
+    "status": "approved",
+    "date": "2026-10-25",
+    "reviewer": "Claude (renders checked against ASL-LEX's coding and the common citation form; not yet checked by a signer)",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "NEED: X hand bends down at the wrist twice."
+   },
+   "todo": []
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/woman-2",
+   "language": "ase",
+   "gloss": "WOMAN",
+   "spoken": [
+    "woman"
+   ],
+   "meanings": [
+    {
+     "text": "woman",
+     "pos": "noun"
+    }
+   ],
+   "handed": "1h",
+   "lexicalClass": "Noun",
+   "dominant": {
+    "handshape": "A",
+    "palm": "contra",
+    "fingers": "up",
+    "location": "chin",
+    "site": "thumb",
+    "movement": [
+     {
+      "type": "tap"
+     }
+    ]
+   },
+   "library": {
+    "handshape": "A",
+    "location": "chin"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "woman_2",
+    "lemmaId": "woman_2",
+    "code": "K_01_101",
+    "signbankLemmaId": "WOMAN",
+    "signbankAnnotationId": "WOMAN5",
+    "aliases": [
+     "woman_2",
+     "WOMAN",
+     "woman 2"
+    ],
+    "phonology": {
+     "Handshape.2.0": "a",
+     "MarkedHandshape.2.0": "0",
+     "SelectedFingers.2.0": "t",
+     "Flexion.2.0": "NA",
+     "FlexionChange.2.0": "NA",
+     "Spread.2.0": "NA",
+     "SpreadChange.2.0": "NA",
+     "ThumbPosition.2.0": "Open",
+     "ThumbContact.2.0": "NA",
+     "SignType.2.0": "OneHanded",
+     "Movement.2.0": "None",
+     "RepeatedMovement.2.0": "0",
+     "MajorLocation.2.0": "Head",
+     "MinorLocation.2.0": "Chin",
+     "SecondMinorLocation.2.0": "NA",
+     "Contact.2.0": "1",
+     "NonDominantHandshape.2.0": "NA",
+     "UlnarRotation.2.0": "0"
+    }
+   },
+   "review": {
+    "status": "draft",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "A hand, thumb at the chin."
+   },
+   "todo": [
+    "check against the ASL-LEX video: an A hand at the chin (WOMAN is often a 5 hand from the chin to the chest)"
+   ]
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/always",
+   "language": "ase",
+   "gloss": "ALWAYS",
+   "spoken": [
+    "always"
+   ],
+   "meanings": [
+    {
+     "text": "always",
+     "pos": "adverb"
+    }
+   ],
+   "handed": "1h",
+   "lexicalClass": "Adverb",
+   "dominant": {
+    "handshape": "1",
+    "palm": "up",
+    "fingers": "out",
+    "location": "neutral-space",
+    "movement": [
+     {
+      "type": "circle",
+      "reps": 2
+     }
+    ]
+   },
+   "library": {
+    "handshape": "1",
+    "location": "neutral-space"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "always",
+    "lemmaId": "always",
+    "code": "J_03_076",
+    "signbankLemmaId": "ALWAYS",
+    "signbankAnnotationId": "ALWAYS",
+    "aliases": [
+     "always",
+     "ALWAYS"
+    ],
+    "phonology": {
+     "Handshape.2.0": "1",
+     "MarkedHandshape.2.0": "0",
+     "SelectedFingers.2.0": "i",
+     "Flexion.2.0": "FullyOpen",
+     "FlexionChange.2.0": "0",
+     "Spread.2.0": "NA",
+     "SpreadChange.2.0": "NA",
+     "ThumbPosition.2.0": "Closed",
+     "ThumbContact.2.0": "0",
+     "SignType.2.0": "OneHanded",
+     "Movement.2.0": "Circular",
+     "RepeatedMovement.2.0": "1",
+     "MajorLocation.2.0": "Neutral",
+     "MinorLocation.2.0": "Neutral",
+     "SecondMinorLocation.2.0": "Neutral",
+     "Contact.2.0": "0",
+     "NonDominantHandshape.2.0": "NA",
+     "UlnarRotation.2.0": "0"
+    }
+   },
+   "review": {
+    "status": "approved",
+    "date": "2026-10-25",
+    "reviewer": "Claude (renders checked against ASL-LEX's coding and the common citation form; not yet checked by a signer)",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "Index points forward, palm up, and circles."
+   },
+   "todo": []
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/understand",
+   "language": "ase",
+   "gloss": "UNDERSTAND",
+   "spoken": [
+    "understand"
+   ],
+   "meanings": [
+    {
+     "text": "understand",
+     "pos": "verb"
+    }
+   ],
+   "handed": "1h",
+   "lexicalClass": "Verb",
+   "dominant": {
+    "handshape": "baby_o",
+    "palm": "contra",
+    "fingers": "up",
+    "location": "head",
+    "offset": {
+     "ipsi": 4,
+     "out": 2
+    },
+    "movement": [
+     {
+      "type": "change",
+      "handshape": "1"
+     }
+    ]
+   },
+   "library": {
+    "handshape": "baby_o",
+    "location": "head"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "understand",
+    "lemmaId": "understand",
+    "code": "C_01_006",
+    "signbankLemmaId": "UNDERSTAND",
+    "signbankAnnotationId": "UNDERSTAND",
+    "aliases": [
+     "understand",
+     "UNDERSTAND"
+    ],
+    "phonology": {
+     "Handshape.2.0": "baby_o",
+     "MarkedHandshape.2.0": "1",
+     "SelectedFingers.2.0": "i",
+     "Flexion.2.0": "Bent",
+     "FlexionChange.2.0": "1",
+     "Spread.2.0": "NA",
+     "SpreadChange.2.0": "NA",
+     "ThumbPosition.2.0": "Open",
+     "ThumbContact.2.0": "1",
+     "SignType.2.0": "OneHanded",
+     "Movement.2.0": "None",
+     "RepeatedMovement.2.0": "0",
+     "MajorLocation.2.0": "Head",
+     "MinorLocation.2.0": "HeadAway",
+     "SecondMinorLocation.2.0": "NA",
+     "Contact.2.0": "0",
+     "NonDominantHandshape.2.0": "NA",
+     "UlnarRotation.2.0": "0"
+    }
+   },
+   "review": {
+    "status": "approved",
+    "date": "2026-10-25",
+    "reviewer": "Claude (renders checked against ASL-LEX's coding and the common citation form; not yet checked by a signer)",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "By the temple, the index flicks up off the thumb."
+   },
+   "todo": []
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/morning",
+   "language": "ase",
+   "gloss": "MORNING",
+   "spoken": [
+    "morning"
+   ],
+   "meanings": [
+    {
+     "text": "morning",
+     "pos": "noun"
+    }
+   ],
+   "handed": "1h",
+   "lexicalClass": "Noun",
+   "dominant": {
+    "handshape": "open_b",
+    "palm": "up",
+    "fingers": "out",
+    "location": "neutral-space",
+    "movement": [
+     {
+      "type": "change",
+      "palm": "in",
+      "fingers": "up"
+     }
+    ]
+   },
+   "library": {
+    "handshape": "open_b",
+    "location": "neutral-space"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "morning",
+    "lemmaId": "morning",
+    "code": "C_02_012",
+    "signbankLemmaId": "MORNING",
+    "signbankAnnotationId": "MORNING",
+    "aliases": [
+     "morning",
+     "MORNING"
+    ],
+    "phonology": {
+     "Handshape.2.0": "open_b",
+     "MarkedHandshape.2.0": "1",
+     "SelectedFingers.2.0": "imrp",
+     "Flexion.2.0": "FullyOpen",
+     "FlexionChange.2.0": "0",
+     "Spread.2.0": "0",
+     "SpreadChange.2.0": "0",
+     "ThumbPosition.2.0": "Open",
+     "ThumbContact.2.0": "0",
+     "SignType.2.0": "OneHanded",
+     "Movement.2.0": "Curved",
+     "RepeatedMovement.2.0": "0",
+     "MajorLocation.2.0": "Neutral",
+     "MinorLocation.2.0": "Neutral",
+     "SecondMinorLocation.2.0": "Neutral",
+     "Contact.2.0": "0",
+     "NonDominantHandshape.2.0": "NA",
+     "UlnarRotation.2.0": "0"
+    }
+   },
+   "review": {
+    "status": "draft",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "The sun rising: the flat hand, palm up, turns up to palm in."
+   },
+   "todo": [
+    "check: the base arm under the elbow is left out"
+   ]
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/month",
+   "language": "ase",
+   "gloss": "MONTH",
+   "spoken": [
+    "month"
+   ],
+   "meanings": [
+    {
+     "text": "month",
+     "pos": "noun"
+    }
+   ],
+   "handed": "2h-asymmetric",
+   "lexicalClass": "Noun",
+   "dominant": {
+    "handshape": "1",
+    "palm": "down",
+    "fingers": "contra",
+    "location": "weak-hand",
+    "site": "index",
+    "movement": [
+     {
+      "type": "linear",
+      "direction": "down"
+     }
+    ]
+   },
+   "nondominant": {
+    "handshape": "1",
+    "palm": "contra",
+    "fingers": "up",
+    "location": "base-hand",
+    "role": "base"
+   },
+   "library": {
+    "handshape": "1",
+    "location": "weak-hand"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "month",
+    "lemmaId": "month",
+    "code": "A_01_073",
+    "signbankLemmaId": "MONTH",
+    "signbankAnnotationId": "MONTH",
+    "aliases": [
+     "month",
+     "MONTH"
+    ],
+    "phonology": {
+     "Handshape.2.0": "1",
+     "MarkedHandshape.2.0": "0",
+     "SelectedFingers.2.0": "i",
+     "Flexion.2.0": "FullyOpen",
+     "FlexionChange.2.0": "0",
+     "Spread.2.0": "NA",
+     "SpreadChange.2.0": "NA",
+     "ThumbPosition.2.0": "Closed",
+     "ThumbContact.2.0": "0",
+     "SignType.2.0": "AsymmetricalSameHandshape",
+     "Movement.2.0": "Straight",
+     "RepeatedMovement.2.0": "0",
+     "MajorLocation.2.0": "Hand",
+     "MinorLocation.2.0": "FingerBack",
+     "SecondMinorLocation.2.0": "PalmBack",
+     "Contact.2.0": "1",
+     "NonDominantHandshape.2.0": "1",
+     "UlnarRotation.2.0": "0"
+    }
+   },
+   "review": {
+    "status": "draft",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "The dominant index slides down the upright base index."
+   },
+   "todo": [
+    "check: the index slides down the back of the base index"
+   ]
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/city-2",
+   "language": "ase",
+   "gloss": "CITY",
+   "spoken": [
+    "city",
+    "town"
+   ],
+   "meanings": [
+    {
+     "text": "city",
+     "pos": "noun"
+    },
+    {
+     "text": "town",
+     "pos": "noun"
+    }
+   ],
+   "handed": "2h-symmetric",
+   "lexicalClass": "Noun",
+   "dominant": {
+    "handshape": "flat_b",
+    "palm": "contra+down",
+    "fingers": "up+contra",
+    "location": "neutral-space",
+    "offset": {
+     "contra": 4
+    },
+    "movement": [
+     {
+      "type": "twist",
+      "reps": 2
+     }
+    ]
+   },
+   "library": {
+    "handshape": "flat_b",
+    "location": "neutral-space"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "city_2",
+    "lemmaId": "city_2",
+    "code": "K_02_076",
+    "signbankLemmaId": "CITY",
+    "signbankAnnotationId": "CITYtwist",
+    "aliases": [
+     "city_2",
+     "CITY",
+     "city 2"
+    ],
+    "phonology": {
+     "Handshape.2.0": "flat_b",
+     "MarkedHandshape.2.0": "1",
+     "SelectedFingers.2.0": "imrp",
+     "Flexion.2.0": "Flat",
+     "FlexionChange.2.0": "0",
+     "Spread.2.0": "0",
+     "SpreadChange.2.0": "0",
+     "ThumbPosition.2.0": "Open",
+     "ThumbContact.2.0": "0",
+     "SignType.2.0": "SymmetricalOrAlternating",
+     "Movement.2.0": "Straight",
+     "RepeatedMovement.2.0": "1",
+     "MajorLocation.2.0": "Neutral",
+     "MinorLocation.2.0": "Neutral",
+     "SecondMinorLocation.2.0": "Neutral",
+     "Contact.2.0": "1",
+     "NonDominantHandshape.2.0": "flat_b",
+     "UlnarRotation.2.0": "1"
+    }
+   },
+   "review": {
+    "status": "draft",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "Roofs: flat hands, fingertips together, turn back and forth."
+   },
+   "todo": [
+    "check: roofs, fingertips touching, the hands turning in turn"
+   ]
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/gas",
+   "language": "ase",
+   "gloss": "GAS",
+   "spoken": [
+    "gas",
+    "gasoline"
+   ],
+   "meanings": [
+    {
+     "text": "gas",
+     "pos": "noun"
+    },
+    {
+     "text": "gasoline",
+     "pos": "noun"
+    }
+   ],
+   "handed": "2h-asymmetric",
+   "lexicalClass": "Noun",
+   "dominant": {
+    "handshape": "A",
+    "palm": "ipsi",
+    "fingers": "out",
+    "location": "weak-hand",
+    "site": "thumb",
+    "movement": [
+     {
+      "type": "tap",
+      "reps": 2
+     }
+    ]
+   },
+   "nondominant": {
+    "handshape": "S",
+    "palm": "contra",
+    "fingers": "out",
+    "location": "base-hand",
+    "role": "base"
+   },
+   "library": {
+    "handshape": "A",
+    "location": "weak-hand"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "gas",
+    "lemmaId": "gas",
+    "code": "A_03_090",
+    "signbankLemmaId": "GAS",
+    "signbankAnnotationId": "GAS",
+    "aliases": [
+     "gas",
+     "GAS"
+    ],
+    "phonology": {
+     "Handshape.2.0": "a",
+     "MarkedHandshape.2.0": "0",
+     "SelectedFingers.2.0": "t",
+     "Flexion.2.0": "NA",
+     "FlexionChange.2.0": "NA",
+     "Spread.2.0": "NA",
+     "SpreadChange.2.0": "NA",
+     "ThumbPosition.2.0": "Open",
+     "ThumbContact.2.0": "NA",
+     "SignType.2.0": "AsymmetricalDifferentHandshape",
+     "Movement.2.0": "Straight",
+     "RepeatedMovement.2.0": "1",
+     "MajorLocation.2.0": "Hand",
+     "MinorLocation.2.0": "FingerRadial",
+     "SecondMinorLocation.2.0": "NA",
+     "Contact.2.0": "1",
+     "NonDominantHandshape.2.0": "S",
+     "UlnarRotation.2.0": "0"
+    }
+   },
+   "review": {
+    "status": "approved",
+    "date": "2026-10-25",
+    "reviewer": "Claude (renders checked against ASL-LEX's coding and the common citation form; not yet checked by a signer)",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "Pouring: the A thumb dips into the top of the base fist twice."
+   },
+   "todo": []
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/three",
+   "language": "ase",
+   "gloss": "THREE",
+   "spoken": [
+    "three"
+   ],
+   "meanings": [
+    {
+     "text": "three",
+     "pos": "numeral"
+    }
+   ],
+   "handed": "1h",
+   "lexicalClass": "Number",
+   "dominant": {
+    "handshape": "3",
+    "palm": "in",
+    "fingers": "up",
+    "location": "neutral-space",
+    "offset": {
+     "up": 8
+    },
+    "movement": []
+   },
+   "library": {
+    "handshape": "3",
+    "location": "neutral-space"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "three",
+    "lemmaId": "three",
+    "code": "B_01_044",
+    "signbankLemmaId": "THREE",
+    "signbankAnnotationId": "THREE",
+    "aliases": [
+     "three",
+     "THREE"
+    ],
+    "phonology": {
+     "Handshape.2.0": "3",
+     "MarkedHandshape.2.0": "1",
+     "SelectedFingers.2.0": "im",
+     "Flexion.2.0": "FullyOpen",
+     "FlexionChange.2.0": "0",
+     "Spread.2.0": "1",
+     "SpreadChange.2.0": "0",
+     "ThumbPosition.2.0": "Open",
+     "ThumbContact.2.0": "0",
+     "SignType.2.0": "OneHanded",
+     "Movement.2.0": "Straight",
+     "RepeatedMovement.2.0": "0",
+     "MajorLocation.2.0": "Neutral",
+     "MinorLocation.2.0": "Neutral",
+     "SecondMinorLocation.2.0": "NA",
+     "Contact.2.0": "0",
+     "NonDominantHandshape.2.0": "NA",
+     "UlnarRotation.2.0": "0"
+    }
+   },
+   "review": {
+    "status": "approved",
+    "date": "2026-10-25",
+    "reviewer": "Claude (renders checked against ASL-LEX's coding and the common citation form; not yet checked by a signer)",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "Thumb, index and middle up, palm in."
+   },
+   "todo": []
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/wrong-1",
+   "language": "ase",
+   "gloss": "WRONG",
+   "spoken": [
+    "wrong",
+    "mistake"
+   ],
+   "meanings": [
+    {
+     "text": "wrong",
+     "pos": "adjective"
+    },
+    {
+     "text": "mistake",
+     "pos": "noun"
+    }
+   ],
+   "handed": "1h",
+   "lexicalClass": "Adjective",
+   "dominant": {
+    "handshape": "Y",
+    "palm": "in",
+    "fingers": "contra",
+    "location": "chin",
+    "site": "fingertips",
+    "movement": [
+     {
+      "type": "tap"
+     }
+    ]
+   },
+   "library": {
+    "handshape": "Y",
+    "location": "chin"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "wrong_1",
+    "lemmaId": "wrong",
+    "code": "B_01_055",
+    "signbankLemmaId": "WRONG",
+    "signbankAnnotationId": "WRONG",
+    "aliases": [
+     "wrong_1",
+     "wrong",
+     "WRONG",
+     "wrong 1"
+    ],
+    "phonology": {
+     "Handshape.2.0": "y",
+     "MarkedHandshape.2.0": "1",
+     "SelectedFingers.2.0": "p",
+     "Flexion.2.0": "FullyOpen",
+     "FlexionChange.2.0": "0",
+     "Spread.2.0": "NA",
+     "SpreadChange.2.0": "NA",
+     "ThumbPosition.2.0": "Open",
+     "ThumbContact.2.0": "0",
+     "SignType.2.0": "OneHanded",
+     "Movement.2.0": "Straight",
+     "RepeatedMovement.2.0": "1",
+     "MajorLocation.2.0": "Head",
+     "MinorLocation.2.0": "Chin",
+     "SecondMinorLocation.2.0": "NA",
+     "Contact.2.0": "1",
+     "NonDominantHandshape.2.0": "NA",
+     "UlnarRotation.2.0": "0"
+    }
+   },
+   "review": {
+    "status": "approved",
+    "date": "2026-10-25",
+    "reviewer": "Claude (renders checked against ASL-LEX's coding and the common citation form; not yet checked by a signer)",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "Y hand, palm in, the curled middle fingers against the chin."
+   },
+   "todo": []
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/cook",
+   "language": "ase",
+   "gloss": "COOK",
+   "spoken": [
+    "cook"
+   ],
+   "meanings": [
+    {
+     "text": "cook",
+     "pos": "verb"
+    }
+   ],
+   "handed": "2h-asymmetric",
+   "lexicalClass": "Verb",
+   "dominant": {
+    "handshape": "open_b",
+    "palm": "down",
+    "fingers": "out",
+    "location": "weak-hand",
+    "site": "palm",
+    "offset": {
+     "down": 2
+    },
+    "movement": [
+     {
+      "type": "change",
+      "palm": "up",
+      "fingers": "out",
+      "site": "back",
+      "reps": 2
+     }
+    ]
+   },
+   "nondominant": {
+    "handshape": "open_b",
+    "palm": "up",
+    "fingers": "out",
+    "location": "base-hand",
+    "role": "base"
+   },
+   "library": {
+    "handshape": "open_b",
+    "location": "weak-hand"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "cook",
+    "lemmaId": "cook",
+    "code": "D_03_078",
+    "signbankLemmaId": "COOK",
+    "signbankAnnotationId": "COOK",
+    "aliases": [
+     "cook",
+     "COOK"
+    ],
+    "phonology": {
+     "Handshape.2.0": "open_b",
+     "MarkedHandshape.2.0": "1",
+     "SelectedFingers.2.0": "imrp",
+     "Flexion.2.0": "FullyOpen",
+     "FlexionChange.2.0": "0",
+     "Spread.2.0": "0",
+     "SpreadChange.2.0": "0",
+     "ThumbPosition.2.0": "Open",
+     "ThumbContact.2.0": "0",
+     "SignType.2.0": "AsymmetricalSameHandshape",
+     "Movement.2.0": "Other",
+     "RepeatedMovement.2.0": "0",
+     "MajorLocation.2.0": "Hand",
+     "MinorLocation.2.0": "Palm",
+     "SecondMinorLocation.2.0": "Palm",
+     "Contact.2.0": "1",
+     "NonDominantHandshape.2.0": "open_b",
+     "UlnarRotation.2.0": "1"
+    }
+   },
+   "review": {
+    "status": "approved",
+    "date": "2026-10-25",
+    "reviewer": "Claude (renders checked against ASL-LEX's coding and the common citation form; not yet checked by a signer)",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "Flipping: the flat hand turns over on the base palm, twice."
+   },
+   "todo": []
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/teacher",
+   "language": "ase",
+   "gloss": "TEACHER",
+   "spoken": [
+    "teacher"
+   ],
+   "meanings": [
+    {
+     "text": "teacher",
+     "pos": "noun"
+    }
+   ],
+   "handed": "2h-symmetric",
+   "lexicalClass": "Noun",
+   "dominant": {
+    "handshape": "flat_o",
+    "palm": "contra",
+    "fingers": "out",
+    "location": "forehead",
+    "offset": {
+     "out": 8,
+     "ipsi": 7,
+     "up": 2
+    },
+    "movement": [
+     {
+      "type": "linear",
+      "direction": "out"
+     },
+     {
+      "type": "move",
+      "to": "chest-front",
+      "handshape": "open_b",
+      "palm": "contra",
+      "fingers": "out",
+      "offset": {
+       "ipsi": 4
+      }
+     },
+     {
+      "type": "linear",
+      "direction": "down"
+     }
+    ]
+   },
+   "library": {
+    "handshape": "O",
+    "location": "head"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "teacher",
+    "lemmaId": "teacher",
+    "code": "A_02_033",
+    "signbankLemmaId": "TEACHER",
+    "signbankAnnotationId": "TEACHER",
+    "aliases": [
+     "teacher",
+     "TEACHER"
+    ],
+    "phonology": {
+     "Handshape.2.0": "o",
+     "MarkedHandshape.2.0": "0",
+     "SelectedFingers.2.0": "imrp",
+     "Flexion.2.0": "Curved",
+     "FlexionChange.2.0": "1",
+     "Spread.2.0": "0",
+     "SpreadChange.2.0": "0",
+     "ThumbPosition.2.0": "Open",
+     "ThumbContact.2.0": "1",
+     "SignType.2.0": "SymmetricalOrAlternating",
+     "Movement.2.0": "Straight",
+     "RepeatedMovement.2.0": "0",
+     "MajorLocation.2.0": "Head",
+     "MinorLocation.2.0": "HeadAway",
+     "SecondMinorLocation.2.0": "HeadAway",
+     "Contact.2.0": "0",
+     "NonDominantHandshape.2.0": "o",
+     "UlnarRotation.2.0": "0"
+    }
+   },
+   "review": {
+    "status": "approved",
+    "date": "2026-10-25",
+    "reviewer": "Claude (renders checked against ASL-LEX's coding and the common citation form; not yet checked by a signer)",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "TEACH, then the person ending: flat hands, palms facing, move down the sides of the body."
+   },
+   "todo": []
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/shoes",
+   "language": "ase",
+   "gloss": "SHOES",
+   "spoken": [
+    "shoes",
+    "shoe"
+   ],
+   "meanings": [
+    {
+     "text": "shoes",
+     "pos": "noun"
+    },
+    {
+     "text": "shoe",
+     "pos": "noun"
+    }
+   ],
+   "handed": "2h-symmetric",
+   "lexicalClass": "Noun",
+   "dominant": {
+    "handshape": "S",
+    "palm": "down",
+    "fingers": "out",
+    "location": "neutral-space",
+    "offset": {
+     "contra": 6
+    },
+    "movement": [
+     {
+      "type": "linear",
+      "direction": "contra",
+      "contact": "end",
+      "reps": 2
+     }
+    ]
+   },
+   "library": {
+    "handshape": "S",
+    "location": "neutral-space"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "shoes",
+    "lemmaId": "shoes",
+    "code": "A_02_057",
+    "signbankLemmaId": "SHOES",
+    "signbankAnnotationId": "SHOES",
+    "aliases": [
+     "shoes",
+     "SHOES"
+    ],
+    "phonology": {
+     "Handshape.2.0": "s",
+     "MarkedHandshape.2.0": "0",
+     "SelectedFingers.2.0": "imrp",
+     "Flexion.2.0": "FullyClosed",
+     "FlexionChange.2.0": "0",
+     "Spread.2.0": "NA",
+     "SpreadChange.2.0": "0",
+     "ThumbPosition.2.0": "Closed",
+     "ThumbContact.2.0": "1",
+     "SignType.2.0": "SymmetricalOrAlternating",
+     "Movement.2.0": "Straight",
+     "RepeatedMovement.2.0": "1",
+     "MajorLocation.2.0": "Neutral",
+     "MinorLocation.2.0": "Neutral",
+     "SecondMinorLocation.2.0": "Neutral",
+     "Contact.2.0": "1",
+     "NonDominantHandshape.2.0": "s",
+     "UlnarRotation.2.0": "0"
+    }
+   },
+   "review": {
+    "status": "approved",
+    "date": "2026-10-25",
+    "reviewer": "Claude (renders checked against ASL-LEX's coding and the common citation form; not yet checked by a signer)",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "S hands, palms down, knock together twice."
+   },
+   "todo": []
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/doesnt-matter",
+   "language": "ase",
+   "gloss": "DOESN'T-MATTER",
+   "spoken": [
+    "doesn't matter"
+   ],
+   "meanings": [
+    {
+     "text": "doesn't matter",
+     "pos": "phrase"
+    }
+   ],
+   "handed": "2h-alternating",
+   "lexicalClass": "Verb",
+   "dominant": {
+    "handshape": "open_b",
+    "palm": "in",
+    "fingers": "contra",
+    "location": "neutral-space",
+    "offset": {
+     "contra": 3
+    },
+    "movement": [
+     {
+      "type": "linear",
+      "direction": "up",
+      "reps": 2
+     }
+    ]
+   },
+   "library": {
+    "handshape": "open_b",
+    "location": "neutral-space"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "doesnt_matter",
+    "lemmaId": "doesnt_matter",
+    "code": "F_03_031",
+    "signbankLemmaId": null,
+    "signbankAnnotationId": null,
+    "aliases": [
+     "doesnt_matter",
+     "doesnt matter"
+    ],
+    "phonology": {
+     "Handshape.2.0": "open_b",
+     "MarkedHandshape.2.0": "1",
+     "SelectedFingers.2.0": "imrp",
+     "Flexion.2.0": "FullyOpen",
+     "FlexionChange.2.0": "0",
+     "Spread.2.0": "0",
+     "SpreadChange.2.0": "0",
+     "ThumbPosition.2.0": "Open",
+     "ThumbContact.2.0": "0",
+     "SignType.2.0": "SymmetricalOrAlternating",
+     "Movement.2.0": "Straight",
+     "RepeatedMovement.2.0": "1",
+     "MajorLocation.2.0": "Neutral",
+     "MinorLocation.2.0": "Neutral",
+     "SecondMinorLocation.2.0": "Neutral",
+     "Contact.2.0": "1",
+     "NonDominantHandshape.2.0": "open_b",
+     "UlnarRotation.2.0": "0"
+    }
+   },
+   "review": {
+    "status": "approved",
+    "date": "2026-10-25",
+    "reviewer": "Claude (renders checked against ASL-LEX's coding and the common citation form; not yet checked by a signer)",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "Flat hands, palms in, fingertips brushing past each other up and down."
+   },
+   "todo": []
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/yay",
+   "language": "ase",
+   "gloss": "YAY",
+   "spoken": [
+    "applause",
+    "hooray"
+   ],
+   "meanings": [
+    {
+     "text": "applause",
+     "pos": "noun"
+    },
+    {
+     "text": "hooray",
+     "pos": "interjection"
+    }
+   ],
+   "handed": "2h-symmetric",
+   "lexicalClass": "Minor",
+   "dominant": {
+    "handshape": "5",
+    "palm": "out",
+    "fingers": "up",
+    "location": "head",
+    "offset": {
+     "ipsi": 8,
+     "out": 8
+    },
+    "movement": [
+     {
+      "type": "twist",
+      "reps": 3
+     }
+    ]
+   },
+   "library": {
+    "handshape": "5",
+    "location": "head"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "yay",
+    "lemmaId": "yay",
+    "code": "J_01_030",
+    "signbankLemmaId": "YAY",
+    "signbankAnnotationId": "YAY",
+    "aliases": [
+     "yay",
+     "YAY"
+    ],
+    "phonology": {
+     "Handshape.2.0": "5",
+     "MarkedHandshape.2.0": "0",
+     "SelectedFingers.2.0": "imrp",
+     "Flexion.2.0": "FullyOpen",
+     "FlexionChange.2.0": "0",
+     "Spread.2.0": "1",
+     "SpreadChange.2.0": "0",
+     "ThumbPosition.2.0": "Open",
+     "ThumbContact.2.0": "0",
+     "SignType.2.0": "SymmetricalOrAlternating",
+     "Movement.2.0": "None",
+     "RepeatedMovement.2.0": "1",
+     "MajorLocation.2.0": "Head",
+     "MinorLocation.2.0": "HeadAway",
+     "SecondMinorLocation.2.0": "NA",
+     "Contact.2.0": "0",
+     "NonDominantHandshape.2.0": "5",
+     "UlnarRotation.2.0": "1"
+    }
+   },
+   "review": {
+    "status": "approved",
+    "date": "2026-10-25",
+    "reviewer": "Claude (renders checked against ASL-LEX's coding and the common citation form; not yet checked by a signer)",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "Deaf applause: open hands raised beside the head, turning back and forth."
+   },
+   "todo": []
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/go-ahead",
+   "language": "ase",
+   "gloss": "GO-AHEAD",
+   "spoken": [
+    "go ahead"
+   ],
+   "meanings": [
+    {
+     "text": "go ahead",
+     "pos": "phrase"
+    }
+   ],
+   "handed": "2h-symmetric",
+   "lexicalClass": "Verb",
+   "dominant": {
+    "handshape": "flat_b",
+    "palm": "contra",
+    "fingers": "out",
+    "location": "neutral-space",
+    "movement": [
+     {
+      "type": "linear",
+      "direction": "out"
+     }
+    ]
+   },
+   "library": {
+    "handshape": "flat_b",
+    "location": "neutral-space"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "go_ahead",
+    "lemmaId": "go_ahead",
+    "code": "J_01_041",
+    "signbankLemmaId": "GO-AHEAD",
+    "signbankAnnotationId": "GO-AHEAD",
+    "aliases": [
+     "go_ahead",
+     "GO-AHEAD",
+     "go ahead"
+    ],
+    "phonology": {
+     "Handshape.2.0": "flat_b",
+     "MarkedHandshape.2.0": "1",
+     "SelectedFingers.2.0": "imrp",
+     "Flexion.2.0": "Flat",
+     "FlexionChange.2.0": "0",
+     "Spread.2.0": "0",
+     "SpreadChange.2.0": "0",
+     "ThumbPosition.2.0": "Open",
+     "ThumbContact.2.0": "0",
+     "SignType.2.0": "SymmetricalOrAlternating",
+     "Movement.2.0": "Straight",
+     "RepeatedMovement.2.0": "0",
+     "MajorLocation.2.0": "Neutral",
+     "MinorLocation.2.0": "Neutral",
+     "SecondMinorLocation.2.0": "Neutral",
+     "Contact.2.0": "0",
+     "NonDominantHandshape.2.0": "flat_b",
+     "UlnarRotation.2.0": "0"
+    }
+   },
+   "review": {
+    "status": "approved",
+    "date": "2026-10-25",
+    "reviewer": "Claude (renders checked against ASL-LEX's coding and the common citation form; not yet checked by a signer)",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "Flat hands, palms facing, push forward."
+   },
+   "todo": []
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/again",
+   "language": "ase",
+   "gloss": "AGAIN",
+   "spoken": [
+    "again"
+   ],
+   "meanings": [
+    {
+     "text": "again",
+     "pos": "adverb"
+    }
+   ],
+   "handed": "2h-asymmetric",
+   "lexicalClass": "Verb",
+   "dominant": {
+    "handshape": "bent_b",
+    "palm": "up",
+    "fingers": "contra",
+    "location": "neutral-space",
+    "movement": [
+     {
+      "type": "move",
+      "to": "weak-hand",
+      "palm": "in",
+      "fingers": "down",
+      "site": "fingertips",
+      "offset": {
+       "down": 2
+      }
+     }
+    ]
+   },
+   "nondominant": {
+    "handshape": "open_b",
+    "palm": "up",
+    "fingers": "out",
+    "location": "base-hand",
+    "role": "base"
+   },
+   "library": {
+    "handshape": "flat_b",
+    "location": "weak-hand"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "again",
+    "lemmaId": "again",
+    "code": "J_02_013",
+    "signbankLemmaId": "AGAIN",
+    "signbankAnnotationId": "AGAIN",
+    "aliases": [
+     "again",
+     "AGAIN"
+    ],
+    "phonology": {
+     "Handshape.2.0": "flat_b",
+     "MarkedHandshape.2.0": "1",
+     "SelectedFingers.2.0": "imrp",
+     "Flexion.2.0": "Flat",
+     "FlexionChange.2.0": "0",
+     "Spread.2.0": "0",
+     "SpreadChange.2.0": "0",
+     "ThumbPosition.2.0": "Open",
+     "ThumbContact.2.0": "0",
+     "SignType.2.0": "AsymmetricalSameHandshape",
+     "Movement.2.0": "Curved",
+     "RepeatedMovement.2.0": "0",
+     "MajorLocation.2.0": "Hand",
+     "MinorLocation.2.0": "HandAway",
+     "SecondMinorLocation.2.0": "Palm",
+     "Contact.2.0": "1",
+     "NonDominantHandshape.2.0": "flat_b",
+     "UlnarRotation.2.0": "1"
+    }
+   },
+   "review": {
+    "status": "approved",
+    "date": "2026-10-25",
+    "reviewer": "Claude (renders checked against ASL-LEX's coding and the common citation form; not yet checked by a signer)",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "The bent hand, palm up, turns over and lands fingertips in the base palm."
+   },
+   "todo": []
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/bye",
+   "language": "ase",
+   "gloss": "BYE-BYE",
+   "spoken": [
+    "bye",
+    "goodbye"
+   ],
+   "meanings": [
+    {
+     "text": "bye",
+     "pos": "interjection"
+    },
+    {
+     "text": "goodbye",
+     "pos": "interjection"
+    }
+   ],
+   "handed": "1h",
+   "lexicalClass": "Noun",
+   "dominant": {
+    "handshape": "5",
+    "palm": "out",
+    "fingers": "up",
+    "location": "neutral-space-high",
+    "movement": [
+     {
+      "type": "nod",
+      "reps": 3
+     }
+    ]
+   },
+   "library": {
+    "handshape": "5",
+    "location": "neutral-space"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "bye",
+    "lemmaId": "bye",
+    "code": "E_01_058",
+    "signbankLemmaId": "BYE-BYE",
+    "signbankAnnotationId": "BYE-BYE",
+    "aliases": [
+     "bye",
+     "BYE-BYE"
+    ],
+    "phonology": {
+     "Handshape.2.0": "5",
+     "MarkedHandshape.2.0": "0",
+     "SelectedFingers.2.0": "imrp",
+     "Flexion.2.0": "FullyOpen",
+     "FlexionChange.2.0": "1",
+     "Spread.2.0": "1",
+     "SpreadChange.2.0": "0",
+     "ThumbPosition.2.0": "Open",
+     "ThumbContact.2.0": "0",
+     "SignType.2.0": "OneHanded",
+     "Movement.2.0": "None",
+     "RepeatedMovement.2.0": "1",
+     "MajorLocation.2.0": "Neutral",
+     "MinorLocation.2.0": "Neutral",
+     "SecondMinorLocation.2.0": "NA",
+     "Contact.2.0": "0",
+     "NonDominantHandshape.2.0": "NA",
+     "UlnarRotation.2.0": "0"
+    }
+   },
+   "review": {
+    "status": "approved",
+    "date": "2026-10-25",
+    "reviewer": "Claude (renders checked against ASL-LEX's coding and the common citation form; not yet checked by a signer)",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "Open hand raised, palm out, the fingers wave down and up."
+   },
+   "todo": []
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/summon",
+   "language": "ase",
+   "gloss": "SUMMON",
+   "spoken": [
+    "call",
+    "summon"
+   ],
+   "meanings": [
+    {
+     "text": "call",
+     "pos": "verb"
+    },
+    {
+     "text": "summon",
+     "pos": "verb"
+    }
+   ],
+   "handed": "2h-asymmetric",
+   "lexicalClass": "Verb",
+   "dominant": {
+    "handshape": "open_b",
+    "palm": "down",
+    "fingers": "out",
+    "location": "weak-hand",
+    "site": "palm",
+    "movement": [
+     {
+      "type": "tap"
+     },
+     {
+      "type": "move",
+      "to": "chest-front",
+      "handshape": "A",
+      "palm": "contra",
+      "fingers": "out"
+     }
+    ]
+   },
+   "nondominant": {
+    "handshape": "flat_b",
+    "palm": "down",
+    "fingers": "contra",
+    "location": "base-hand",
+    "role": "base"
+   },
+   "library": {
+    "handshape": "open_b",
+    "location": "weak-hand"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "summon",
+    "lemmaId": "summon",
+    "code": "K_02_075",
+    "signbankLemmaId": "SUMMON",
+    "signbankAnnotationId": "SUMMON",
+    "aliases": [
+     "summon",
+     "SUMMON"
+    ],
+    "phonology": {
+     "Handshape.2.0": "open_b",
+     "MarkedHandshape.2.0": "1",
+     "SelectedFingers.2.0": "imrp",
+     "Flexion.2.0": "FullyOpen",
+     "FlexionChange.2.0": "1",
+     "Spread.2.0": "0",
+     "SpreadChange.2.0": "0",
+     "ThumbPosition.2.0": "Open",
+     "ThumbContact.2.0": "0",
+     "SignType.2.0": "AsymmetricalDifferentHandshape",
+     "Movement.2.0": "BackAndForth",
+     "RepeatedMovement.2.0": "0",
+     "MajorLocation.2.0": "Hand",
+     "MinorLocation.2.0": "PalmBack",
+     "SecondMinorLocation.2.0": "HandAway",
+     "Contact.2.0": "1",
+     "NonDominantHandshape.2.0": "Lax",
+     "UlnarRotation.2.0": "0"
+    }
+   },
+   "review": {
+    "status": "approved",
+    "date": "2026-10-25",
+    "reviewer": "Claude (renders checked against ASL-LEX's coding and the common citation form; not yet checked by a signer)",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "CALL: the hand slaps the back of the base hand and pulls back, closing."
+   },
+   "todo": []
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/week",
+   "language": "ase",
+   "gloss": "WEEK",
+   "spoken": [
+    "week"
+   ],
+   "meanings": [
+    {
+     "text": "week",
+     "pos": "noun"
+    }
+   ],
+   "handed": "2h-asymmetric",
+   "lexicalClass": "Noun",
+   "dominant": {
+    "handshape": "1",
+    "palm": "down",
+    "fingers": "out",
+    "location": "weak-hand",
+    "site": "index",
+    "offset": {
+     "down": 3
+    },
+    "movement": [
+     {
+      "type": "linear",
+      "direction": "out"
+     }
+    ]
+   },
+   "nondominant": {
+    "handshape": "open_b",
+    "palm": "up",
+    "fingers": "out",
+    "location": "base-hand",
+    "role": "base"
+   },
+   "library": {
+    "handshape": "1",
+    "location": "weak-hand"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "week",
+    "lemmaId": "week",
+    "code": "B_02_079",
+    "signbankLemmaId": "WEEK",
+    "signbankAnnotationId": "WEEK",
+    "aliases": [
+     "week",
+     "WEEK"
+    ],
+    "phonology": {
+     "Handshape.2.0": "1",
+     "MarkedHandshape.2.0": "0",
+     "SelectedFingers.2.0": "i",
+     "Flexion.2.0": "FullyOpen",
+     "FlexionChange.2.0": "0",
+     "Spread.2.0": "NA",
+     "SpreadChange.2.0": "NA",
+     "ThumbPosition.2.0": "Closed",
+     "ThumbContact.2.0": "0",
+     "SignType.2.0": "AsymmetricalDifferentHandshape",
+     "Movement.2.0": "Straight",
+     "RepeatedMovement.2.0": "0",
+     "MajorLocation.2.0": "Hand",
+     "MinorLocation.2.0": "Palm",
+     "SecondMinorLocation.2.0": "FingerFront",
+     "Contact.2.0": "1",
+     "NonDominantHandshape.2.0": "B",
+     "UlnarRotation.2.0": "0"
+    }
+   },
+   "review": {
+    "status": "approved",
+    "date": "2026-10-25",
+    "reviewer": "Claude (renders checked against ASL-LEX's coding and the common citation form; not yet checked by a signer)",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "Index slides across the base palm, heel to fingertips."
+   },
+   "todo": []
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/maybe",
+   "language": "ase",
+   "gloss": "MAYBE",
+   "spoken": [
+    "maybe"
+   ],
+   "meanings": [
+    {
+     "text": "maybe",
+     "pos": "adverb"
+    }
+   ],
+   "handed": "2h-alternating",
+   "lexicalClass": "Adverb",
+   "dominant": {
+    "handshape": "open_b",
+    "palm": "up",
+    "fingers": "out",
+    "location": "neutral-space",
+    "movement": [
+     {
+      "type": "linear",
+      "direction": "up",
+      "reps": 2
+     }
+    ]
+   },
+   "library": {
+    "handshape": "open_b",
+    "location": "neutral-space"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "maybe",
+    "lemmaId": "maybe",
+    "code": "B_03_022",
+    "signbankLemmaId": "MAYBE",
+    "signbankAnnotationId": "MAYBE",
+    "aliases": [
+     "maybe",
+     "MAYBE"
+    ],
+    "phonology": {
+     "Handshape.2.0": "open_b",
+     "MarkedHandshape.2.0": "1",
+     "SelectedFingers.2.0": "imrp",
+     "Flexion.2.0": "FullyOpen",
+     "FlexionChange.2.0": "0",
+     "Spread.2.0": "0",
+     "SpreadChange.2.0": "0",
+     "ThumbPosition.2.0": "Open",
+     "ThumbContact.2.0": "0",
+     "SignType.2.0": "SymmetricalOrAlternating",
+     "Movement.2.0": "Straight",
+     "RepeatedMovement.2.0": "1",
+     "MajorLocation.2.0": "Neutral",
+     "MinorLocation.2.0": "Neutral",
+     "SecondMinorLocation.2.0": "Neutral",
+     "Contact.2.0": "0",
+     "NonDominantHandshape.2.0": "open_b",
+     "UlnarRotation.2.0": "0"
+    }
+   },
+   "review": {
+    "status": "approved",
+    "date": "2026-10-25",
+    "reviewer": "Claude (renders checked against ASL-LEX's coding and the common citation form; not yet checked by a signer)",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "Weighing: flat hands, palms up, rise and fall in turn."
+   },
+   "todo": []
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/kitchen",
+   "language": "ase",
+   "gloss": "KITCHEN",
+   "spoken": [
+    "kitchen"
+   ],
+   "meanings": [
+    {
+     "text": "kitchen",
+     "pos": "noun"
+    }
+   ],
+   "handed": "2h-asymmetric",
+   "lexicalClass": "Noun",
+   "dominant": {
+    "handshape": "K",
+    "palm": "down",
+    "fingers": "out",
+    "location": "weak-hand",
+    "site": "palm",
+    "offset": {
+     "down": 2
+    },
+    "movement": [
+     {
+      "type": "change",
+      "palm": "up",
+      "fingers": "out",
+      "site": "back",
+      "reps": 2
+     }
+    ]
+   },
+   "nondominant": {
+    "handshape": "open_b",
+    "palm": "up",
+    "fingers": "out",
+    "location": "base-hand",
+    "role": "base"
+   },
+   "library": {
+    "handshape": "P",
+    "location": "weak-hand"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "kitchen",
+    "lemmaId": "kitchen",
+    "code": "A_02_016",
+    "signbankLemmaId": "KITCHEN",
+    "signbankAnnotationId": "KITCHEN",
+    "aliases": [
+     "kitchen",
+     "KITCHEN"
+    ],
+    "phonology": {
+     "Handshape.2.0": "p",
+     "MarkedHandshape.2.0": "1",
+     "SelectedFingers.2.0": "im",
+     "Flexion.2.0": "Stacked",
+     "FlexionChange.2.0": "0",
+     "Spread.2.0": "NA",
+     "SpreadChange.2.0": "0",
+     "ThumbPosition.2.0": "Open",
+     "ThumbContact.2.0": "1",
+     "SignType.2.0": "AsymmetricalDifferentHandshape",
+     "Movement.2.0": "Curved",
+     "RepeatedMovement.2.0": "0",
+     "MajorLocation.2.0": "Hand",
+     "MinorLocation.2.0": "Palm",
+     "SecondMinorLocation.2.0": "Palm",
+     "Contact.2.0": "1",
+     "NonDominantHandshape.2.0": "B",
+     "UlnarRotation.2.0": "1"
+    }
+   },
+   "review": {
+    "status": "approved",
+    "date": "2026-10-25",
+    "reviewer": "Claude (renders checked against ASL-LEX's coding and the common citation form; not yet checked by a signer)",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "K hand flips over on the base palm, as in COOK. ASL-LEX codes a P hand; KITCHEN is usually K."
+   },
+   "todo": []
+  },
+  {
+   "schema": "marionet.signdesc/v0",
+   "id": "ase/asllex/cool-1",
+   "language": "ase",
+   "gloss": "COOL",
+   "spoken": [
+    "cool"
+   ],
+   "meanings": [
+    {
+     "text": "cool",
+     "pos": "adjective"
+    }
+   ],
+   "handed": "1h",
+   "lexicalClass": "Adjective",
+   "dominant": {
+    "handshape": "5",
+    "palm": "contra",
+    "fingers": "up",
+    "location": "chest",
+    "site": "thumb",
+    "movement": [
+     {
+      "type": "change",
+      "handshape": "curved_5",
+      "reps": 3
+     }
+    ]
+   },
+   "library": {
+    "handshape": "5",
+    "location": "chest-front"
+   },
+   "compileReady": true,
+   "source": {
+    "dataset": "asl-lex-2.0",
+    "entryId": "cool_1",
+    "lemmaId": "cool_1",
+    "code": "F_01_014",
+    "signbankLemmaId": null,
+    "signbankAnnotationId": null,
+    "aliases": [
+     "cool_1",
+     "cool 1"
+    ],
+    "phonology": {
+     "Handshape.2.0": "5",
+     "MarkedHandshape.2.0": "0",
+     "SelectedFingers.2.0": "imrp",
+     "Flexion.2.0": "FullyOpen",
+     "FlexionChange.2.0": "1",
+     "Spread.2.0": "1",
+     "SpreadChange.2.0": "0",
+     "ThumbPosition.2.0": "Open",
+     "ThumbContact.2.0": "0",
+     "SignType.2.0": "OneHanded",
+     "Movement.2.0": "None",
+     "RepeatedMovement.2.0": "1",
+     "MajorLocation.2.0": "Body",
+     "MinorLocation.2.0": "TorsoTop",
+     "SecondMinorLocation.2.0": "NA",
+     "Contact.2.0": "1",
+     "NonDominantHandshape.2.0": "NA",
+     "UlnarRotation.2.0": "0"
+    }
+   },
+   "review": {
+    "status": "approved",
+    "date": "2026-10-25",
+    "reviewer": "Claude (renders checked against ASL-LEX's coding and the common citation form; not yet checked by a signer)",
+    "reference": "https://asl-lex.org/visualization/",
+    "notes": "5 hand, thumb on the chest, the fingers wiggle."
+   },
+   "todo": []
+  }
+ ]
+}

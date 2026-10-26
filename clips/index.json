@@ -196,6 +196,622 @@
       "gloss": "GATO",
       "duration": 1.36,
       "path": "gsm/gato.json"
+    },
+    {
+      "id": "ase/asllex/water",
+      "language": "ase",
+      "gloss": "WATER",
+      "duration": 1.47,
+      "path": "ase/asllex/water.json"
+    },
+    {
+      "id": "ase/asllex/you",
+      "language": "ase",
+      "gloss": "YOU",
+      "duration": 1.49,
+      "path": "ase/asllex/you.json"
+    },
+    {
+      "id": "ase/asllex/yes",
+      "language": "ase",
+      "gloss": "YES",
+      "duration": 1.63,
+      "path": "ase/asllex/yes.json"
+    },
+    {
+      "id": "ase/asllex/eat-1",
+      "language": "ase",
+      "gloss": "EAT",
+      "duration": 1.47,
+      "path": "ase/asllex/eat-1.json"
+    },
+    {
+      "id": "ase/asllex/want-2",
+      "language": "ase",
+      "gloss": "WANT",
+      "duration": 1.37,
+      "path": "ase/asllex/want-2.json"
+    },
+    {
+      "id": "ase/asllex/oh-i-see",
+      "language": "ase",
+      "gloss": "OH-I-SEE",
+      "duration": 1.63,
+      "path": "ase/asllex/oh-i-see.json"
+    },
+    {
+      "id": "ase/asllex/deaf-1",
+      "language": "ase",
+      "gloss": "DEAF",
+      "duration": 1.37,
+      "path": "ase/asllex/deaf-1.json"
+    },
+    {
+      "id": "ase/asllex/me",
+      "language": "ase",
+      "gloss": "ME",
+      "duration": 1.21,
+      "path": "ase/asllex/me.json"
+    },
+    {
+      "id": "ase/asllex/work",
+      "language": "ase",
+      "gloss": "WORK",
+      "duration": 1.47,
+      "path": "ase/asllex/work.json"
+    },
+    {
+      "id": "ase/asllex/book",
+      "language": "ase",
+      "gloss": "BOOK",
+      "duration": 1.19,
+      "path": "ase/asllex/book.json"
+    },
+    {
+      "id": "ase/asllex/mother",
+      "language": "ase",
+      "gloss": "MOTHER",
+      "duration": 1.47,
+      "path": "ase/asllex/mother.json"
+    },
+    {
+      "id": "ase/asllex/sleep",
+      "language": "ase",
+      "gloss": "SLEEP",
+      "duration": 1.37,
+      "path": "ase/asllex/sleep.json"
+    },
+    {
+      "id": "ase/asllex/teach-2",
+      "language": "ase",
+      "gloss": "TEACH",
+      "duration": 2.03,
+      "path": "ase/asllex/teach-2.json"
+    },
+    {
+      "id": "ase/asllex/thank-you",
+      "language": "ase",
+      "gloss": "THANK-YOU",
+      "duration": 1.49,
+      "path": "ase/asllex/thank-you.json"
+    },
+    {
+      "id": "ase/asllex/parents",
+      "language": "ase",
+      "gloss": "PARENTS",
+      "duration": 1.89,
+      "path": "ase/asllex/parents.json"
+    },
+    {
+      "id": "ase/asllex/car",
+      "language": "ase",
+      "gloss": "CAR",
+      "duration": 2.03,
+      "path": "ase/asllex/car.json"
+    },
+    {
+      "id": "ase/asllex/evening",
+      "language": "ase",
+      "gloss": "NIGHT",
+      "duration": 1.47,
+      "path": "ase/asllex/evening.json"
+    },
+    {
+      "id": "ase/asllex/love",
+      "language": "ase",
+      "gloss": "LOVE",
+      "duration": 1.3,
+      "path": "ase/asllex/love.json"
+    },
+    {
+      "id": "ase/asllex/tired",
+      "language": "ase",
+      "gloss": "TIRED",
+      "duration": 1.19,
+      "path": "ase/asllex/tired.json"
+    },
+    {
+      "id": "ase/asllex/hello",
+      "language": "ase",
+      "gloss": "HELLO",
+      "duration": 1.49,
+      "path": "ase/asllex/hello.json"
+    },
+    {
+      "id": "ase/asllex/this-it",
+      "language": "ase",
+      "gloss": "IX",
+      "duration": 1.49,
+      "path": "ase/asllex/this-it.json"
+    },
+    {
+      "id": "ase/asllex/ok",
+      "language": "ase",
+      "gloss": "OK",
+      "duration": 1.19,
+      "path": "ase/asllex/ok.json"
+    },
+    {
+      "id": "ase/asllex/paper",
+      "language": "ase",
+      "gloss": "PAPER",
+      "duration": 2.03,
+      "path": "ase/asllex/paper.json"
+    },
+    {
+      "id": "ase/asllex/home",
+      "language": "ase",
+      "gloss": "HOME",
+      "duration": 1.63,
+      "path": "ase/asllex/home.json"
+    },
+    {
+      "id": "ase/asllex/more",
+      "language": "ase",
+      "gloss": "MORE",
+      "duration": 2.03,
+      "path": "ase/asllex/more.json"
+    },
+    {
+      "id": "ase/asllex/good",
+      "language": "ase",
+      "gloss": "GOOD",
+      "duration": 1.49,
+      "path": "ase/asllex/good.json"
+    },
+    {
+      "id": "ase/asllex/what-1",
+      "language": "ase",
+      "gloss": "WHAT",
+      "duration": 2.03,
+      "path": "ase/asllex/what-1.json"
+    },
+    {
+      "id": "ase/asllex/must",
+      "language": "ase",
+      "gloss": "MUST",
+      "duration": 1.49,
+      "path": "ase/asllex/must.json"
+    },
+    {
+      "id": "ase/asllex/today",
+      "language": "ase",
+      "gloss": "TODAY",
+      "duration": 2.03,
+      "path": "ase/asllex/today.json"
+    },
+    {
+      "id": "ase/asllex/school",
+      "language": "ase",
+      "gloss": "SCHOOL",
+      "duration": 1.47,
+      "path": "ase/asllex/school.json"
+    },
+    {
+      "id": "ase/asllex/read",
+      "language": "ase",
+      "gloss": "READ",
+      "duration": 2.03,
+      "path": "ase/asllex/read.json"
+    },
+    {
+      "id": "ase/asllex/coffee",
+      "language": "ase",
+      "gloss": "COFFEE",
+      "duration": 1.73,
+      "path": "ase/asllex/coffee.json"
+    },
+    {
+      "id": "ase/asllex/time",
+      "language": "ase",
+      "gloss": "TIME",
+      "duration": 1.47,
+      "path": "ase/asllex/time.json"
+    },
+    {
+      "id": "ase/asllex/better",
+      "language": "ase",
+      "gloss": "BETTER",
+      "duration": 1.37,
+      "path": "ase/asllex/better.json"
+    },
+    {
+      "id": "ase/asllex/ready",
+      "language": "ase",
+      "gloss": "READY",
+      "duration": 1.49,
+      "path": "ase/asllex/ready.json"
+    },
+    {
+      "id": "ase/asllex/father",
+      "language": "ase",
+      "gloss": "FATHER",
+      "duration": 1.47,
+      "path": "ase/asllex/father.json"
+    },
+    {
+      "id": "ase/asllex/drink",
+      "language": "ase",
+      "gloss": "DRINK",
+      "duration": 1.19,
+      "path": "ase/asllex/drink.json"
+    },
+    {
+      "id": "ase/asllex/tomorrow",
+      "language": "ase",
+      "gloss": "TOMORROW",
+      "duration": 1.57,
+      "path": "ase/asllex/tomorrow.json"
+    },
+    {
+      "id": "ase/asllex/see",
+      "language": "ase",
+      "gloss": "SEE",
+      "duration": 1.49,
+      "path": "ase/asllex/see.json"
+    },
+    {
+      "id": "ase/asllex/door",
+      "language": "ase",
+      "gloss": "DOOR",
+      "duration": 1.73,
+      "path": "ase/asllex/door.json"
+    },
+    {
+      "id": "ase/asllex/nothing",
+      "language": "ase",
+      "gloss": "NOTHING",
+      "duration": 2.03,
+      "path": "ase/asllex/nothing.json"
+    },
+    {
+      "id": "ase/asllex/friday",
+      "language": "ase",
+      "gloss": "FRIDAY",
+      "duration": 2.51,
+      "path": "ase/asllex/friday.json"
+    },
+    {
+      "id": "ase/asllex/category",
+      "language": "ase",
+      "gloss": "CLASS",
+      "duration": 1.19,
+      "path": "ase/asllex/category.json"
+    },
+    {
+      "id": "ase/asllex/my",
+      "language": "ase",
+      "gloss": "MY",
+      "duration": 1.49,
+      "path": "ase/asllex/my.json"
+    },
+    {
+      "id": "ase/asllex/hot",
+      "language": "ase",
+      "gloss": "HOT",
+      "duration": 1.75,
+      "path": "ase/asllex/hot.json"
+    },
+    {
+      "id": "ase/asllex/bed-2",
+      "language": "ase",
+      "gloss": "BED",
+      "duration": 1.49,
+      "path": "ase/asllex/bed-2.json"
+    },
+    {
+      "id": "ase/asllex/why",
+      "language": "ase",
+      "gloss": "WHY",
+      "duration": 1.37,
+      "path": "ase/asllex/why.json"
+    },
+    {
+      "id": "ase/asllex/picture",
+      "language": "ase",
+      "gloss": "PICTURE",
+      "duration": 1.37,
+      "path": "ase/asllex/picture.json"
+    },
+    {
+      "id": "ase/asllex/soon-1",
+      "language": "ase",
+      "gloss": "SOON",
+      "duration": 1.47,
+      "path": "ase/asllex/soon-1.json"
+    },
+    {
+      "id": "ase/asllex/where",
+      "language": "ase",
+      "gloss": "WHERE",
+      "duration": 2.03,
+      "path": "ase/asllex/where.json"
+    },
+    {
+      "id": "ase/asllex/milk",
+      "language": "ase",
+      "gloss": "MILK",
+      "duration": 1.67,
+      "path": "ase/asllex/milk.json"
+    },
+    {
+      "id": "ase/asllex/who",
+      "language": "ase",
+      "gloss": "WHO",
+      "duration": 1.63,
+      "path": "ase/asllex/who.json"
+    },
+    {
+      "id": "ase/asllex/shop-2",
+      "language": "ase",
+      "gloss": "STORE",
+      "duration": 1.63,
+      "path": "ase/asllex/shop-2.json"
+    },
+    {
+      "id": "ase/asllex/your",
+      "language": "ase",
+      "gloss": "YOUR",
+      "duration": 1.49,
+      "path": "ase/asllex/your.json"
+    },
+    {
+      "id": "ase/asllex/like",
+      "language": "ase",
+      "gloss": "LIKE",
+      "duration": 1.37,
+      "path": "ase/asllex/like.json"
+    },
+    {
+      "id": "ase/asllex/learn",
+      "language": "ase",
+      "gloss": "LEARN",
+      "duration": 1.61,
+      "path": "ase/asllex/learn.json"
+    },
+    {
+      "id": "ase/asllex/fine-2",
+      "language": "ase",
+      "gloss": "FINE",
+      "duration": 1.47,
+      "path": "ase/asllex/fine-2.json"
+    },
+    {
+      "id": "ase/asllex/bring",
+      "language": "ase",
+      "gloss": "BRING",
+      "duration": 1.49,
+      "path": "ase/asllex/bring.json"
+    },
+    {
+      "id": "ase/asllex/will",
+      "language": "ase",
+      "gloss": "WILL",
+      "duration": 1.57,
+      "path": "ase/asllex/will.json"
+    },
+    {
+      "id": "ase/asllex/pet-2",
+      "language": "ase",
+      "gloss": "PET",
+      "duration": 2.03,
+      "path": "ase/asllex/pet-2.json"
+    },
+    {
+      "id": "ase/asllex/please",
+      "language": "ase",
+      "gloss": "PLEASE",
+      "duration": 2.51,
+      "path": "ase/asllex/please.json"
+    },
+    {
+      "id": "ase/asllex/boy",
+      "language": "ase",
+      "gloss": "BOY",
+      "duration": 1.67,
+      "path": "ase/asllex/boy.json"
+    },
+    {
+      "id": "ase/asllex/help",
+      "language": "ase",
+      "gloss": "HELP",
+      "duration": 2.03,
+      "path": "ase/asllex/help.json"
+    },
+    {
+      "id": "ase/asllex/one",
+      "language": "ase",
+      "gloss": "ONE",
+      "duration": 1.3,
+      "path": "ase/asllex/one.json"
+    },
+    {
+      "id": "ase/asllex/hug",
+      "language": "ase",
+      "gloss": "HUG",
+      "duration": 1.3,
+      "path": "ase/asllex/hug.json"
+    },
+    {
+      "id": "ase/asllex/dont-know",
+      "language": "ase",
+      "gloss": "DON'T-KNOW",
+      "duration": 1.37,
+      "path": "ase/asllex/dont-know.json"
+    },
+    {
+      "id": "ase/asllex/have",
+      "language": "ase",
+      "gloss": "HAVE",
+      "duration": 1.49,
+      "path": "ase/asllex/have.json"
+    },
+    {
+      "id": "ase/asllex/walk",
+      "language": "ase",
+      "gloss": "WALK",
+      "duration": 2.03,
+      "path": "ase/asllex/walk.json"
+    },
+    {
+      "id": "ase/asllex/dont-like",
+      "language": "ase",
+      "gloss": "DON'T-LIKE",
+      "duration": 1.61,
+      "path": "ase/asllex/dont-like.json"
+    },
+    {
+      "id": "ase/asllex/should",
+      "language": "ase",
+      "gloss": "NEED",
+      "duration": 1.63,
+      "path": "ase/asllex/should.json"
+    },
+    {
+      "id": "ase/asllex/always",
+      "language": "ase",
+      "gloss": "ALWAYS",
+      "duration": 2.51,
+      "path": "ase/asllex/always.json"
+    },
+    {
+      "id": "ase/asllex/understand",
+      "language": "ase",
+      "gloss": "UNDERSTAND",
+      "duration": 1.19,
+      "path": "ase/asllex/understand.json"
+    },
+    {
+      "id": "ase/asllex/gas",
+      "language": "ase",
+      "gloss": "GAS",
+      "duration": 1.47,
+      "path": "ase/asllex/gas.json"
+    },
+    {
+      "id": "ase/asllex/three",
+      "language": "ase",
+      "gloss": "THREE",
+      "duration": 1.3,
+      "path": "ase/asllex/three.json"
+    },
+    {
+      "id": "ase/asllex/wrong-1",
+      "language": "ase",
+      "gloss": "WRONG",
+      "duration": 1.21,
+      "path": "ase/asllex/wrong-1.json"
+    },
+    {
+      "id": "ase/asllex/cook",
+      "language": "ase",
+      "gloss": "COOK",
+      "duration": 1.67,
+      "path": "ase/asllex/cook.json"
+    },
+    {
+      "id": "ase/asllex/teacher",
+      "language": "ase",
+      "gloss": "TEACHER",
+      "duration": 2.45,
+      "path": "ase/asllex/teacher.json"
+    },
+    {
+      "id": "ase/asllex/shoes",
+      "language": "ase",
+      "gloss": "SHOES",
+      "duration": 2.03,
+      "path": "ase/asllex/shoes.json"
+    },
+    {
+      "id": "ase/asllex/doesnt-matter",
+      "language": "ase",
+      "gloss": "DOESN'T-MATTER",
+      "duration": 2.03,
+      "path": "ase/asllex/doesnt-matter.json"
+    },
+    {
+      "id": "ase/asllex/yay",
+      "language": "ase",
+      "gloss": "YAY",
+      "duration": 1.99,
+      "path": "ase/asllex/yay.json"
+    },
+    {
+      "id": "ase/asllex/go-ahead",
+      "language": "ase",
+      "gloss": "GO-AHEAD",
+      "duration": 1.49,
+      "path": "ase/asllex/go-ahead.json"
+    },
+    {
+      "id": "ase/asllex/again",
+      "language": "ase",
+      "gloss": "AGAIN",
+      "duration": 1.37,
+      "path": "ase/asllex/again.json"
+    },
+    {
+      "id": "ase/asllex/bye",
+      "language": "ase",
+      "gloss": "BYE-BYE",
+      "duration": 1.97,
+      "path": "ase/asllex/bye.json"
+    },
+    {
+      "id": "ase/asllex/summon",
+      "language": "ase",
+      "gloss": "SUMMON",
+      "duration": 1.63,
+      "path": "ase/asllex/summon.json"
+    },
+    {
+      "id": "ase/asllex/week",
+      "language": "ase",
+      "gloss": "WEEK",
+      "duration": 1.49,
+      "path": "ase/asllex/week.json"
+    },
+    {
+      "id": "ase/asllex/maybe",
+      "language": "ase",
+      "gloss": "MAYBE",
+      "duration": 2.03,
+      "path": "ase/asllex/maybe.json"
+    },
+    {
+      "id": "ase/asllex/kitchen",
+      "language": "ase",
+      "gloss": "KITCHEN",
+      "duration": 1.67,
+      "path": "ase/asllex/kitchen.json"
+    },
+    {
+      "id": "ase/asllex/cool-1",
+      "language": "ase",
+      "gloss": "COOL",
+      "duration": 1.67,
+      "path": "ase/asllex/cool-1.json"
     }
   ]
 }
