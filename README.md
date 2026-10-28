@@ -97,10 +97,11 @@ ASL-LEX says which handshape, where and roughly how a sign moves, but not which 
    - `tap`, `nod` and `twist` take `reps`.
    - `move` goes `to` another location, and `change` turns the hand into another handshape or palm where it is. Either can name the new handshape, `palm`, `fingers`, `site` and `offset` too; a move takes its own `offset` or none.
    - A hand held off its location names an `offset` in centimetres per direction (`{"out": 5}`), with its palm and fingers.
+   - `weak-hand` holds the hand 5.5 cm above the waiting base hand's centre, so a hand that touches the base comes down 2–3 cm (`{"down": 3}`; HELP, SCHOOL, WEEK), and one that goes under it further. Without that, contacts float above the base.
 
    Take each item off `todo` as it is filled in.
 3. Fit what the sign needs on the sample: `node scripts/fit_arm.mjs jobs --ids <ids>` writes the turns, sites and paths into `src/fitted.js`. It needs the server on port 8765.
-4. Preview: `node scripts/bake_clips.mjs --ids <ids> --out data/runs/core-preview`, then `MARIONET_CLIPS=data/runs/core-preview node scripts/render_clips.mjs http://127.0.0.1:8765 data/runs/core-preview-renders <id> <id> …` (ids space-separated here). The gallery opens with the filled-out signs: the sign as played, its meanings, notes and todo, and its ASL-LEX entry to compare with.
+4. Preview: `node scripts/bake_clips.mjs --ids <ids> --out data/runs/core-preview`, then `MARIONET_CLIPS=data/runs/core-preview node scripts/render_clips.mjs http://127.0.0.1:8765 data/runs/core-preview-renders <id> <id> …` (ids space-separated here). The gallery opens with the filled-out signs: the sign as played, its meanings, notes and todo, and its ASL-LEX entry to compare with. For many signs at once, `MARIONET_CLIPS=data/runs/core-preview node scripts/review_sheet.mjs data/runs/core-review <id> <id> …` draws contact sheets, six signs to a sheet: the start, middle and end from the front with the index fingertip's path, the end from the signer's right, and the hand up close.
 5. When a person who knows the sign has checked it, set `review` to `{"status": "approved", "date", "reviewer"}` with an empty `todo`. Only approved signs are baked into `clips/` (and so drawn for glottosphere). `npm run check` refuses an approved sign with anything left to do or to fit.
 
 ## Dictionary videos and the embed

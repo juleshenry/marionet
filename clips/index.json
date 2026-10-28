@@ -812,6 +812,2239 @@
       "gloss": "COOL",
       "duration": 1.67,
       "path": "ase/asllex/cool-1.json"
+    },
+    {
+      "id": "ase/asllex/we",
+      "language": "ase",
+      "gloss": "WE",
+      "duration": 1.89,
+      "path": "ase/asllex/we.json"
+    },
+    {
+      "id": "ase/asllex/excited",
+      "language": "ase",
+      "gloss": "EXCITED",
+      "duration": 2.03,
+      "path": "ase/asllex/excited.json"
+    },
+    {
+      "id": "ase/asllex/money",
+      "language": "ase",
+      "gloss": "MONEY",
+      "duration": 1.47,
+      "path": "ase/asllex/money.json"
+    },
+    {
+      "id": "ase/asllex/go",
+      "language": "ase",
+      "gloss": "GO",
+      "duration": 1.37,
+      "path": "ase/asllex/go.json"
+    },
+    {
+      "id": "ase/asllex/dont-want",
+      "language": "ase",
+      "gloss": "DON'T-WANT",
+      "duration": 1.19,
+      "path": "ase/asllex/dont-want.json"
+    },
+    {
+      "id": "ase/asllex/table",
+      "language": "ase",
+      "gloss": "TABLE",
+      "duration": 1.47,
+      "path": "ase/asllex/table.json"
+    },
+    {
+      "id": "ase/asllex/people",
+      "language": "ase",
+      "gloss": "PEOPLE",
+      "duration": 2.51,
+      "path": "ase/asllex/people.json"
+    },
+    {
+      "id": "ase/asllex/right-1",
+      "language": "ase",
+      "gloss": "RIGHT",
+      "duration": 1.49,
+      "path": "ase/asllex/right-1.json"
+    },
+    {
+      "id": "ase/asllex/can",
+      "language": "ase",
+      "gloss": "CAN",
+      "duration": 1.49,
+      "path": "ase/asllex/can.json"
+    },
+    {
+      "id": "ase/asllex/winter",
+      "language": "ase",
+      "gloss": "COLD",
+      "duration": 2.25,
+      "path": "ase/asllex/winter.json"
+    },
+    {
+      "id": "ase/asllex/something",
+      "language": "ase",
+      "gloss": "SOMETHING",
+      "duration": 2.51,
+      "path": "ase/asllex/something.json"
+    },
+    {
+      "id": "ase/asllex/thrilled",
+      "language": "ase",
+      "gloss": "WHAT'S-UP",
+      "duration": 1.49,
+      "path": "ase/asllex/thrilled.json"
+    },
+    {
+      "id": "ase/asllex/license",
+      "language": "ase",
+      "gloss": "LICENSE",
+      "duration": 1.49,
+      "path": "ase/asllex/license.json"
+    },
+    {
+      "id": "ase/asllex/fun",
+      "language": "ase",
+      "gloss": "FUN",
+      "duration": 1.37,
+      "path": "ase/asllex/fun.json"
+    },
+    {
+      "id": "ase/asllex/family",
+      "language": "ase",
+      "gloss": "FAMILY",
+      "duration": 1.19,
+      "path": "ase/asllex/family.json"
+    },
+    {
+      "id": "ase/asllex/play",
+      "language": "ase",
+      "gloss": "PLAY",
+      "duration": 1.99,
+      "path": "ase/asllex/play.json"
+    },
+    {
+      "id": "ase/asllex/explanation",
+      "language": "ase",
+      "gloss": "EXPLAIN",
+      "duration": 2.03,
+      "path": "ase/asllex/explanation.json"
+    },
+    {
+      "id": "ase/asllex/toilet",
+      "language": "ase",
+      "gloss": "TOILET",
+      "duration": 1.99,
+      "path": "ase/asllex/toilet.json"
+    },
+    {
+      "id": "ase/asllex/there",
+      "language": "ase",
+      "gloss": "THERE",
+      "duration": 1.49,
+      "path": "ase/asllex/there.json"
+    },
+    {
+      "id": "ase/asllex/support-1",
+      "language": "ase",
+      "gloss": "SUPPORT",
+      "duration": 1.49,
+      "path": "ase/asllex/support-1.json"
+    },
+    {
+      "id": "ase/asllex/long",
+      "language": "ase",
+      "gloss": "LONG",
+      "duration": 1.49,
+      "path": "ase/asllex/long.json"
+    },
+    {
+      "id": "ase/asllex/toothbrush-ca",
+      "language": "ase",
+      "gloss": "BRUSH-TEETH",
+      "duration": 2.57,
+      "path": "ase/asllex/toothbrush-ca.json"
+    },
+    {
+      "id": "ase/asllex/everyday",
+      "language": "ase",
+      "gloss": "EVERY-DAY",
+      "duration": 2.57,
+      "path": "ase/asllex/everyday.json"
+    },
+    {
+      "id": "ase/asllex/tell",
+      "language": "ase",
+      "gloss": "TELL",
+      "duration": 1.37,
+      "path": "ase/asllex/tell.json"
+    },
+    {
+      "id": "ase/asllex/woman",
+      "language": "ase",
+      "gloss": "WOMAN",
+      "duration": 1.37,
+      "path": "ase/asllex/woman.json"
+    },
+    {
+      "id": "ase/asllex/name",
+      "language": "ase",
+      "gloss": "NAME",
+      "duration": 1.47,
+      "path": "ase/asllex/name.json"
+    },
+    {
+      "id": "ase/asllex/cheap",
+      "language": "ase",
+      "gloss": "CHEAP",
+      "duration": 1.49,
+      "path": "ase/asllex/cheap.json"
+    },
+    {
+      "id": "ase/asllex/best",
+      "language": "ase",
+      "gloss": "BETTER",
+      "duration": 1.37,
+      "path": "ase/asllex/best.json"
+    },
+    {
+      "id": "ase/asllex/believe-2",
+      "language": "ase",
+      "gloss": "BELIEVE",
+      "duration": 1.63,
+      "path": "ase/asllex/believe-2.json"
+    },
+    {
+      "id": "ase/asllex/if",
+      "language": "ase",
+      "gloss": "SUPPOSE",
+      "duration": 2.03,
+      "path": "ase/asllex/if.json"
+    },
+    {
+      "id": "ase/asllex/schedule",
+      "language": "ase",
+      "gloss": "SCHEDULE",
+      "duration": 2.27,
+      "path": "ase/asllex/schedule.json"
+    },
+    {
+      "id": "ase/asllex/black",
+      "language": "ase",
+      "gloss": "BLACK",
+      "duration": 1.49,
+      "path": "ase/asllex/black.json"
+    },
+    {
+      "id": "ase/asllex/sign",
+      "language": "ase",
+      "gloss": "SIGN",
+      "duration": 2.51,
+      "path": "ase/asllex/sign.json"
+    },
+    {
+      "id": "ase/asllex/yesterday",
+      "language": "ase",
+      "gloss": "YESTERDAY",
+      "duration": 1.37,
+      "path": "ase/asllex/yesterday.json"
+    },
+    {
+      "id": "ase/asllex/saturday",
+      "language": "ase",
+      "gloss": "SATURDAY",
+      "duration": 2.51,
+      "path": "ase/asllex/saturday.json"
+    },
+    {
+      "id": "ase/asllex/restaurant",
+      "language": "ase",
+      "gloss": "RESTAURANT",
+      "duration": 1.89,
+      "path": "ase/asllex/restaurant.json"
+    },
+    {
+      "id": "ase/asllex/pour-2",
+      "language": "ase",
+      "gloss": "POUR",
+      "duration": 1.19,
+      "path": "ase/asllex/pour-2.json"
+    },
+    {
+      "id": "ase/asllex/fed-up",
+      "language": "ase",
+      "gloss": "FED-UP",
+      "duration": 1.49,
+      "path": "ase/asllex/fed-up.json"
+    },
+    {
+      "id": "ase/asllex/wait",
+      "language": "ase",
+      "gloss": "WAIT",
+      "duration": 1.67,
+      "path": "ase/asllex/wait.json"
+    },
+    {
+      "id": "ase/asllex/policeman-2",
+      "language": "ase",
+      "gloss": "POLICE",
+      "duration": 1.47,
+      "path": "ase/asllex/policeman-2.json"
+    },
+    {
+      "id": "ase/asllex/taste",
+      "language": "ase",
+      "gloss": "TASTE",
+      "duration": 1.47,
+      "path": "ase/asllex/taste.json"
+    },
+    {
+      "id": "ase/asllex/kiss-fist",
+      "language": "ase",
+      "gloss": "KISS-FIST",
+      "duration": 1.83,
+      "path": "ase/asllex/kiss-fist.json"
+    },
+    {
+      "id": "ase/asllex/hearing",
+      "language": "ase",
+      "gloss": "HEARING",
+      "duration": 2.51,
+      "path": "ase/asllex/hearing.json"
+    },
+    {
+      "id": "ase/asllex/eleven",
+      "language": "ase",
+      "gloss": "ELEVEN",
+      "duration": 1.67,
+      "path": "ase/asllex/eleven.json"
+    },
+    {
+      "id": "ase/asllex/full",
+      "language": "ase",
+      "gloss": "FULL",
+      "duration": 1.49,
+      "path": "ase/asllex/full.json"
+    },
+    {
+      "id": "ase/asllex/curious",
+      "language": "ase",
+      "gloss": "CURIOUS",
+      "duration": 1.73,
+      "path": "ase/asllex/curious.json"
+    },
+    {
+      "id": "ase/asllex/kiss",
+      "language": "ase",
+      "gloss": "KISS_1",
+      "duration": 1.63,
+      "path": "ase/asllex/kiss.json"
+    },
+    {
+      "id": "ase/asllex/important",
+      "language": "ase",
+      "gloss": "IMPORTANT",
+      "duration": 1.37,
+      "path": "ase/asllex/important.json"
+    },
+    {
+      "id": "ase/asllex/same-1",
+      "language": "ase",
+      "gloss": "SAME",
+      "duration": 2.03,
+      "path": "ase/asllex/same-1.json"
+    },
+    {
+      "id": "ase/asllex/dont-mind",
+      "language": "ase",
+      "gloss": "DON'T-MIND",
+      "duration": 1.19,
+      "path": "ase/asllex/dont-mind.json"
+    },
+    {
+      "id": "ase/asllex/game",
+      "language": "ase",
+      "gloss": "GAME",
+      "duration": 2.03,
+      "path": "ase/asllex/game.json"
+    },
+    {
+      "id": "ase/asllex/stay",
+      "language": "ase",
+      "gloss": "STAY",
+      "duration": 1.49,
+      "path": "ase/asllex/stay.json"
+    },
+    {
+      "id": "ase/asllex/champion",
+      "language": "ase",
+      "gloss": "CHAMPION",
+      "duration": 1.49,
+      "path": "ase/asllex/champion.json"
+    },
+    {
+      "id": "ase/asllex/our",
+      "language": "ase",
+      "gloss": "OUR",
+      "duration": 1.37,
+      "path": "ase/asllex/our.json"
+    },
+    {
+      "id": "ase/asllex/both",
+      "language": "ase",
+      "gloss": "BOTH",
+      "duration": 1.37,
+      "path": "ase/asllex/both.json"
+    },
+    {
+      "id": "ase/asllex/sometimes",
+      "language": "ase",
+      "gloss": "SOMETIME",
+      "duration": 2.19,
+      "path": "ase/asllex/sometimes.json"
+    },
+    {
+      "id": "ase/asllex/cannot",
+      "language": "ase",
+      "gloss": "CAN'T",
+      "duration": 1.49,
+      "path": "ase/asllex/cannot.json"
+    },
+    {
+      "id": "ase/asllex/attention",
+      "language": "ase",
+      "gloss": "ATTENTION",
+      "duration": 1.49,
+      "path": "ase/asllex/attention.json"
+    },
+    {
+      "id": "ase/asllex/bored",
+      "language": "ase",
+      "gloss": "BORED",
+      "duration": 1.73,
+      "path": "ase/asllex/bored.json"
+    },
+    {
+      "id": "ase/asllex/which",
+      "language": "ase",
+      "gloss": "WHICH",
+      "duration": 2.03,
+      "path": "ase/asllex/which.json"
+    },
+    {
+      "id": "ase/asllex/really",
+      "language": "ase",
+      "gloss": "TRUE",
+      "duration": 1.49,
+      "path": "ase/asllex/really.json"
+    },
+    {
+      "id": "ase/asllex/finish",
+      "language": "ase",
+      "gloss": "FINISH",
+      "duration": 1.19,
+      "path": "ase/asllex/finish.json"
+    },
+    {
+      "id": "ase/asllex/now",
+      "language": "ase",
+      "gloss": "NOW",
+      "duration": 1.49,
+      "path": "ase/asllex/now.json"
+    },
+    {
+      "id": "ase/asllex/wash-1",
+      "language": "ase",
+      "gloss": "WASH",
+      "duration": 2.51,
+      "path": "ase/asllex/wash-1.json"
+    },
+    {
+      "id": "ase/asllex/laptop",
+      "language": "ase",
+      "gloss": "LAPTOP",
+      "duration": 1.19,
+      "path": "ase/asllex/laptop.json"
+    },
+    {
+      "id": "ase/asllex/culture",
+      "language": "ase",
+      "gloss": "CULTURE",
+      "duration": 2.5,
+      "path": "ase/asllex/culture.json"
+    },
+    {
+      "id": "ase/asllex/college",
+      "language": "ase",
+      "gloss": "COLLEGE",
+      "duration": 2.84,
+      "path": "ase/asllex/college.json"
+    },
+    {
+      "id": "ase/asllex/his",
+      "language": "ase",
+      "gloss": "HIS-HER",
+      "duration": 1.49,
+      "path": "ase/asllex/his.json"
+    },
+    {
+      "id": "ase/asllex/place",
+      "language": "ase",
+      "gloss": "PLACE",
+      "duration": 2.03,
+      "path": "ase/asllex/place.json"
+    },
+    {
+      "id": "ase/asllex/hungry",
+      "language": "ase",
+      "gloss": "DESIRE",
+      "duration": 1.49,
+      "path": "ase/asllex/hungry.json"
+    },
+    {
+      "id": "ase/asllex/first",
+      "language": "ase",
+      "gloss": "FIRST",
+      "duration": 1.21,
+      "path": "ase/asllex/first.json"
+    },
+    {
+      "id": "ase/asllex/know",
+      "language": "ase",
+      "gloss": "KNOW",
+      "duration": 1.47,
+      "path": "ase/asllex/know.json"
+    },
+    {
+      "id": "ase/asllex/discuss",
+      "language": "ase",
+      "gloss": "DISCUSS",
+      "duration": 1.73,
+      "path": "ase/asllex/discuss.json"
+    },
+    {
+      "id": "ase/asllex/start",
+      "language": "ase",
+      "gloss": "START",
+      "duration": 1.21,
+      "path": "ase/asllex/start.json"
+    },
+    {
+      "id": "ase/asllex/get",
+      "language": "ase",
+      "gloss": "GET",
+      "duration": 1.37,
+      "path": "ase/asllex/get.json"
+    },
+    {
+      "id": "ase/asllex/communication",
+      "language": "ase",
+      "gloss": "COMMUNICATE",
+      "duration": 2.03,
+      "path": "ase/asllex/communication.json"
+    },
+    {
+      "id": "ase/asllex/man",
+      "language": "ase",
+      "gloss": "MAN",
+      "duration": 1.37,
+      "path": "ase/asllex/man.json"
+    },
+    {
+      "id": "ase/asllex/refuse",
+      "language": "ase",
+      "gloss": "REFUSE",
+      "duration": 1.37,
+      "path": "ase/asllex/refuse.json"
+    },
+    {
+      "id": "ase/asllex/cup",
+      "language": "ase",
+      "gloss": "CUP",
+      "duration": 1.49,
+      "path": "ase/asllex/cup.json"
+    },
+    {
+      "id": "ase/asllex/room",
+      "language": "ase",
+      "gloss": "ROOM",
+      "duration": 1.19,
+      "path": "ase/asllex/room.json"
+    },
+    {
+      "id": "ase/asllex/kid",
+      "language": "ase",
+      "gloss": "KID",
+      "duration": 1.73,
+      "path": "ase/asllex/kid.json"
+    },
+    {
+      "id": "ase/asllex/polish",
+      "language": "ase",
+      "gloss": "POLISH",
+      "duration": 2.57,
+      "path": "ase/asllex/polish.json"
+    },
+    {
+      "id": "ase/asllex/apple",
+      "language": "ase",
+      "gloss": "APPLE",
+      "duration": 1.73,
+      "path": "ase/asllex/apple.json"
+    },
+    {
+      "id": "ase/asllex/responsibility",
+      "language": "ase",
+      "gloss": "RESPONSIBILITY",
+      "duration": 1.47,
+      "path": "ase/asllex/responsibility.json"
+    },
+    {
+      "id": "ase/asllex/knife-2",
+      "language": "ase",
+      "gloss": "KNIFE",
+      "duration": 2.03,
+      "path": "ase/asllex/knife-2.json"
+    },
+    {
+      "id": "ase/asllex/chair",
+      "language": "ase",
+      "gloss": "CHAIR",
+      "duration": 1.47,
+      "path": "ase/asllex/chair.json"
+    },
+    {
+      "id": "ase/asllex/team",
+      "language": "ase",
+      "gloss": "TEAM",
+      "duration": 1.19,
+      "path": "ase/asllex/team.json"
+    },
+    {
+      "id": "ase/asllex/last-week",
+      "language": "ase",
+      "gloss": "LAST-WEEK",
+      "duration": 1.91,
+      "path": "ase/asllex/last-week.json"
+    },
+    {
+      "id": "ase/asllex/stop",
+      "language": "ase",
+      "gloss": "STOP",
+      "duration": 1.49,
+      "path": "ase/asllex/stop.json"
+    },
+    {
+      "id": "ase/asllex/here",
+      "language": "ase",
+      "gloss": "HERE",
+      "duration": 2.51,
+      "path": "ase/asllex/here.json"
+    },
+    {
+      "id": "ase/asllex/fair",
+      "language": "ase",
+      "gloss": "EQUAL",
+      "duration": 2.03,
+      "path": "ase/asllex/fair.json"
+    },
+    {
+      "id": "ase/asllex/example",
+      "language": "ase",
+      "gloss": "EXAMPLE",
+      "duration": 1.49,
+      "path": "ase/asllex/example.json"
+    },
+    {
+      "id": "ase/asllex/skill",
+      "language": "ase",
+      "gloss": "SKILL",
+      "duration": 1.37,
+      "path": "ase/asllex/skill.json"
+    },
+    {
+      "id": "ase/asllex/remember",
+      "language": "ase",
+      "gloss": "REMEMBER",
+      "duration": 1.37,
+      "path": "ase/asllex/remember.json"
+    },
+    {
+      "id": "ase/asllex/numbers",
+      "language": "ase",
+      "gloss": "NUMBER",
+      "duration": 1.73,
+      "path": "ase/asllex/numbers.json"
+    },
+    {
+      "id": "ase/asllex/happy",
+      "language": "ase",
+      "gloss": "HAPPY",
+      "duration": 2.03,
+      "path": "ase/asllex/happy.json"
+    },
+    {
+      "id": "ase/asllex/enjoy",
+      "language": "ase",
+      "gloss": "ENJOY",
+      "duration": 1.94,
+      "path": "ase/asllex/enjoy.json"
+    },
+    {
+      "id": "ase/asllex/nice",
+      "language": "ase",
+      "gloss": "NICE",
+      "duration": 1.49,
+      "path": "ase/asllex/nice.json"
+    },
+    {
+      "id": "ase/asllex/share",
+      "language": "ase",
+      "gloss": "SHARE",
+      "duration": 2.03,
+      "path": "ase/asllex/share.json"
+    },
+    {
+      "id": "ase/asllex/give",
+      "language": "ase",
+      "gloss": "GIVE",
+      "duration": 1.57,
+      "path": "ase/asllex/give.json"
+    },
+    {
+      "id": "ase/asllex/still",
+      "language": "ase",
+      "gloss": "STILL",
+      "duration": 1.49,
+      "path": "ase/asllex/still.json"
+    },
+    {
+      "id": "ase/asllex/most",
+      "language": "ase",
+      "gloss": "MOST",
+      "duration": 1.49,
+      "path": "ase/asllex/most.json"
+    },
+    {
+      "id": "ase/asllex/busy",
+      "language": "ase",
+      "gloss": "BUSY",
+      "duration": 2.57,
+      "path": "ase/asllex/busy.json"
+    },
+    {
+      "id": "ase/asllex/feel",
+      "language": "ase",
+      "gloss": "FEEL",
+      "duration": 1.49,
+      "path": "ase/asllex/feel.json"
+    },
+    {
+      "id": "ase/asllex/but",
+      "language": "ase",
+      "gloss": "BUT",
+      "duration": 1.49,
+      "path": "ase/asllex/but.json"
+    },
+    {
+      "id": "ase/asllex/sorry",
+      "language": "ase",
+      "gloss": "SORRY",
+      "duration": 1.94,
+      "path": "ase/asllex/sorry.json"
+    },
+    {
+      "id": "ase/asllex/cheese",
+      "language": "ase",
+      "gloss": "CHEESE",
+      "duration": 1.73,
+      "path": "ase/asllex/cheese.json"
+    },
+    {
+      "id": "ase/asllex/easy",
+      "language": "ase",
+      "gloss": "EASY",
+      "duration": 2.03,
+      "path": "ase/asllex/easy.json"
+    },
+    {
+      "id": "ase/asllex/bright",
+      "language": "ase",
+      "gloss": "BRIGHT",
+      "duration": 1.37,
+      "path": "ase/asllex/bright.json"
+    },
+    {
+      "id": "ase/asllex/some",
+      "language": "ase",
+      "gloss": "SOME",
+      "duration": 1.49,
+      "path": "ase/asllex/some.json"
+    },
+    {
+      "id": "ase/asllex/meeting",
+      "language": "ase",
+      "gloss": "MEETING",
+      "duration": 1.67,
+      "path": "ase/asllex/meeting.json"
+    },
+    {
+      "id": "ase/asllex/new",
+      "language": "ase",
+      "gloss": "NEW",
+      "duration": 1.57,
+      "path": "ase/asllex/new.json"
+    },
+    {
+      "id": "ase/asllex/when",
+      "language": "ase",
+      "gloss": "WHEN",
+      "duration": 2.5,
+      "path": "ase/asllex/when.json"
+    },
+    {
+      "id": "ase/asllex/dark-1",
+      "language": "ase",
+      "gloss": "DARK",
+      "duration": 1.49,
+      "path": "ase/asllex/dark-1.json"
+    },
+    {
+      "id": "ase/asllex/not",
+      "language": "ase",
+      "gloss": "NOT",
+      "duration": 1.49,
+      "path": "ase/asllex/not.json"
+    },
+    {
+      "id": "ase/asllex/shower",
+      "language": "ase",
+      "gloss": "SHOWER",
+      "duration": 1.67,
+      "path": "ase/asllex/shower.json"
+    },
+    {
+      "id": "ase/asllex/write",
+      "language": "ase",
+      "gloss": "WRITE",
+      "duration": 1.49,
+      "path": "ase/asllex/write.json"
+    },
+    {
+      "id": "ase/asllex/lunch-1",
+      "language": "ase",
+      "gloss": "LUNCH",
+      "duration": 1.47,
+      "path": "ase/asllex/lunch-1.json"
+    },
+    {
+      "id": "ase/asllex/mad",
+      "language": "ase",
+      "gloss": "MAD",
+      "duration": 1.49,
+      "path": "ase/asllex/mad.json"
+    },
+    {
+      "id": "ase/asllex/impress",
+      "language": "ase",
+      "gloss": "IMPRESSION",
+      "duration": 1.21,
+      "path": "ase/asllex/impress.json"
+    },
+    {
+      "id": "ase/asllex/dry",
+      "language": "ase",
+      "gloss": "DRY",
+      "duration": 1.49,
+      "path": "ase/asllex/dry.json"
+    },
+    {
+      "id": "ase/asllex/overlook",
+      "language": "ase",
+      "gloss": "OVERLOOK",
+      "duration": 1.49,
+      "path": "ase/asllex/overlook.json"
+    },
+    {
+      "id": "ase/asllex/buy",
+      "language": "ase",
+      "gloss": "BUY",
+      "duration": 1.57,
+      "path": "ase/asllex/buy.json"
+    },
+    {
+      "id": "ase/asllex/close",
+      "language": "ase",
+      "gloss": "CLOSE",
+      "duration": 1.49,
+      "path": "ase/asllex/close.json"
+    },
+    {
+      "id": "ase/asllex/straight",
+      "language": "ase",
+      "gloss": "STRAIGHT",
+      "duration": 1.49,
+      "path": "ase/asllex/straight.json"
+    },
+    {
+      "id": "ase/asllex/make",
+      "language": "ase",
+      "gloss": "MAKE",
+      "duration": 1.73,
+      "path": "ase/asllex/make.json"
+    },
+    {
+      "id": "ase/asllex/work-out",
+      "language": "ase",
+      "gloss": "EXERCISE",
+      "duration": 2.03,
+      "path": "ase/asllex/work-out.json"
+    },
+    {
+      "id": "ase/asllex/chocolate",
+      "language": "ase",
+      "gloss": "CHOCOLATE",
+      "duration": 2.51,
+      "path": "ase/asllex/chocolate.json"
+    },
+    {
+      "id": "ase/asllex/patient-2",
+      "language": "ase",
+      "gloss": "PATIENT",
+      "duration": 1.49,
+      "path": "ase/asllex/patient-2.json"
+    },
+    {
+      "id": "ase/asllex/wednesday",
+      "language": "ase",
+      "gloss": "WEDNESDAY",
+      "duration": 2.51,
+      "path": "ase/asllex/wednesday.json"
+    },
+    {
+      "id": "ase/asllex/smile-2",
+      "language": "ase",
+      "gloss": "SMILE",
+      "duration": 1.49,
+      "path": "ase/asllex/smile-2.json"
+    },
+    {
+      "id": "ase/asllex/how",
+      "language": "ase",
+      "gloss": "HOW",
+      "duration": 1.19,
+      "path": "ase/asllex/how.json"
+    },
+    {
+      "id": "ase/asllex/tease",
+      "language": "ase",
+      "gloss": "TEASE",
+      "duration": 2.03,
+      "path": "ase/asllex/tease.json"
+    },
+    {
+      "id": "ase/asllex/normal",
+      "language": "ase",
+      "gloss": "NATURAL",
+      "duration": 2.5,
+      "path": "ase/asllex/normal.json"
+    },
+    {
+      "id": "ase/asllex/tuesday",
+      "language": "ase",
+      "gloss": "TUESDAY",
+      "duration": 2.51,
+      "path": "ase/asllex/tuesday.json"
+    },
+    {
+      "id": "ase/asllex/stuck",
+      "language": "ase",
+      "gloss": "STUCK",
+      "duration": 1.49,
+      "path": "ase/asllex/stuck.json"
+    },
+    {
+      "id": "ase/asllex/timeout",
+      "language": "ase",
+      "gloss": "TIME-OUT",
+      "duration": 1.47,
+      "path": "ase/asllex/timeout.json"
+    },
+    {
+      "id": "ase/asllex/dont-care",
+      "language": "ase",
+      "gloss": "DON'T-CARE",
+      "duration": 1.37,
+      "path": "ase/asllex/dont-care.json"
+    },
+    {
+      "id": "ase/asllex/inside",
+      "language": "ase",
+      "gloss": "INSIDE",
+      "duration": 2.03,
+      "path": "ase/asllex/inside.json"
+    },
+    {
+      "id": "ase/asllex/pretty",
+      "language": "ase",
+      "gloss": "PRETTY",
+      "duration": 2.2,
+      "path": "ase/asllex/pretty.json"
+    },
+    {
+      "id": "ase/asllex/color",
+      "language": "ase",
+      "gloss": "COLOR",
+      "duration": 1.67,
+      "path": "ase/asllex/color.json"
+    },
+    {
+      "id": "ase/asllex/dirty",
+      "language": "ase",
+      "gloss": "DIRTY",
+      "duration": 1.67,
+      "path": "ase/asllex/dirty.json"
+    },
+    {
+      "id": "ase/asllex/look-for",
+      "language": "ase",
+      "gloss": "LOOK-FOR",
+      "duration": 2.51,
+      "path": "ase/asllex/look-for.json"
+    },
+    {
+      "id": "ase/asllex/not-yet",
+      "language": "ase",
+      "gloss": "NOT-YET",
+      "duration": 1.63,
+      "path": "ase/asllex/not-yet.json"
+    },
+    {
+      "id": "ase/asllex/practice",
+      "language": "ase",
+      "gloss": "PRACTICE",
+      "duration": 2.03,
+      "path": "ase/asllex/practice.json"
+    },
+    {
+      "id": "ase/asllex/complain",
+      "language": "ase",
+      "gloss": "COMPLAIN",
+      "duration": 1.47,
+      "path": "ase/asllex/complain.json"
+    },
+    {
+      "id": "ase/asllex/different",
+      "language": "ase",
+      "gloss": "DIFFERENT",
+      "duration": 1.49,
+      "path": "ase/asllex/different.json"
+    },
+    {
+      "id": "ase/asllex/end",
+      "language": "ase",
+      "gloss": "END-OF",
+      "duration": 2.03,
+      "path": "ase/asllex/end.json"
+    },
+    {
+      "id": "ase/asllex/other",
+      "language": "ase",
+      "gloss": "OTHER",
+      "duration": 1.19,
+      "path": "ase/asllex/other.json"
+    },
+    {
+      "id": "ase/asllex/bad",
+      "language": "ase",
+      "gloss": "BAD",
+      "duration": 1.37,
+      "path": "ase/asllex/bad.json"
+    },
+    {
+      "id": "ase/asllex/that",
+      "language": "ase",
+      "gloss": "THAT",
+      "duration": 1.49,
+      "path": "ase/asllex/that.json"
+    },
+    {
+      "id": "ase/asllex/daughter",
+      "language": "ase",
+      "gloss": "DAUGHTER",
+      "duration": 1.37,
+      "path": "ase/asllex/daughter.json"
+    },
+    {
+      "id": "ase/asllex/relief",
+      "language": "ase",
+      "gloss": "RELIEF",
+      "duration": 1.49,
+      "path": "ase/asllex/relief.json"
+    },
+    {
+      "id": "ase/asllex/accept",
+      "language": "ase",
+      "gloss": "ACCEPT",
+      "duration": 1.37,
+      "path": "ase/asllex/accept.json"
+    },
+    {
+      "id": "ase/asllex/long-ago",
+      "language": "ase",
+      "gloss": "LONG-AGO",
+      "duration": 1.37,
+      "path": "ase/asllex/long-ago.json"
+    },
+    {
+      "id": "ase/asllex/grow-up",
+      "language": "ase",
+      "gloss": "GROW-UP",
+      "duration": 1.49,
+      "path": "ase/asllex/grow-up.json"
+    },
+    {
+      "id": "ase/asllex/telephone",
+      "language": "ase",
+      "gloss": "TELEPHONE",
+      "duration": 1.47,
+      "path": "ase/asllex/telephone.json"
+    },
+    {
+      "id": "ase/asllex/signature",
+      "language": "ase",
+      "gloss": "SIGNATURE",
+      "duration": 1.49,
+      "path": "ase/asllex/signature.json"
+    },
+    {
+      "id": "ase/asllex/follow-1",
+      "language": "ase",
+      "gloss": "FOLLOW",
+      "duration": 1.49,
+      "path": "ase/asllex/follow-1.json"
+    },
+    {
+      "id": "ase/asllex/window",
+      "language": "ase",
+      "gloss": "WINDOW",
+      "duration": 2.03,
+      "path": "ase/asllex/window.json"
+    },
+    {
+      "id": "ase/asllex/brother",
+      "language": "ase",
+      "gloss": "BROTHER",
+      "duration": 1.37,
+      "path": "ase/asllex/brother.json"
+    },
+    {
+      "id": "ase/asllex/delicious",
+      "language": "ase",
+      "gloss": "DELICIOUS",
+      "duration": 1.21,
+      "path": "ase/asllex/delicious.json"
+    },
+    {
+      "id": "ase/asllex/about-1",
+      "language": "ase",
+      "gloss": "ABOUT",
+      "duration": 2.51,
+      "path": "ase/asllex/about-1.json"
+    },
+    {
+      "id": "ase/asllex/children",
+      "language": "ase",
+      "gloss": "CHILDREN",
+      "duration": 2.03,
+      "path": "ase/asllex/children.json"
+    },
+    {
+      "id": "ase/asllex/contact",
+      "language": "ase",
+      "gloss": "CONTACT",
+      "duration": 1.47,
+      "path": "ase/asllex/contact.json"
+    },
+    {
+      "id": "ase/asllex/hair",
+      "language": "ase",
+      "gloss": "HAIR",
+      "duration": 1.73,
+      "path": "ase/asllex/hair.json"
+    },
+    {
+      "id": "ase/asllex/take-care",
+      "language": "ase",
+      "gloss": "TAKE-CARE",
+      "duration": 1.47,
+      "path": "ase/asllex/take-care.json"
+    },
+    {
+      "id": "ase/asllex/abbreviate",
+      "language": "ase",
+      "gloss": "SHORT",
+      "duration": 2.03,
+      "path": "ase/asllex/abbreviate.json"
+    },
+    {
+      "id": "ase/asllex/study",
+      "language": "ase",
+      "gloss": "STUDY",
+      "duration": 1.67,
+      "path": "ase/asllex/study.json"
+    },
+    {
+      "id": "ase/asllex/confidential",
+      "language": "ase",
+      "gloss": "SECRET",
+      "duration": 1.47,
+      "path": "ase/asllex/confidential.json"
+    },
+    {
+      "id": "ase/asllex/egg",
+      "language": "ase",
+      "gloss": "EGG",
+      "duration": 1.75,
+      "path": "ase/asllex/egg.json"
+    },
+    {
+      "id": "ase/asllex/doubt",
+      "language": "ase",
+      "gloss": "DOUBT",
+      "duration": 1.49,
+      "path": "ase/asllex/doubt.json"
+    },
+    {
+      "id": "ase/asllex/year",
+      "language": "ase",
+      "gloss": "YEAR",
+      "duration": 2.5,
+      "path": "ase/asllex/year.json"
+    },
+    {
+      "id": "ase/asllex/live-2",
+      "language": "ase",
+      "gloss": "LIVE",
+      "duration": 1.49,
+      "path": "ase/asllex/live-2.json"
+    },
+    {
+      "id": "ase/asllex/fix",
+      "language": "ase",
+      "gloss": "REPAIR",
+      "duration": 2.03,
+      "path": "ase/asllex/fix.json"
+    },
+    {
+      "id": "ase/asllex/reason",
+      "language": "ase",
+      "gloss": "REASON",
+      "duration": 2.51,
+      "path": "ase/asllex/reason.json"
+    },
+    {
+      "id": "ase/asllex/meet",
+      "language": "ase",
+      "gloss": "MEET",
+      "duration": 1.49,
+      "path": "ase/asllex/meet.json"
+    },
+    {
+      "id": "ase/asllex/many",
+      "language": "ase",
+      "gloss": "MANY",
+      "duration": 1.67,
+      "path": "ase/asllex/many.json"
+    },
+    {
+      "id": "ase/asllex/miss",
+      "language": "ase",
+      "gloss": "MISS",
+      "duration": 1.21,
+      "path": "ase/asllex/miss.json"
+    },
+    {
+      "id": "ase/asllex/pride",
+      "language": "ase",
+      "gloss": "PROUD",
+      "duration": 1.37,
+      "path": "ase/asllex/pride.json"
+    },
+    {
+      "id": "ase/asllex/breaktime",
+      "language": "ase",
+      "gloss": "BREAK-TIME",
+      "duration": 1.49,
+      "path": "ase/asllex/breaktime.json"
+    },
+    {
+      "id": "ase/asllex/next-year",
+      "language": "ase",
+      "gloss": "NEXT-YEAR",
+      "duration": 1.73,
+      "path": "ase/asllex/next-year.json"
+    },
+    {
+      "id": "ase/asllex/lazy",
+      "language": "ase",
+      "gloss": "LAZY",
+      "duration": 1.47,
+      "path": "ase/asllex/lazy.json"
+    },
+    {
+      "id": "ase/asllex/experienced",
+      "language": "ase",
+      "gloss": "EXPERIENCE",
+      "duration": 1.37,
+      "path": "ase/asllex/experienced.json"
+    },
+    {
+      "id": "ase/asllex/smell",
+      "language": "ase",
+      "gloss": "SMELL",
+      "duration": 2.03,
+      "path": "ase/asllex/smell.json"
+    },
+    {
+      "id": "ase/asllex/charge-card",
+      "language": "ase",
+      "gloss": "CREDIT-CARD",
+      "duration": 2.03,
+      "path": "ase/asllex/charge-card.json"
+    },
+    {
+      "id": "ase/asllex/silly",
+      "language": "ase",
+      "gloss": "SILLY",
+      "duration": 1.99,
+      "path": "ase/asllex/silly.json"
+    },
+    {
+      "id": "ase/asllex/age",
+      "language": "ase",
+      "gloss": "OLD",
+      "duration": 1.73,
+      "path": "ase/asllex/age.json"
+    },
+    {
+      "id": "ase/asllex/green",
+      "language": "ase",
+      "gloss": "GREEN",
+      "duration": 1.99,
+      "path": "ase/asllex/green.json"
+    },
+    {
+      "id": "ase/asllex/animal",
+      "language": "ase",
+      "gloss": "ANIMAL",
+      "duration": 1.63,
+      "path": "ase/asllex/animal.json"
+    },
+    {
+      "id": "ase/asllex/fingerspelling",
+      "language": "ase",
+      "gloss": "FINGERSPELL",
+      "duration": 2.21,
+      "path": "ase/asllex/fingerspelling.json"
+    },
+    {
+      "id": "ase/asllex/movies",
+      "language": "ase",
+      "gloss": "MOVIE",
+      "duration": 2.03,
+      "path": "ase/asllex/movies.json"
+    },
+    {
+      "id": "ase/asllex/sure",
+      "language": "ase",
+      "gloss": "SURE",
+      "duration": 1.49,
+      "path": "ase/asllex/sure.json"
+    },
+    {
+      "id": "ase/asllex/language",
+      "language": "ase",
+      "gloss": "LANGUAGE",
+      "duration": 1.49,
+      "path": "ase/asllex/language.json"
+    },
+    {
+      "id": "ase/asllex/sister",
+      "language": "ase",
+      "gloss": "SISTER",
+      "duration": 1.37,
+      "path": "ase/asllex/sister.json"
+    },
+    {
+      "id": "ase/asllex/house",
+      "language": "ase",
+      "gloss": "HOUSE",
+      "duration": 1.37,
+      "path": "ase/asllex/house.json"
+    },
+    {
+      "id": "ase/asllex/rest",
+      "language": "ase",
+      "gloss": "REST",
+      "duration": 1.3,
+      "path": "ase/asllex/rest.json"
+    },
+    {
+      "id": "ase/asllex/football",
+      "language": "ase",
+      "gloss": "FOOTBALL",
+      "duration": 2.03,
+      "path": "ase/asllex/football.json"
+    },
+    {
+      "id": "ase/asllex/unique",
+      "language": "ase",
+      "gloss": "SPECIAL",
+      "duration": 1.49,
+      "path": "ase/asllex/unique.json"
+    },
+    {
+      "id": "ase/asllex/limited",
+      "language": "ase",
+      "gloss": "LIMIT",
+      "duration": 1.49,
+      "path": "ase/asllex/limited.json"
+    },
+    {
+      "id": "ase/asllex/outside",
+      "language": "ase",
+      "gloss": "OUTSIDE",
+      "duration": 1.37,
+      "path": "ase/asllex/outside.json"
+    },
+    {
+      "id": "ase/asllex/clothes",
+      "language": "ase",
+      "gloss": "CLOTHES",
+      "duration": 2.03,
+      "path": "ase/asllex/clothes.json"
+    },
+    {
+      "id": "ase/asllex/warn",
+      "language": "ase",
+      "gloss": "WARN",
+      "duration": 1.47,
+      "path": "ase/asllex/warn.json"
+    },
+    {
+      "id": "ase/asllex/wonder",
+      "language": "ase",
+      "gloss": "WONDER",
+      "duration": 2.51,
+      "path": "ase/asllex/wonder.json"
+    },
+    {
+      "id": "ase/asllex/snow-2",
+      "language": "ase",
+      "gloss": "SNOW",
+      "duration": 2.21,
+      "path": "ase/asllex/snow-2.json"
+    },
+    {
+      "id": "ase/asllex/recent-1",
+      "language": "ase",
+      "gloss": "RECENTLY",
+      "duration": 1.63,
+      "path": "ase/asllex/recent-1.json"
+    },
+    {
+      "id": "ase/asllex/use",
+      "language": "ase",
+      "gloss": "USE",
+      "duration": 2.51,
+      "path": "ase/asllex/use.json"
+    },
+    {
+      "id": "ase/asllex/touch",
+      "language": "ase",
+      "gloss": "TOUCH",
+      "duration": 1.21,
+      "path": "ase/asllex/touch.json"
+    },
+    {
+      "id": "ase/asllex/office",
+      "language": "ase",
+      "gloss": "OFFICE",
+      "duration": 1.19,
+      "path": "ase/asllex/office.json"
+    },
+    {
+      "id": "ase/asllex/talk",
+      "language": "ase",
+      "gloss": "TALK",
+      "duration": 2.03,
+      "path": "ase/asllex/talk.json"
+    },
+    {
+      "id": "ase/asllex/four",
+      "language": "ase",
+      "gloss": "FOUR",
+      "duration": 1.3,
+      "path": "ase/asllex/four.json"
+    },
+    {
+      "id": "ase/asllex/university",
+      "language": "ase",
+      "gloss": "UNIVERSITY",
+      "duration": 2.84,
+      "path": "ase/asllex/university.json"
+    },
+    {
+      "id": "ase/asllex/hour",
+      "language": "ase",
+      "gloss": "HOUR",
+      "duration": 1.21,
+      "path": "ase/asllex/hour.json"
+    },
+    {
+      "id": "ase/asllex/wine",
+      "language": "ase",
+      "gloss": "WINE",
+      "duration": 2.51,
+      "path": "ase/asllex/wine.json"
+    },
+    {
+      "id": "ase/asllex/arrive",
+      "language": "ase",
+      "gloss": "ARRIVE",
+      "duration": 1.37,
+      "path": "ase/asllex/arrive.json"
+    },
+    {
+      "id": "ase/asllex/later",
+      "language": "ase",
+      "gloss": "LATER",
+      "duration": 1.19,
+      "path": "ase/asllex/later.json"
+    },
+    {
+      "id": "ase/asllex/alcohol",
+      "language": "ase",
+      "gloss": "ALCOHOL",
+      "duration": 1.47,
+      "path": "ase/asllex/alcohol.json"
+    },
+    {
+      "id": "ase/asllex/lousy",
+      "language": "ase",
+      "gloss": "LOUSY",
+      "duration": 1.49,
+      "path": "ase/asllex/lousy.json"
+    },
+    {
+      "id": "ase/asllex/party-1",
+      "language": "ase",
+      "gloss": "PARTY",
+      "duration": 1.73,
+      "path": "ase/asllex/party-1.json"
+    },
+    {
+      "id": "ase/asllex/criticize",
+      "language": "ase",
+      "gloss": "CORRECT",
+      "duration": 2.57,
+      "path": "ase/asllex/criticize.json"
+    },
+    {
+      "id": "ase/asllex/near",
+      "language": "ase",
+      "gloss": "NEAR",
+      "duration": 1.49,
+      "path": "ase/asllex/near.json"
+    },
+    {
+      "id": "ase/asllex/jacket-2",
+      "language": "ase",
+      "gloss": "COAT",
+      "duration": 1.49,
+      "path": "ase/asllex/jacket-2.json"
+    },
+    {
+      "id": "ase/asllex/every-year",
+      "language": "ase",
+      "gloss": "EVERY-YEAR",
+      "duration": 2.27,
+      "path": "ase/asllex/every-year.json"
+    },
+    {
+      "id": "ase/asllex/much",
+      "language": "ase",
+      "gloss": "MUCH",
+      "duration": 1.49,
+      "path": "ase/asllex/much.json"
+    },
+    {
+      "id": "ase/asllex/sick",
+      "language": "ase",
+      "gloss": "SICK",
+      "duration": 1.47,
+      "path": "ase/asllex/sick.json"
+    },
+    {
+      "id": "ase/asllex/world",
+      "language": "ase",
+      "gloss": "WORLD",
+      "duration": 2.5,
+      "path": "ase/asllex/world.json"
+    },
+    {
+      "id": "ase/asllex/swim-2",
+      "language": "ase",
+      "gloss": "SWIM",
+      "duration": 1.49,
+      "path": "ase/asllex/swim-2.json"
+    },
+    {
+      "id": "ase/asllex/avoid",
+      "language": "ase",
+      "gloss": "AVOID",
+      "duration": 1.49,
+      "path": "ase/asllex/avoid.json"
+    },
+    {
+      "id": "ase/asllex/alright",
+      "language": "ase",
+      "gloss": "ALL-RIGHT",
+      "duration": 1.49,
+      "path": "ase/asllex/alright.json"
+    },
+    {
+      "id": "ase/asllex/sweet",
+      "language": "ase",
+      "gloss": "SWEET",
+      "duration": 2.03,
+      "path": "ase/asllex/sweet.json"
+    },
+    {
+      "id": "ase/asllex/gone",
+      "language": "ase",
+      "gloss": "GONE",
+      "duration": 1.37,
+      "path": "ase/asllex/gone.json"
+    },
+    {
+      "id": "ase/asllex/quiet",
+      "language": "ase",
+      "gloss": "QUIET",
+      "duration": 1.37,
+      "path": "ase/asllex/quiet.json"
+    },
+    {
+      "id": "ase/asllex/fruit",
+      "language": "ase",
+      "gloss": "FRUIT",
+      "duration": 1.21,
+      "path": "ase/asllex/fruit.json"
+    },
+    {
+      "id": "ase/asllex/all",
+      "language": "ase",
+      "gloss": "ALL",
+      "duration": 2.5,
+      "path": "ase/asllex/all.json"
+    },
+    {
+      "id": "ase/asllex/let-know",
+      "language": "ase",
+      "gloss": "INFORM",
+      "duration": 1.37,
+      "path": "ase/asllex/let-know.json"
+    },
+    {
+      "id": "ase/asllex/race",
+      "language": "ase",
+      "gloss": "RACE",
+      "duration": 2.03,
+      "path": "ase/asllex/race.json"
+    },
+    {
+      "id": "ase/asllex/hurry",
+      "language": "ase",
+      "gloss": "HURRY",
+      "duration": 2.03,
+      "path": "ase/asllex/hurry.json"
+    },
+    {
+      "id": "ase/asllex/email",
+      "language": "ase",
+      "gloss": "EMAIL",
+      "duration": 1.49,
+      "path": "ase/asllex/email.json"
+    },
+    {
+      "id": "ase/asllex/oil-2",
+      "language": "ase",
+      "gloss": "OIL",
+      "duration": 2.03,
+      "path": "ase/asllex/oil-2.json"
+    },
+    {
+      "id": "ase/asllex/street",
+      "language": "ase",
+      "gloss": "STREET",
+      "duration": 1.49,
+      "path": "ase/asllex/street.json"
+    },
+    {
+      "id": "ase/asllex/two",
+      "language": "ase",
+      "gloss": "TWO",
+      "duration": 1.3,
+      "path": "ase/asllex/two.json"
+    },
+    {
+      "id": "ase/asllex/poop",
+      "language": "ase",
+      "gloss": "POOP",
+      "duration": 1.49,
+      "path": "ase/asllex/poop.json"
+    },
+    {
+      "id": "ase/asllex/onion",
+      "language": "ase",
+      "gloss": "ONION",
+      "duration": 1.73,
+      "path": "ase/asllex/onion.json"
+    },
+    {
+      "id": "ase/asllex/find",
+      "language": "ase",
+      "gloss": "FIND",
+      "duration": 1.49,
+      "path": "ase/asllex/find.json"
+    },
+    {
+      "id": "ase/asllex/measure-2",
+      "language": "ase",
+      "gloss": "MEASURE",
+      "duration": 2.03,
+      "path": "ase/asllex/measure-2.json"
+    },
+    {
+      "id": "ase/asllex/laugh",
+      "language": "ase",
+      "gloss": "LAUGH",
+      "duration": 2.03,
+      "path": "ase/asllex/laugh.json"
+    },
+    {
+      "id": "ase/asllex/look-forward",
+      "language": "ase",
+      "gloss": "LOOK-FORWARD",
+      "duration": 1.49,
+      "path": "ase/asllex/look-forward.json"
+    },
+    {
+      "id": "ase/asllex/any",
+      "language": "ase",
+      "gloss": "ANY",
+      "duration": 1.21,
+      "path": "ase/asllex/any.json"
+    },
+    {
+      "id": "ase/asllex/awake",
+      "language": "ase",
+      "gloss": "AWAKE",
+      "duration": 1.19,
+      "path": "ase/asllex/awake.json"
+    },
+    {
+      "id": "ase/asllex/concerned",
+      "language": "ase",
+      "gloss": "CONCERNED",
+      "duration": 1.47,
+      "path": "ase/asllex/concerned.json"
+    },
+    {
+      "id": "ase/asllex/analyze",
+      "language": "ase",
+      "gloss": "ANALYZE",
+      "duration": 2.03,
+      "path": "ase/asllex/analyze.json"
+    },
+    {
+      "id": "ase/asllex/program",
+      "language": "ase",
+      "gloss": "PROGRAM",
+      "duration": 1.49,
+      "path": "ase/asllex/program.json"
+    },
+    {
+      "id": "ase/asllex/yourself",
+      "language": "ase",
+      "gloss": "YOURSELF",
+      "duration": 2.03,
+      "path": "ase/asllex/yourself.json"
+    },
+    {
+      "id": "ase/asllex/stand-up",
+      "language": "ase",
+      "gloss": "STAND-UP",
+      "duration": 1.49,
+      "path": "ase/asllex/stand-up.json"
+    },
+    {
+      "id": "ase/asllex/ask",
+      "language": "ase",
+      "gloss": "ASK",
+      "duration": 1.37,
+      "path": "ase/asllex/ask.json"
+    },
+    {
+      "id": "ase/asllex/boss",
+      "language": "ase",
+      "gloss": "BOSS",
+      "duration": 1.47,
+      "path": "ase/asllex/boss.json"
+    },
+    {
+      "id": "ase/asllex/sad",
+      "language": "ase",
+      "gloss": "SAD",
+      "duration": 1.49,
+      "path": "ase/asllex/sad.json"
+    },
+    {
+      "id": "ase/asllex/on",
+      "language": "ase",
+      "gloss": "ON",
+      "duration": 1.49,
+      "path": "ase/asllex/on.json"
+    },
+    {
+      "id": "ase/asllex/truth",
+      "language": "ase",
+      "gloss": "HONEST",
+      "duration": 1.49,
+      "path": "ase/asllex/truth.json"
+    },
+    {
+      "id": "ase/asllex/positive",
+      "language": "ase",
+      "gloss": "POSITIVE",
+      "duration": 1.21,
+      "path": "ase/asllex/positive.json"
+    },
+    {
+      "id": "ase/asllex/smart",
+      "language": "ase",
+      "gloss": "SMART",
+      "duration": 1.49,
+      "path": "ase/asllex/smart.json"
+    },
+    {
+      "id": "ase/asllex/register",
+      "language": "ase",
+      "gloss": "REGISTER",
+      "duration": 1.49,
+      "path": "ase/asllex/register.json"
+    },
+    {
+      "id": "ase/asllex/each",
+      "language": "ase",
+      "gloss": "EVERY",
+      "duration": 1.49,
+      "path": "ase/asllex/each.json"
+    },
+    {
+      "id": "ase/asllex/argue",
+      "language": "ase",
+      "gloss": "ARGUE",
+      "duration": 2.03,
+      "path": "ase/asllex/argue.json"
+    },
+    {
+      "id": "ase/asllex/and",
+      "language": "ase",
+      "gloss": "AND",
+      "duration": 1.37,
+      "path": "ase/asllex/and.json"
+    },
+    {
+      "id": "ase/asllex/happen",
+      "language": "ase",
+      "gloss": "HAPPEN",
+      "duration": 1.19,
+      "path": "ase/asllex/happen.json"
+    },
+    {
+      "id": "ase/asllex/word",
+      "language": "ase",
+      "gloss": "WORD",
+      "duration": 1.47,
+      "path": "ase/asllex/word.json"
+    },
+    {
+      "id": "ase/asllex/disagreement",
+      "language": "ase",
+      "gloss": "DISAGREE",
+      "duration": 2.17,
+      "path": "ase/asllex/disagreement.json"
+    },
+    {
+      "id": "ase/asllex/cute-1",
+      "language": "ase",
+      "gloss": "CUTE",
+      "duration": 2.03,
+      "path": "ase/asllex/cute-1.json"
+    },
+    {
+      "id": "ase/asllex/caption",
+      "language": "ase",
+      "gloss": "CAPTION",
+      "duration": 2.03,
+      "path": "ase/asllex/caption.json"
+    },
+    {
+      "id": "ase/asllex/park",
+      "language": "ase",
+      "gloss": "PARK",
+      "duration": 1.49,
+      "path": "ase/asllex/park.json"
+    },
+    {
+      "id": "ase/asllex/popular",
+      "language": "ase",
+      "gloss": "POPULAR",
+      "duration": 1.73,
+      "path": "ase/asllex/popular.json"
+    },
+    {
+      "id": "ase/asllex/regular",
+      "language": "ase",
+      "gloss": "REGULAR",
+      "duration": 1.47,
+      "path": "ase/asllex/regular.json"
+    },
+    {
+      "id": "ase/asllex/add",
+      "language": "ase",
+      "gloss": "ADD",
+      "duration": 1.37,
+      "path": "ase/asllex/add.json"
+    },
+    {
+      "id": "ase/asllex/birthday",
+      "language": "ase",
+      "gloss": "BIRTHDAY",
+      "duration": 1.89,
+      "path": "ase/asllex/birthday.json"
+    },
+    {
+      "id": "ase/asllex/bicycle",
+      "language": "ase",
+      "gloss": "BICYCLE",
+      "duration": 2.51,
+      "path": "ase/asllex/bicycle.json"
+    },
+    {
+      "id": "ase/asllex/throw-2",
+      "language": "ase",
+      "gloss": "THROW",
+      "duration": 1.37,
+      "path": "ase/asllex/throw-2.json"
+    },
+    {
+      "id": "ase/asllex/bird",
+      "language": "ase",
+      "gloss": "BIRD",
+      "duration": 1.67,
+      "path": "ase/asllex/bird.json"
+    },
+    {
+      "id": "ase/asllex/myself",
+      "language": "ase",
+      "gloss": "MYSELF",
+      "duration": 1.47,
+      "path": "ase/asllex/myself.json"
+    },
+    {
+      "id": "ase/asllex/wife",
+      "language": "ase",
+      "gloss": "WIFE",
+      "duration": 1.37,
+      "path": "ase/asllex/wife.json"
+    },
+    {
+      "id": "ase/asllex/average",
+      "language": "ase",
+      "gloss": "AVERAGE",
+      "duration": 1.73,
+      "path": "ase/asllex/average.json"
+    },
+    {
+      "id": "ase/asllex/save",
+      "language": "ase",
+      "gloss": "SAVE",
+      "duration": 1.47,
+      "path": "ase/asllex/save.json"
+    },
+    {
+      "id": "ase/asllex/break",
+      "language": "ase",
+      "gloss": "BREAK",
+      "duration": 1.19,
+      "path": "ase/asllex/break.json"
+    },
+    {
+      "id": "ase/asllex/battery",
+      "language": "ase",
+      "gloss": "BATTERY",
+      "duration": 2.03,
+      "path": "ase/asllex/battery.json"
+    },
+    {
+      "id": "ase/asllex/seem",
+      "language": "ase",
+      "gloss": "SEEM",
+      "duration": 1.19,
+      "path": "ase/asllex/seem.json"
+    },
+    {
+      "id": "ase/asllex/calm",
+      "language": "ase",
+      "gloss": "QUIET",
+      "duration": 1.49,
+      "path": "ase/asllex/calm.json"
+    },
+    {
+      "id": "ase/asllex/gift",
+      "language": "ase",
+      "gloss": "PRESENT",
+      "duration": 1.57,
+      "path": "ase/asllex/gift.json"
+    },
+    {
+      "id": "ase/asllex/cost",
+      "language": "ase",
+      "gloss": "CHARGE",
+      "duration": 1.49,
+      "path": "ase/asllex/cost.json"
+    },
+    {
+      "id": "ase/asllex/often",
+      "language": "ase",
+      "gloss": "OFTEN",
+      "duration": 1.47,
+      "path": "ase/asllex/often.json"
+    },
+    {
+      "id": "ase/asllex/serious",
+      "language": "ase",
+      "gloss": "SERIOUS",
+      "duration": 1.21,
+      "path": "ase/asllex/serious.json"
+    },
+    {
+      "id": "ase/asllex/stress",
+      "language": "ase",
+      "gloss": "STRESS",
+      "duration": 2.03,
+      "path": "ase/asllex/stress.json"
+    },
+    {
+      "id": "ase/asllex/socks",
+      "language": "ase",
+      "gloss": "SOCKS",
+      "duration": 2.03,
+      "path": "ase/asllex/socks.json"
+    },
+    {
+      "id": "ase/asllex/bake-2",
+      "language": "ase",
+      "gloss": "BAKE",
+      "duration": 1.49,
+      "path": "ase/asllex/bake-2.json"
+    },
+    {
+      "id": "ase/asllex/they-1",
+      "language": "ase",
+      "gloss": "THEY",
+      "duration": 1.49,
+      "path": "ase/asllex/they-1.json"
+    },
+    {
+      "id": "ase/asllex/face",
+      "language": "ase",
+      "gloss": "FACE",
+      "duration": 1.63,
+      "path": "ase/asllex/face.json"
+    },
+    {
+      "id": "ase/asllex/idea",
+      "language": "ase",
+      "gloss": "IDEA",
+      "duration": 1.49,
+      "path": "ase/asllex/idea.json"
+    },
+    {
+      "id": "ase/asllex/wash-dishes",
+      "language": "ase",
+      "gloss": "WASH-DISHES",
+      "duration": 2.51,
+      "path": "ase/asllex/wash-dishes.json"
+    },
+    {
+      "id": "ase/asllex/postpone",
+      "language": "ase",
+      "gloss": "POSTPONE",
+      "duration": 1.57,
+      "path": "ase/asllex/postpone.json"
+    },
+    {
+      "id": "ase/asllex/improve",
+      "language": "ase",
+      "gloss": "IMPROVE",
+      "duration": 2.03,
+      "path": "ase/asllex/improve.json"
+    },
+    {
+      "id": "ase/asllex/keep",
+      "language": "ase",
+      "gloss": "KEEP",
+      "duration": 1.21,
+      "path": "ase/asllex/keep.json"
+    },
+    {
+      "id": "ase/asllex/habit",
+      "language": "ase",
+      "gloss": "USED-TO",
+      "duration": 1.37,
+      "path": "ase/asllex/habit.json"
+    },
+    {
+      "id": "ase/asllex/community",
+      "language": "ase",
+      "gloss": "CITY",
+      "duration": 1.49,
+      "path": "ase/asllex/community.json"
+    },
+    {
+      "id": "ase/asllex/confused-1",
+      "language": "ase",
+      "gloss": "CONFUSED",
+      "duration": 2.51,
+      "path": "ase/asllex/confused-1.json"
+    },
+    {
+      "id": "ase/asllex/cat",
+      "language": "ase",
+      "gloss": "CAT",
+      "duration": 2.03,
+      "path": "ase/asllex/cat.json"
+    },
+    {
+      "id": "ase/asllex/soap",
+      "language": "ase",
+      "gloss": "SOAP",
+      "duration": 2.03,
+      "path": "ase/asllex/soap.json"
+    },
+    {
+      "id": "ase/asllex/star",
+      "language": "ase",
+      "gloss": "STAR",
+      "duration": 2.03,
+      "path": "ase/asllex/star.json"
+    },
+    {
+      "id": "ase/asllex/put",
+      "language": "ase",
+      "gloss": "PUT",
+      "duration": 1.57,
+      "path": "ase/asllex/put.json"
+    },
+    {
+      "id": "ase/asllex/law",
+      "language": "ase",
+      "gloss": "LAW",
+      "duration": 1.75,
+      "path": "ase/asllex/law.json"
+    },
+    {
+      "id": "ase/asllex/over",
+      "language": "ase",
+      "gloss": "OVER",
+      "duration": 1.57,
+      "path": "ase/asllex/over.json"
+    },
+    {
+      "id": "ase/asllex/six",
+      "language": "ase",
+      "gloss": "SIX",
+      "duration": 1.3,
+      "path": "ase/asllex/six.json"
+    },
+    {
+      "id": "ase/asllex/bother",
+      "language": "ase",
+      "gloss": "BOTHER",
+      "duration": 2.03,
+      "path": "ase/asllex/bother.json"
+    },
+    {
+      "id": "ase/asllex/provide",
+      "language": "ase",
+      "gloss": "PROVIDE",
+      "duration": 1.57,
+      "path": "ase/asllex/provide.json"
+    },
+    {
+      "id": "ase/asllex/precious",
+      "language": "ase",
+      "gloss": "PRECIOUS",
+      "duration": 1.19,
+      "path": "ase/asllex/precious.json"
+    },
+    {
+      "id": "ase/asllex/visit",
+      "language": "ase",
+      "gloss": "VISIT",
+      "duration": 2.51,
+      "path": "ase/asllex/visit.json"
+    },
+    {
+      "id": "ase/asllex/red",
+      "language": "ase",
+      "gloss": "RED",
+      "duration": 2.03,
+      "path": "ase/asllex/red.json"
+    },
+    {
+      "id": "ase/asllex/shop-1",
+      "language": "ase",
+      "gloss": "SHOP",
+      "duration": 2.03,
+      "path": "ase/asllex/shop-1.json"
+    },
+    {
+      "id": "ase/asllex/nine",
+      "language": "ase",
+      "gloss": "NINE",
+      "duration": 1.3,
+      "path": "ase/asllex/nine.json"
+    },
+    {
+      "id": "ase/asllex/answer",
+      "language": "ase",
+      "gloss": "ANSWER",
+      "duration": 1.37,
+      "path": "ase/asllex/answer.json"
+    },
+    {
+      "id": "ase/asllex/heart-touch",
+      "language": "ase",
+      "gloss": "TOUCHED",
+      "duration": 1.21,
+      "path": "ase/asllex/heart-touch.json"
     }
   ]
 }
