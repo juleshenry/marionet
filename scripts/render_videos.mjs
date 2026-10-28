@@ -66,9 +66,13 @@ const sha1 = (...parts) => {
   return hash.digest("hex");
 };
 
-/** ase/fs/A → fs-a, ase/asllex/cat-2 → asllex-cat-2 */
-export function slugOf(id) {
-  return id.split("/").slice(1).join("-").toLowerCase().replace(/[^a-z0-9-]+/g, "-");
+/** ase/fs/A → fs-a, ase/asllex/cat-2 → asllex-cat-2. A name the letters a-z cannot write (Korean
+ * 학교, Russian дом), or one another sign of the language would share, keeps a short hash of its id:
+ * kvk/signpuddle/학교 → signpuddle-4f1c2a9b. */
+export function slugOf(id, shared = false) {
+  const slug = id.split("/").slice(1).join("-").toLowerCase().replace(/[^a-z0-9-]+/g, "-");
+  if (!shared && /[a-z0-9]/i.test(id.split("/").at(-1))) return slug;
+  return `${slug.replace(/-+$/, "")}-${createHash("sha1").update(id).digest("hex").slice(0, 8)}`;
 }
 
 function ffmpeg(args) {
@@ -122,12 +126,16 @@ const signers = assignAvatars([...asked], roster, weights, kept);
 const reachOf = (id) => descs.get(id)?.source?.reach ?? 0;
 const filmed = new Set([...todo].sort((a, b) => reachOf(b.id) - reachOf(a.id) || a.id.localeCompare(b.id)).slice(0, videos).map((c) => c.id));
 
+// Slugs two of the language's signs would share (German Arm and arm)
+const plain = new Map();
+for (const c of clips) if (c.language === language) plain.set(slugOf(c.id), (plain.get(slugOf(c.id)) || 0) + 1);
+
 const jobs = [];
 for (const entry of todo) {
   const clip = await readJson(path.join(clipsDir, entry.path));
   const desc = descs.get(entry.id);
   const avatar = signers.get(entry.id);
-  const slug = slugOf(entry.id);
+  const slug = slugOf(entry.id, plain.get(slugOf(entry.id)) > 1);
   const hash = sha1(JSON.stringify(clip), avatarHash.get(avatar), rendererHash);
   const video = filmed.has(entry.id);
   const fresh =
