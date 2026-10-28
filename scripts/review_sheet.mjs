@@ -7,10 +7,12 @@
  * Usage: python3 -m http.server 8765 &
  *   node scripts/review_sheet.mjs <outDir> <id> [id ...]      writes <outDir>/sheet-01.png, …
  *   MARIONET_CLIPS=data/runs/preview reviews a bake_clips --out folder instead of clips/
+ *   SOURCE_IMAGES=dir adds a sixth tile, dir/<last part of the id>.png: the source the sign was read
+ *   from (fsw_signdesc.py png draws its SignWriting)
  */
 import { chromium } from "playwright";
 import { spawn } from "node:child_process";
-import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
+import { access, mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -33,7 +35,8 @@ T = spec["tile"]
 rows = spec["rows"]
 font = ImageFont.load_default()
 LABEL = 16
-sheet = Image.new("RGB", (T * 5, len(rows) * (T + LABEL)), (20, 20, 28))
+cols = max(len(row["frames"]) for row in rows)
+sheet = Image.new("RGB", (T * cols, len(rows) * (T + LABEL)), (20, 20, 28))
 d = ImageDraw.Draw(sheet)
 for r, row in enumerate(rows):
     y = r * (T + LABEL)
@@ -163,6 +166,10 @@ try {
       const file = path.join(tmp, `${rows.length}-${i}.png`);
       await writeFile(file, Buffer.from(shots[i].png.split(",")[1], "base64"));
       frames.push({ png: file, trail: shots[i].trail });
+    }
+    if (process.env.SOURCE_IMAGES) {
+      const src = path.resolve(root, process.env.SOURCE_IMAGES, `${id.split("/").pop()}.png`);
+      if (await access(src).then(() => true, () => false)) frames.push({ png: src });
     }
     rows.push({ label: `${rows.length + 1}. ${id.split("/").pop()}`, frames });
   }
