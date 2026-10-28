@@ -223,6 +223,26 @@ export const HANDSHAPES = {
     fingers: { index: 0, middle: 0.22, ring: 1, little: 1, spread: 0.35 },
     thumb: { curl: 0.25, opposition: 0.6, abduction: 0.2 },
   },
+  // Not ASL letters: shapes other sign languages write in SignWriting (scripts/fsw_signdesc.py).
+  // Thumbs-up (ASL-LEX "10", DGS GUT): the fist with the thumb out, held as L and Y hold it.
+  10: {
+    id: "10",
+    fingers: { index: 1, middle: 1, ring: 1, little: 1, spread: 0 },
+    thumb: { curl: 0.05, opposition: 0.05, abduction: 0.75 },
+  },
+  // A small C of the index and thumb, the other fingers closed.
+  baby_c: {
+    id: "baby_c",
+    fingers: { index: 0.38, middle: 1, ring: 1, little: 1, spread: 0 },
+    thumb: { curl: 0.3, opposition: 0.5, abduction: 0.55 },
+  },
+  // V clawed: both fingers bent at the middle joints.
+  bent_v: {
+    id: "bent_v",
+    fingers: { index: 0.6, middle: 0.6, ring: 1, little: 1, spread: 0.3 },
+    thumb: { curl: 0.35, opposition: 0.55, abduction: 0.05 },
+    profile: "hook",
+  },
 };
 
 const euler = (x = 0, y = 0, z = 0) => ({ x, y, z });
@@ -240,6 +260,7 @@ const THUMB_POSES = {
   B: [[0.374, -0.507, -0.511], [1.237, 0, 0.863], [0.617, 0, 0.599]],
   bent_b: [[0.374, -0.507, -0.511], [1.237, 0, 0.863], [0.617, 0, 0.599]], // B's thumb, across the palm
   C: [[0.139, -0.268, -0.118], [0.692, 0, 0.629], [0.399, 0, 0.442]],
+  baby_c: [[0.139, -0.268, -0.118], [0.692, 0, 0.629], [0.399, 0, 0.442]], // C's thumb
   D: [[0.47, -0.101, 0.11], [0.847, 0, 0.656], [0.542, 0, 0.519]],
   E: [[0.259, -0.43, -0.301], [1.309, 0, 1.021], [1.166, 0, 0.809]],
   G: [[-0.252, -0.191, -0.601], [0.56, 0, 0.35], [0.412, 0, 0.42]],
@@ -255,6 +276,7 @@ const THUMB_POSES = {
   T: [[0.776, -0.127, -0.025], [1.007, 0, 0.04], [1.408, 0, 0.809]],
   U: [[0.595, -0.587, 0.164], [0.843, 0, 0.594], [0.382, 0, 0.358]],
   V: [[0.609, -0.574, 0.169], [0.843, 0, 0.586], [0.39, 0, 0.363]],
+  bent_v: [[0.609, -0.574, 0.169], [0.843, 0, 0.586], [0.39, 0, 0.363]], // V's thumb, over the ring and little
   W: [[0.484, -0.872, 0.151], [0.836, 0, 0.573], [0.321, 0, 0.308]],
   X: [[0.461, -0.341, 0.046], [0.885, 0, 0.683], [0.51, 0, 0.502]],
   "1": [[0.674, -0.294, 0.129], [0.868, 0, 0.543], [0.555, 0, 0.494]],

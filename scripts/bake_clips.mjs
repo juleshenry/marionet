@@ -8,6 +8,8 @@
  *        node scripts/bake_clips.mjs --check   fail if clips/ is stale
  *        node scripts/bake_clips.mjs --ids ase/asllex/tree,ase/asllex/cat --out data/runs/preview
  *          bake chosen signs from any pack (deferred ones too, drafts too) to review them
+ * A pack with "clips": "<dir>" (signs converted by the thousand, data/clips/ being out of git) is
+ * baked into that folder with its own index.json, and --check leaves it alone.
  */
 import { compileSignDesc } from "../src/compile.js";
 import { isCompilable, isPublishable, validateClip } from "../src/ir.js";
@@ -43,8 +45,13 @@ function roundClip(clip) {
 const index = [];
 const stale = [];
 const seen = new Set();
+const ownIndex = new Map(); // a pack's own clips folder → its index
 for (const pack of load("data/signs/index.json").packs) {
   if (pack.defer && !ids) continue;
+  const own = pack.clips && !arg("out") ? join(root, pack.clips) : null;
+  if (own && check) continue;
+  const into = own ?? outDir;
+  const list = own ? (ownIndex.get(own) ?? ownIndex.set(own, []).get(own)) : index;
   for (const desc of packSigns(load(pack.path))) {
     if (seen.has(desc.id)) continue;
     seen.add(desc.id);
@@ -55,7 +62,7 @@ for (const pack of load("data/signs/index.json").packs) {
     if (errors.length) throw new Error(`${desc.id}: ${errors.join("; ")}`);
     const rel = `${desc.id}.json`;
     const text = JSON.stringify(clip) + "\n";
-    const file = join(outDir, rel);
+    const file = join(into, rel);
     if (check) {
       let prev = null;
       try {
@@ -68,7 +75,7 @@ for (const pack of load("data/signs/index.json").packs) {
       mkdirSync(dirname(file), { recursive: true });
       writeFileSync(file, text);
     }
-    index.push({ id: desc.id, language: desc.language, gloss: desc.gloss, duration: clip.duration, path: rel });
+    list.push({ id: desc.id, language: desc.language, gloss: desc.gloss, duration: clip.duration, path: rel });
   }
 }
 
@@ -89,4 +96,8 @@ if (check) {
 } else {
   writeFileSync(join(outDir, "index.json"), indexText);
   console.log(`baked ${index.length} clips → ${outDir.slice(root.length + 1)}/`);
+  for (const [dir, list] of ownIndex) {
+    writeFileSync(join(dir, "index.json"), JSON.stringify({ schema: "marionet.clipindex/v0", clips: list }) + "\n");
+    console.log(`baked ${list.length} clips → ${dir.slice(root.length + 1)}/`);
+  }
 }

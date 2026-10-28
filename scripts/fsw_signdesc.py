@@ -15,6 +15,22 @@ out of the learning and are what the conversion is scored on.
 
   python3 scripts/fsw_signdesc.py score [--show N]     learn from ASL-LEX, score on core.json
   python3 scripts/fsw_signdesc.py learn                 write data/sources/iswa_learnt.json
+  python3 scripts/fsw_signdesc.py convert --spml data/raw/sgn53.spml --language gsg --gloss-lang deu \
+      --out data/signs/gsg/signpuddle.json [--also eng]
+  python3 scripts/fsw_signdesc.py png --pack data/signs/gsg/signpuddle.json --ids gsg/signpuddle/haus --out DIR
+
+Converting a dictionary of another sign language: one sign per headword (the medoid of its
+variants), named by the dictionary's word for it (`spoken`, in `gloss_lang`) and given the English
+that word leads to in glottosphere, which approves it as converted (published, labelled unchecked).
+The tables of English are glottosphere's, not in git: from the glottosphere checkout,
+  python3 scripts/build/export_gloss_meanings.py deu spa por … --out ../marionet/data/sources/glosses
+writes data/sources/glosses/{iso}.json and reach.json (how many languages share each meaning, by which
+render_videos.mjs --videos picks the signs that get a video). --also names other languages the
+dictionary mixes in: Maltese's "Hobz / Bread", Paraguay's "Jueves (Thursday)". Which SignPuddle
+dictionary is which language, and what it is glossed in, is in glottosphere's
+data/sign_languages.json (`puddles`, `gloss_language`): Tunisian's is in French, the Yugoslav one in
+Slovene, International Sign's in Esperanto roots. data/sources/iswa_hand_names.json has ISWA 2010's
+name for each hand symbol (signbank.org/iswa), for the handshapes to come.
 
 Needs data/raw/sgn4.spml (see ingest_signpuddle.py) and data/raw/fonts/SuttonSignWritingLine.ttf
 (`npm pack @sutton-signwriting/font-ttf`, font/SuttonSignWritingLine.ttf) for the symbols' sizes.
@@ -38,6 +54,8 @@ ASLLEX = ROOT / "data/signs/ase/asllex_signdesc.json"
 CORE = ROOT / "data/signs/ase/core.json"
 LEARNT = ROOT / "data/sources/iswa_learnt.json"
 REPORT = ROOT / "data/runs/fsw-score.json"
+GLOSSES = ROOT / "data/sources/glosses"  # {iso}.json from glottosphere's export_gloss_meanings.py
+TODAY = __import__("datetime").date.today().isoformat()
 
 ENTRY_RE = re.compile(r"<entry\b[^>]*>(.*?)</entry>", re.S)
 TERM_RE = re.compile(r"<term>(?:<!\[CDATA\[)?(.*?)(?:\]\]>)?</term>", re.S)
@@ -150,7 +168,15 @@ def hand_directions(sym: dict) -> tuple[str, str, bool]:
 
 # --- conversion -------------------------------------------------------------------------------------------
 
-def split_hands(hands: list[dict]) -> tuple[list[dict], list[dict]]:
+def arrow_between(a: dict, b: dict, arrows: list[dict]) -> bool:
+    """A movement arrow inside the box the two hands' centres span: one hand going from one to the
+    other, or opening on the way (DGS SONNE, a fist and then a spread hand, drawn on a diagonal)."""
+    x0, x1 = sorted((a["cx"], b["cx"]))
+    y0, y1 = sorted((a["cy"], b["cy"]))
+    return any(x0 - 4 <= r["cx"] <= x1 + 4 and y0 - 4 <= r["cy"] <= y1 + 4 for r in arrows)
+
+
+def split_hands(hands: list[dict], arrows: list[dict] | None = None) -> tuple[list[dict], list[dict]]:
     """The dominant hand's symbols and the other hand's.
 
     A mirrored symbol (rotation 8–f) is the left hand, but writers often draw the left hand unmirrored,
@@ -170,6 +196,8 @@ def split_hands(hands: list[dict]) -> tuple[list[dict], list[dict]]:
     near = math.hypot(dx, dy) <= 22
     if not (near or a["base"] == b["base"] or abs(dy) < abs(dx)):
         return hands, []  # one hand, changing shape
+    if len(hands) == 2 and a["base"] != b["base"] and arrow_between(a, b, arrows or []):
+        return hands, []
     if (a["fill"] == 3) != (b["fill"] == 3):
         dom, base = (b, a) if a["fill"] == 3 else (a, b)
     elif abs(dy) > abs(dx):
@@ -183,9 +211,9 @@ def split_hands(hands: list[dict]) -> tuple[list[dict], list[dict]]:
 def features(sign: dict) -> dict:
     syms = sign["symbols"]
     hands = [s for s in syms if within(s["base"], HAND)]
-    right, left = split_hands(hands)
-    heads = [s for s in syms if within(s["base"], (HEAD[0], FACE[1])) and s["w"] >= 30]
     arrows = [s for s in syms if within(s["base"], (STRAIGHT[0], CIRCLE[1]))]
+    right, left = split_hands(hands, arrows)
+    heads = [s for s in syms if within(s["base"], (HEAD[0], FACE[1])) and s["w"] >= 30]
     contacts = [s for s in syms if within(s["base"], CONTACT)]
     fingermoves = [s for s in syms if within(s["base"], FINGER_MOVE)]
     trunk = [s for s in syms if within(s["base"], TRUNK)]
@@ -256,12 +284,28 @@ def touches_face(f: dict) -> bool:
     return hand or any(inside(c["cx"], c["cy"]) for c in f["contacts"])
 
 
+def below_shoulders(f: dict) -> bool:
+    """The dominant hand under the shoulder line SignWriting draws below the head (S36d…)."""
+    lines = [t for t in f["trunk"] if t["w"] > 2 * t["h"]]
+    return bool(lines and f["dom"]) and f["dom"]["cy"] > min(t["cy"] for t in lines)
+
+
 def location(f: dict, learnt: dict) -> str:
     if f.get("rel") is not None:
         x, y = f["rel"]
         near = sorted(learnt["places"], key=lambda p: (p[0] - x) ** 2 + (p[1] - y) ** 2)[:9]
-        votes = collections.Counter(p[2] for p in near)
-        place = votes.most_common(1)[0][0]
+        # the region first, then the place within it: the face's points split among mouth, cheek,
+        # eye and chin and would lose to neutral space one by one (DGS AUGE, an index at the eye)
+        regions = collections.Counter(REGION.get(p[2]) for p in near)
+        top = max(regions.values())
+        region = next(REGION.get(p[2]) for p in near if regions[REGION.get(p[2])] == top)
+        if region == "face" and below_shoulders(f):
+            region = "body"  # KSL 여자, DGS FRAU: under the shoulder line, whatever the points say
+        within = [p for p in near if REGION.get(p[2]) == region]
+        votes = collections.Counter(p[2] for p in within)
+        place = next(p[2] for p in within if votes[p[2]] == max(votes.values())) if within else None
+        if place is None and region == "body":
+            place = "chest" if f["contacts"] else "neutral-space"
         if f["mouthing"] and REGION.get(place) == "face" and not touches_face(f):
             place = None  # under a row of mouthed faces, a hand that does not touch one is below them
         if place and (place not in ("weak-hand", "forearm") or f["left"]):
@@ -315,9 +359,22 @@ def choose(convs: list[dict]) -> dict:
     return convs[scores.index(max(scores))]
 
 
+# Symbols ASL writes too seldom to learn, read off their glyphs (the commonest in DGS, LSE and Libras).
+MANUAL_SHAPES = {
+    "1ed": "baby_c", "1d2": "F", "18c": "W", "1d3": "F", "16c": "C", "1de": "L", "1f8": "A", "10c": "1",
+    "1f1": "G", "1ef": "G", "160": "B", "1df": "L", "1f2": "G", "17f": "bent_b", "175": "O", "13d": "3",
+    "1e4": "D", "158": "curved_5", "127": "bent_v", "17c": "flat_b", "129": "T", "1d0": "F", "113": "V",
+    "1a7": "5", "173": "flat_o", "18b": "curved_5", "174": "O", "19d": "Y", "156": "C", "1cf": "F",
+    "112": "bent_v", "145": "curved_5", "179": "bent_b", "1e2": "X", "109": "X", "1a3": "Y", "124": "V",
+    "17b": "open_b", "12b": "3", "198": "I", "10f": "1", "1c2": "open_8", "166": "open_b", "189": "W",
+    "16e": "bent_b", "1a5": "F", "161": "open_b", "1f6": "10",
+}
+
+
 def handshape_of(base: int, learnt: dict) -> str:
     key = f"{base:03x}"
-    return learnt["shapes"].get(key) or learnt["groups"].get(f"{group_of(base):03x}") or "5"
+    return (learnt["shapes"].get(key) or MANUAL_SHAPES.get(key)
+            or learnt["groups"].get(f"{group_of(base):03x}") or "5")
 
 
 # --- learning and scoring on ASL --------------------------------------------------------------------------
@@ -391,7 +448,7 @@ def learn(asllex: list[dict], idx: dict, exclude: set[str]) -> dict:
 
 FAMILY = {"open_b": "B", "flat_b": "B", "bent_b": "B", "curved_5": "5", "open_8": "5", "baby_o": "F", "flat_o": "O",
           "X": "1", "G": "1", "D": "1", "H": "V", "R": "V", "3": "V", "K": "V", "P": "V", "W": "V", "E": "S",
-          "T": "S", "A": "S"}
+          "T": "S", "A": "S", "10": "S", "baby_c": "C", "bent_v": "V"}
 
 REGION = {"forehead": "face", "eye": "face", "nose": "face", "mouth": "face", "chin": "face", "cheek": "face",
           "ear": "face", "head": "face", "neck": "body", "shoulder": "body", "chest": "body", "chest-front": "body",
@@ -472,14 +529,79 @@ def slug(text: str) -> str:
     return re.sub(r"[^\w]+", "-", t).strip("-") or "sign"
 
 
-def convert_puddle(spml: Path, language: str, gloss_lang: str, dataset: str, learnt: dict) -> list[dict]:
-    """One SignDesc draft per headword (an entry's first gloss): of its variants, the one most like the others."""
+def clean_gloss(g: str) -> str:
+    """A dictionary's word without its numbering: "serpiente 14", "보지못하다1_1_2", "도박(4)", "casa_2"."""
+    g = re.sub(r"\s*\(\d+\)\s*$", "", g.strip())
+    g = re.sub(r"[\s_\-]*\d+(?:[_\-]\d+)*$", "", g)
+    return g.strip()
+
+
+def fold(word: str) -> str:
+    import unicodedata
+
+    return "".join(ch for ch in unicodedata.normalize("NFKD", word.lower()) if not unicodedata.combining(ch))
+
+
+BRACKET = re.compile(r"\s*\(([^()]*)\)\s*$")
+# A dictionary that names its signs by a word's root: International Sign's SignPuddle writes Esperanto
+# without its endings (trov, kant, danc), and the root of a verb, noun or adjective is all three
+ENDINGS = {"epo": ("i", "o", "a", "e")}
+
+
+def headword(gloss: str) -> tuple[str, str | None]:
+    """A gloss without the note in brackets after it, and the note: "Jueves (Thursday)", "aîné
+    (personne âgée)", "Wirt_1 (Krl)". The note is a gloss's English in some dictionaries."""
+    g = clean_gloss(gloss)
+    m = BRACKET.search(g)
+    if not m or not m.start():
+        return g, None
+    return clean_gloss(g[:m.start()]), m.group(1).strip() or None
+
+
+def meaning_tables(gloss_lang: str, also: list[str]) -> list[tuple[str, dict, dict]]:
+    """The English of the gloss language's words, then of the languages a dictionary mixes in
+    (Maltese's "Hobz / Bread"), from glottosphere's scripts/build/export_gloss_meanings.py."""
+    tables = []
+    for code in [gloss_lang, *also]:
+        path = GLOSSES / f"{code}.json"
+        if path.exists():
+            english = json.loads(path.read_text())
+            folded = {}
+            for word, meanings in english.items():
+                folded.setdefault(fold(word), meanings)
+            tables.append((code, english, folded))
+    return tables
+
+
+def english_of(words: list[str], tables: list[tuple[str, dict, dict]]) -> str | None:
+    for code, english, folded in tables:  # every word in the gloss language before any in another
+        for w in words:
+            for form in (w, *(w + e for e in ENDINGS.get(code, ()))):
+                hit = english.get(form.lower()) or folded.get(fold(form))
+                if hit:
+                    return hit[0]
+    return None
+
+
+def convert_puddle(spml: Path, language: str, gloss_lang: str, dataset: str, learnt: dict,
+                   tables: list[tuple[str, dict, dict]] | None = None, reach: dict | None = None) -> list[dict]:
+    """One SignDesc per headword (an entry's first gloss): of its variants, the one most like the others.
+
+    With `tables` (meaning_tables(): {word: [English, ...]}) a sign whose words
+    lead to English takes the first as its meaning and is approved as converted: published, and
+    labelled as not checked by a signer. The others stay drafts. `reach` ({English: languages},
+    reach.json beside the tables) goes in the sign's source, for render_videos.mjs --videos to draw the
+    commonest signs first.
+    """
     groups: dict[str, list[dict]] = collections.defaultdict(list)
     for e in read_spml(spml):
-        groups[e["glosses"][0].strip().lower()].append(e)
+        head = clean_gloss(e["glosses"][0])
+        if not head or head.startswith("용례"):  # KSL's usage examples are sentences, not signs
+            continue
+        groups[head.lower()].append(e)
     signs, seen = [], set()
     for key, es in groups.items():
-        pairs = [(c, e) for c, e in ((convert(e["fsw"], e["glosses"][0].strip(), language, learnt), e) for e in es) if c]
+        pairs = [(c, e) for c, e in ((convert(e["fsw"], clean_gloss(e["glosses"][0]), language, learnt), e) for e in es) if c]
         if not pairs:
             continue
         chosen = choose([c for c, _ in pairs])
@@ -489,12 +611,19 @@ def convert_puddle(spml: Path, language: str, gloss_lang: str, dataset: str, lea
         while sid in seen:
             sid, n = f"{language}/signpuddle/{slug(key)}-{n}", n + 1
         seen.add(sid)
-        words = list(dict.fromkeys(g.strip() for g in entry["glosses"] if g.strip()))
+        heads = [headword(g) for g in entry["glosses"]]
+        words = list(dict.fromkeys(w for w, _ in heads if w and len(w.split()) <= 4 and not w.isdigit()))
+        notes = [n for _, n in heads if n and len(n.split()) <= 4]
+        meaning = english_of(words + notes, tables) if tables else None
+        review = ({"status": "approved", "reviewer_kind": "converter", "date": TODAY,
+                   "reviewer": "scripts/fsw_signdesc.py: converted from SignWriting; not checked by a signer"}
+                  if meaning else {"status": "draft", "reviewer_kind": "converter"})
         signs.append({"schema": chosen["schema"], "id": sid, "language": language, "gloss": chosen["gloss"],
-                      "gloss_lang": gloss_lang, "spoken": words, "handed": chosen["handed"],
+                      "gloss_lang": gloss_lang, "spoken": words,
+                      **({"meanings": [{"text": meaning}]} if meaning else {}), "handed": chosen["handed"],
                       "dominant": chosen["dominant"], **({"nondominant": chosen["nondominant"]} if "nondominant" in chosen else {}),
-                      "review": {"status": "draft", "reviewer_kind": "converter"},
-                      "source": {"dataset": dataset, "fsw": entry["fsw"], "variants": len(pairs)}})
+                      "review": review, "source": {"dataset": dataset, "fsw": entry["fsw"], "variants": len(pairs),
+                                                   **({"reach": reach.get(meaning, 0)} if meaning and reach else {})}})
     return signs
 
 
@@ -532,6 +661,7 @@ def main() -> None:
     ap.add_argument("--spml", type=Path)
     ap.add_argument("--language")
     ap.add_argument("--gloss-lang")
+    ap.add_argument("--also", help="convert: languages besides --gloss-lang the dictionary names its signs in, e.g. eng")
     ap.add_argument("--out", type=Path)
     ap.add_argument("--ids", help="png: comma-separated sign ids of --pack to draw into --out")
     ap.add_argument("--pack", type=Path)
@@ -541,13 +671,15 @@ def main() -> None:
     elif a.command == "convert":
         learnt = json.loads(LEARNT.read_text())
         dataset = f"signpuddle-{a.spml.stem}"
-        signs = convert_puddle(a.spml, a.language, a.gloss_lang, dataset, learnt)
+        tables = meaning_tables(a.gloss_lang, a.also.split(",") if a.also else [])
+        reach = json.loads((GLOSSES / "reach.json").read_text()) if (GLOSSES / "reach.json").exists() else None
+        signs = convert_puddle(a.spml, a.language, a.gloss_lang, dataset, learnt, tables, reach)
         a.out.parent.mkdir(parents=True, exist_ok=True)
         pack = {"dataset": dataset, "source": f"https://www.signbank.org/signpuddle2.0/data/spml/{a.spml.name}",
                 "license": "CC BY-SA (SignPuddle)", "note": "Converted from SignWriting by scripts/fsw_signdesc.py; drafts.",
                 "n": len(signs), "signs": signs}
         a.out.write_text(json.dumps(pack, ensure_ascii=False, separators=(",", ":")) + "\n")
-        print(f"{len(signs)} signs from {a.spml.name} → {a.out}")
+        print(f"{len(signs)} signs from {a.spml.name} → {a.out}; {sum('meanings' in s for s in signs)} with an English meaning")
     elif a.command == "png":
         want = set(a.ids.split(","))
         a.out.mkdir(parents=True, exist_ok=True)

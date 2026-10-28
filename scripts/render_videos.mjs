@@ -7,12 +7,15 @@
  *   python3 -m http.server 8765 &
  *   node scripts/bake_clips.mjs
  *   node scripts/render_videos.mjs [--ids ase/fs/A,ase/ily] [--language ase] [--out dist/signs] [--force] [--reassign]
+ *     [--clips data/clips/converted]   the baked clips to draw (a pack's own "clips" folder; default clips/)
+ *     [--videos 1000]   a video for that many signs only, the ones whose meaning the most languages share
+ *                       (source.reach, scripts/fsw_signdesc.py); the others get their clip, for the 3D player
  *
  * Writes {out}/{language}/{slug}.mp4 (H.264, faststart), {slug}.jpg (the held pose, the poster),
  * {slug}.clip.json (for the live player) and manifest.json (marionet.signmedia/v0). A sign whose
  * clip, signer and renderer (render.html and every module it loads) are unchanged since the last
  * run is not drawn again. A sign keeps the signer the last manifest gave it; --reassign deals the
- * signs asked for afresh.
+ * signs asked for afresh. A sign without a video is listed in the manifest with "video": false.
  */
 import { chromium } from "playwright";
 import { execFileSync, spawn } from "node:child_process";
@@ -38,6 +41,8 @@ const outDir = path.resolve(root, arg("out") || "dist/signs", language);
 const force = process.argv.includes("--force");
 const reassign = process.argv.includes("--reassign");
 const only = arg("ids") ? new Set(arg("ids").split(",")) : null;
+const clipsDir = arg("clips") || "clips";
+const videos = arg("videos") ? Number(arg("videos")) : Infinity;
 
 // colour: frames are converted with the BT.709 matrix and tagged as sRGB. An untagged video is
 // shown darker by Apple's players than by others, and its paper background no longer matches
@@ -98,11 +103,11 @@ for (const a of roster.avatars) {
 const rendererFiles = ["render.html", ...pageModules(root, "render.html")];
 const rendererHash = sha1(...(await Promise.all(rendererFiles.map((p) => readFile(path.join(root, p))))), JSON.stringify(SETTINGS));
 
-const { clips } = await readJson("clips/index.json");
+const { clips } = await readJson(path.join(clipsDir, "index.json"));
 const todo = clips.filter((c) => c.language === language && (!only || only.has(c.id)));
 if (only && todo.length !== only.size) {
   const missing = [...only].filter((id) => !todo.some((c) => c.id === id));
-  throw new Error(`not in clips/index.json for ${language}: ${missing.join(", ")} (run node scripts/bake_clips.mjs)`);
+  throw new Error(`not in ${clipsDir}/index.json for ${language}: ${missing.join(", ")} (run node scripts/bake_clips.mjs)`);
 }
 
 await mkdir(outDir, { recursive: true });
@@ -113,16 +118,21 @@ const asked = new Set(todo.map((c) => c.id));
 const kept = new Map(previous.signs.filter((s) => !(reassign && asked.has(s.id))).map((s) => [s.id, s.avatar]));
 const signers = assignAvatars([...asked], roster, weights, kept);
 
+// The signs that get a video: the commonest meanings first, then by id
+const reachOf = (id) => descs.get(id)?.source?.reach ?? 0;
+const filmed = new Set([...todo].sort((a, b) => reachOf(b.id) - reachOf(a.id) || a.id.localeCompare(b.id)).slice(0, videos).map((c) => c.id));
+
 const jobs = [];
 for (const entry of todo) {
-  const clip = await readJson(path.join("clips", entry.path));
+  const clip = await readJson(path.join(clipsDir, entry.path));
   const desc = descs.get(entry.id);
   const avatar = signers.get(entry.id);
   const slug = slugOf(entry.id);
   const hash = sha1(JSON.stringify(clip), avatarHash.get(avatar), rendererHash);
+  const video = filmed.has(entry.id);
   const fresh =
-    !force && before.get(entry.id)?.hash === hash && existsSync(path.join(outDir, `${slug}.mp4`)) && existsSync(path.join(outDir, `${slug}.jpg`));
-  jobs.push({ entry, clip, desc, avatar, slug, hash, fresh });
+    !video || (!force && before.get(entry.id)?.hash === hash && existsSync(path.join(outDir, `${slug}.mp4`)) && existsSync(path.join(outDir, `${slug}.jpg`)));
+  jobs.push({ entry, clip, desc, avatar, slug, hash, fresh, video });
 }
 
 const browser = await chromium.launch({ channel: "chrome", headless: true });
@@ -179,11 +189,13 @@ try {
       id: entry.id,
       gloss: entry.gloss,
       spoken: desc?.spoken ?? [],
+      ...(desc?.gloss_lang ? { gloss_lang: desc.gloss_lang } : {}),
       meanings: meaningsOf(desc),
       slug,
       avatar,
       duration: Math.round(cycle * 1000) / 1000,
       source: desc?.source?.dataset || "authored",
+      ...(job.video ? {} : { video: false }),
       hash,
     });
   }

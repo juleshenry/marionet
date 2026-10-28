@@ -22,13 +22,19 @@
  *   node scripts/fit_arm.mjs fs-turn                     → FS_ORIENTATION "palm-in" (C, O)
  * Run them in that order: each later table is fitted on top of the earlier ones.
  *
- *   node scripts/fit_arm.mjs jobs [--ids a,b] [--refit]  → src/fitted.js
+ *   node scripts/fit_arm.mjs jobs [--ids a,b] [--refit] [--kinds turn,site]  → src/fitted.js
  * fits what the signs of the non-deferred packs need that is not fitted yet (compile.js fitJobs:
  * a palm and fingers turned, a part of the hand touching, a directed path, tap, nod or twist),
- * and drops the rows no sign needs any more.
+ * and drops the rows no sign needs any more. Each job takes one core, and a language converted
+ * from SignWriting brings hundreds of paths, so they can be fitted side by side:
+ *   node scripts/fit_arm.mjs jobs --kinds turn,site       the turns and sites first, which paths start from
+ *   node scripts/fit_arm.mjs jobs --kinds path --shard 0/6 & … --shard 5/6 &
+ *                                                         each every sixth path, into data/runs/fits/shard-{i}.json
+ *   node scripts/fit_arm.mjs jobs --merge                 the shards into src/fitted.js
+ * A shard resumes where it stopped.
  */
 import { chromium } from "playwright";
-import { readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { fitJobs } from "../src/compile.js";
@@ -526,6 +532,10 @@ try {
     const flag = (name) => rest.indexOf(`--${name}`);
     const ids = flag("ids") >= 0 ? new Set(rest[flag("ids") + 1].split(",")) : null;
     const refit = flag("refit") >= 0;
+    const kinds = flag("kinds") >= 0 ? rest[flag("kinds") + 1].split(",") : ["turn", "site", "path"];
+    const [shard, shards] = flag("shard") >= 0 ? rest[flag("shard") + 1].split("/").map(Number) : [0, 1];
+    const merge = flag("merge") >= 0;
+    const fitsDir = join(root, "data/runs/fits");
     const jobs = new Map();
     const needed = new Set();
     const packs = JSON.parse(readFileSync(join(root, "data/signs/index.json"), "utf8")).packs.filter((p) => !p.defer);
@@ -543,11 +553,31 @@ try {
     const rows = Object.fromEntries(kept.map(([k, rs]) => [k, rs.map((r) => `{ UpperArm: ${fmt(r.UpperArm)}, LowerArm: ${fmt(r.LowerArm)}, Hand: ${fmt(r.Hand)} }`)]));
     const notes = Object.fromEntries(kept.map(([k]) => [k, FITTED_NOTES[k]]));
     if (kept.length < Object.keys(FITTED).length) console.log(`${Object.keys(FITTED).length - kept.length} rows no sign needs, dropped`);
+    if (merge) {
+      let merged = 0;
+      for (const file of existsSync(fitsDir) ? readdirSync(fitsDir).filter((f) => /^shard-\d+\.json$/.test(f)) : []) {
+        for (const [key, fit] of Object.entries(JSON.parse(readFileSync(join(fitsDir, file), "utf8")))) {
+          if (!needed.has(key)) continue;
+          rows[key] = fit.rows;
+          notes[key] = fit.note;
+          merged++;
+        }
+      }
+      writeFitted(rows, notes);
+      console.log(`${merged} rows from the shards in ${fitsDir}; ${[...jobs.keys()].filter((k) => !(k in rows)).length} still to fit`);
+    }
+    // A shard writes its own file, so that shards side by side do not write over each other
+    const shardFile = shards > 1 ? join(fitsDir, `shard-${shard}.json`) : null;
+    const mine = shardFile && existsSync(shardFile) ? JSON.parse(readFileSync(shardFile, "utf8")) : {};
+    if (shardFile) mkdirSync(fitsDir, { recursive: true });
     // Turns first, then sites (held turned), then paths (from the turned, touching hand): the
     // page reloads between them so the compiler it runs holds the hands the new rows say.
     let fitted = 0;
-    for (const kind of ["turn", "site", "path"]) {
-      const todo = [...jobs.values()].filter((j) => j.kind === kind);
+    for (const kind of merge ? [] : kinds) {
+      const todo = [...jobs.values()]
+        .filter((j) => j.kind === kind)
+        .sort((a, b) => a.key.localeCompare(b.key))
+        .filter((j, i) => i % shards === shard && !(j.key in mine));
       if (!todo.length) continue;
       if (fitted) await openPlayer();
       console.log(`${todo.length} ${kind}s to fit`);
@@ -559,7 +589,12 @@ try {
         rows[job.key] = rs.map((x) => row(x.d));
         notes[job.key] = `${job.kind === "path" ? "worst point" : "point"} ${worst.errCm} cm off, palm ${palm}°, fingers ${fing}°`;
         console.log(`  ${job.key}: ${notes[job.key]}`);
-        writeFitted(rows, notes);
+        if (shardFile) {
+          mine[job.key] = { rows: rows[job.key], note: notes[job.key] };
+          writeFileSync(shardFile, JSON.stringify(mine));
+        } else {
+          writeFitted(rows, notes);
+        }
         fitted++;
       }
     }
