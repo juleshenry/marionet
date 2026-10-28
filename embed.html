@@ -122,11 +122,88 @@
       #file {
         display: none;
       }
+
+      /* The viewer's own avatars, over the stage, to rename or remove. */
+      #mine {
+        position: absolute;
+        inset: 6px 6px 52px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        padding: 10px;
+        overflow: auto;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: var(--panel);
+        backdrop-filter: blur(8px);
+      }
+
+      #mine[hidden] {
+        display: none;
+      }
+
+      #mine .head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+      }
+
+      #mine .note {
+        margin: 0;
+        color: var(--muted);
+      }
+
+      #mine-list {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      #mine-list li {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 6px;
+      }
+
+      #mine-list input {
+        flex: 1 1 8em;
+        min-width: 0;
+        min-height: 32px;
+        padding: 0 8px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: transparent;
+        color: var(--text);
+        font: inherit;
+      }
+
+      #mine-list small {
+        flex-basis: 100%;
+        color: var(--muted);
+      }
+
+      #mine-add {
+        align-self: flex-start;
+      }
     </style>
   </head>
   <body>
     <div id="stage" aria-label="3D signing avatar"></div>
     <p id="status">Loading avatar…</p>
+    <section id="mine" hidden aria-label="Your avatars">
+      <div class="head">
+        <strong>Your avatars</strong>
+        <button id="mine-done" type="button">Done</button>
+      </div>
+      <p class="note">Kept in this browser only. They are never uploaded.</p>
+      <ul id="mine-list"></ul>
+      <button id="mine-add" type="button">Add a .vrm…</button>
+    </section>
     <div id="bar">
       <select id="avatar" aria-label="Avatar"></select>
       <div class="speeds" role="group" aria-label="Speed">
