@@ -14,6 +14,7 @@ import { sampleUrl } from "./vrm.js";
  * The framing page (same origin only) can then post
  *   { type: "marionet:play", clip: <url or MarionetClip> }
  *   { type: "marionet:avatar", avatar: <roster id or .vrm url> }
+ *   { type: "marionet:make" }      (open the avatar maker, starting from the avatar on stage)
  * and hears { type: "marionet:ready" } once an avatar is on stage, and
  * { type: "marionet:error", message } when something fails.
  *
@@ -590,6 +591,7 @@ window.addEventListener("message", (event) => {
   const message = event.data || {};
   if (message.type === "marionet:play" && message.clip) playClip(message.clip);
   else if (message.type === "marionet:avatar" && message.avatar) useAvatar(message.avatar);
+  else if (message.type === "marionet:make" && state.kit && !state.making) openMaker();
 });
 
 // The camera's framing depends on the stage's shape; keep it when the frame is resized.
