@@ -263,6 +263,10 @@ function skinGrid(baked, rest, centers) {
      */
     nearest(p, P, cellsOut = 1) {
       let best = null;
+      // Triangles as near as the nearest, to a millimetre: where it is an edge or a corner they
+      // share, one wound the other way would make the point inside on one frame and outside
+      // on the next, as the cells are visited in another order. Inside only if all say so.
+      const TIE = 1e-3;
       for (const g of groups) {
         inv.copy(P.q[g]).invert();
         local.copy(p).sub(P.p[g]).applyQuaternion(inv).add(rest[g]);
@@ -279,14 +283,19 @@ function skinGrid(baked, rest, centers) {
                 seen.add(t);
                 triangles[t].tri.closestPointToPoint(local, c);
                 const d = c.distanceTo(local);
-                if (best && d >= best.d) continue;
+                if (best && d > best.d + TIE) continue;
                 const n = triangles[t].n.clone();
                 // inside: behind the triangle as wound, and on the middle's side of it too
                 // (either alone is fooled by ears, collars and layered clothes)
                 const behind = n.dot(local.clone().sub(c)) < 0;
                 if (n.dot(c.clone().sub(centers[g])) < 0) n.negate();
                 const inside = behind && n.dot(local.clone().sub(c)) < 0;
-                best = { d, n: n.applyQuaternion(P.q[g]), g, inside };
+                if (best && d >= best.d) {
+                  best.inside &&= inside;
+                  continue;
+                }
+                const tied = best && d > best.d - TIE ? best.inside : true;
+                best = { d, n: n.applyQuaternion(P.q[g]), g, inside: inside && tied };
               }
             }
       }
@@ -506,6 +515,77 @@ function reach(skel, P, side, eul, goal) {
 
 const isRest = (eul, side) => ARM.every((b) => (eul[side + b] ?? ZERO).every((x) => Math.abs(x) < 1e-3));
 
+// The arm's half-thickness, in metres: a VRoid forearm is about 6 cm across, its wrist 5.
+const FOREARM = 0.03;
+const WRIST = 0.025;
+// The skin's "inside" is a guess (collars and layered clothes fold back on themselves), and a
+// point this far off the nearest skin that seems inside is not: an arm is not that deep in a body.
+const DEEPEST = 0.06;
+const MIN_STRETCH = 0.06; // seconds between keyframes too few to fit another between them
+const SWING_STEP = 0.1; // radians the elbow is turned out by at a time,
+const MAX_SWING = 1.0; // and at most
+const RAMP = 0.2; // seconds the elbow takes to turn out before the frame that needs it, and back
+
+/**
+ * How far the forearm keeps from the body, less its thickness (negative: through it), for clip
+ * eulers `eul`, and the skin it comes nearest. The hips are left out: an arm at rest hangs
+ * against them, as it should.
+ */
+function forearmGap(skel, skin, eul, side) {
+  const P = posed(skel, eul);
+  const elbow = P.p[`${side}LowerArm`];
+  const wrist = P.p[`${side}Hand`];
+  let worst = null;
+  for (const u of [0, 0.25, 0.5, 0.75, 1]) {
+    const hit = skin.nearest(elbow.clone().lerp(wrist, u), P, 4);
+    if (!hit || hit.g === "hips" || (hit.inside && hit.d > DEEPEST)) continue;
+    const gap = (hit.inside ? -hit.d : hit.d) - (u === 1 ? WRIST : FOREARM);
+    if (!worst || gap < worst.gap) worst = { gap, n: hit.n };
+  }
+  return worst ?? { gap: Infinity, n: null };
+}
+
+/**
+ * The upper arm's eulers with the elbow turned about the line from the shoulder to the wrist by
+ * `angle`: the wrist stays where it is, and the forearm and hand turn with the upper arm.
+ */
+function swung(skel, P, side, upperEul, angle) {
+  const upper = `${side}UpperArm`;
+  const axis = P.p[`${side}Hand`].clone().sub(P.p[upper]).normalize();
+  const turn = new Q().setFromAxisAngle(axis, angle);
+  const parent = P.q[skel.bones[upper].parent];
+  const local = parent.clone().invert().multiply(turn).multiply(P.q[upper]);
+  const r = restOf(upper);
+  const e = nearestEuler(local, upperEul.map((x, i) => x + r[i]));
+  return { upper: e.map((x, i) => x - r[i]), turn };
+}
+
+/**
+ * Keep the forearm out of the body, the hand where it was put: a hand flat on the heart had the
+ * forearm across the chest, through it (Libras AMOR, 3 cm into a woman signer's chest). The
+ * elbow is turned out, the least that clears the body, the way it turned at the keyframe before
+ * first (`prefer`, so it does not flip from one side to the other); where no turn clears it,
+ * the turn that comes nearest.
+ */
+function clearForearm(skel, skin, side, eul, r, prefer) {
+  const upper = `${side}UpperArm`;
+  const lower = `${side}LowerArm`;
+  const at = { ...eul, [upper]: r.upper, [lower]: r.lower };
+  const before = forearmGap(skel, skin, at, side);
+  if (before.gap >= 0) return { ...r, turn: null, angle: 0, gap: before.gap, sign: prefer };
+  const P = posed(skel, at);
+  let best = { gap: before.gap, upper: r.upper, turn: null, angle: 0, sign: prefer };
+  for (let angle = SWING_STEP; angle <= MAX_SWING + 1e-9; angle += SWING_STEP) {
+    for (const sign of [prefer, -prefer]) {
+      const s = swung(skel, P, side, r.upper, sign * angle);
+      const { gap } = forearmGap(skel, skin, { ...at, [upper]: s.upper }, side);
+      if (gap > best.gap) best = { gap, upper: s.upper, turn: s.turn, angle: sign * angle, sign };
+      if (gap >= 0) return { ...r, upper: s.upper, turn: s.turn, angle: sign * angle, gap, sign };
+    }
+  }
+  return { ...r, ...best };
+}
+
 function mapper(ref, mine) {
   const names = new Set(mine.anchors.map((a) => a.name));
   const pairs = ref.anchors.filter((a) => names.has(a.name)).map((a) => [a, mine.anchors.find((b) => b.name === a.name)]);
@@ -548,12 +628,13 @@ function retargetClip(clip, ref, mine, body) {
     const other = side === "right" ? "left" : "right";
 
     // Per frame: the sample's pose and anchors, and this avatar's.
-    const live = frames.map((eul) => {
+    const liveAt = (eul) => {
       if (isRest(eul, side)) return null;
       const S = posed(ref, eul);
       const M = posed(mine, eul);
       return { eul, S, M, A: anchorsAt(body.ref, ref, S), B: anchorsAt(body.mine, mine, M), pts: handPoints(ref, S, side) };
-    });
+    };
+    const live = frames.map(liveAt);
     if (!live.some(Boolean)) continue;
 
     // The hand point that comes closest to the body or the other hand, over the clip.
@@ -568,15 +649,13 @@ function retargetClip(clip, ref, mine, body) {
     }
     const point = best.d <= NEAR ? best.name : "palm";
 
-    const tracks = { UpperArm: [], LowerArm: [], Hand: [] };
+    const PARTS = ["UpperArm", "LowerArm", "Hand"];
     const report = { point, missCm: 0, liftCm: 0 };
-    live.forEach((f, i) => {
-      const t = times[i];
-      const eul = frames[i];
-      if (!f) {
-        for (const b of Object.keys(tracks)) tracks[b].push([t, [...(eul[side + b] ?? ZERO)]]);
-        return;
-      }
+    // One frame fitted to this avatar: where the arm puts the hand (`r`), and how far the elbow
+    // must turn out to keep the forearm out of the body there (`angle`, signed; the way it turned
+    // at the frame before, `swing`, is tried first).
+    const fit = (eul, f, swing) => {
+      if (!f) return { eul, f, angle: 0, swing };
       const goal = body.map(f.pts[point], f.A, f.B);
       const mp = handPoints(mine, f.M, side);
       const wrist = f.M.p[`${side}Hand`];
@@ -602,15 +681,88 @@ function retargetClip(clip, ref, mine, body) {
         }
         report.liftCm = Math.max(report.liftCm, +(lift.length() * 100).toFixed(1));
       }
-      const r = reach(mine, f.M, side, eul, wristGoal);
+      let r = reach(mine, f.M, side, eul, wristGoal);
       report.missCm = Math.max(report.missCm, +(r.miss * 100).toFixed(1));
+      let angle = 0;
+      if (body.skin) {
+        let c = clearForearm(mine, body.skin, side, eul, r, swing);
+        // No turn of the elbow clears the body: the hand comes off it by what is left.
+        if (c.gap < 0) {
+          const { n } = forearmGap(mine, body.skin, { ...eul, [`${side}UpperArm`]: c.upper, [`${side}LowerArm`]: c.lower }, side);
+          if (n) {
+            wristGoal.addScaledVector(n, -c.gap);
+            report.liftCm = Math.max(report.liftCm, +(-c.gap * 100).toFixed(1));
+            r = reach(mine, f.M, side, eul, wristGoal);
+            c = clearForearm(mine, body.skin, side, eul, r, c.sign);
+          }
+        }
+        swing = c.sign;
+        angle = c.angle;
+        report.clearCm = Math.min(report.clearCm ?? Infinity, +(c.gap * 100).toFixed(1));
+      }
+      return { eul, f, r, angle, swing };
+    };
+    // A fitted frame's eulers [UpperArm, LowerArm, Hand], with the elbow turned out by `angle`.
+    const pose = ({ eul, f, r }, angle) => {
+      if (!f) return PARTS.map((b) => [...(eul[side + b] ?? ZERO)]);
+      let { upper, qLower } = r;
+      if (angle) {
+        const P = posed(mine, { ...eul, [`${side}UpperArm`]: r.upper, [`${side}LowerArm`]: r.lower });
+        const s = swung(mine, P, side, r.upper, angle);
+        upper = s.upper;
+        qLower = s.turn.clone().multiply(r.qLower);
+      }
       // The hand keeps its facing: undo what the new arm turned.
-      const qHand = r.qLower.clone().invert().multiply(f.M.q[`${side}Hand`]);
-      tracks.UpperArm.push([t, r.upper]);
-      tracks.LowerArm.push([t, r.lower]);
-      tracks.Hand.push([t, nearestEuler(qHand, eul[`${side}Hand`] ?? ZERO)]);
+      const qHand = qLower.clone().invert().multiply(f.M.q[`${side}Hand`]);
+      return [upper, r.lower, nearestEuler(qHand, eul[`${side}Hand`] ?? ZERO)];
+    };
+    let swing = side === "right" ? 1 : -1;
+    const keys = times.map((t, i) => {
+      const k = fit(frames[i], live[i], swing);
+      swing = k.swing;
+      return { t, ...k };
     });
-    for (const [b, keys] of Object.entries(tracks)) out.bones[side + b] = keys;
+    // Turned out at one keyframe and not at the next, the elbow would flick out and back: it
+    // turns out over RAMP before the frame that needs it, and back over RAMP after.
+    const turnArms = () => {
+      for (const k of keys) {
+        let angle = 0;
+        for (const j of keys) {
+          const a = Math.abs(j.angle) * Math.max(0, 1 - Math.abs(k.t - j.t) / RAMP);
+          if (a > Math.abs(angle)) angle = Math.sign(j.angle) * a;
+        }
+        k.arm = pose(k, angle);
+      }
+    };
+    turnArms();
+    // Between keyframes the arm moves along a straight line of eulers, which can still take the
+    // forearm through the body where both ends are clear of it (rising from rest past a woman
+    // signer's chest). Where a stretch does at a quarter, half or three quarters of the way, a
+    // keyframe is fitted at the worst of them, and the stretches it makes are looked at again.
+    if (body.skin) {
+      for (let round = 0; round < 3; round++) {
+        let added = false;
+        for (let i = keys.length - 2; i >= 0; i--) {
+          const [a, b] = [keys[i], keys[i + 1]];
+          if (b.t - a.t < MIN_STRETCH) continue;
+          let worst = null;
+          for (const u of [0.25, 0.5, 0.75]) {
+            const t = a.t + (b.t - a.t) * u;
+            const between = Object.fromEntries(all.map((n) => [n, track(clip.bones[n], t)]));
+            PARTS.forEach((part, k) => (between[side + part] = a.arm[k].map((x, j) => x + (b.arm[k][j] - x) * u)));
+            const { gap } = forearmGap(mine, body.skin, between, side);
+            if (gap < 0 && (!worst || gap < worst.gap)) worst = { t, gap };
+          }
+          if (!worst) continue;
+          const eul = Object.fromEntries(all.map((n) => [n, track(clip.bones[n], worst.t)]));
+          keys.splice(i + 1, 0, { t: worst.t, ...fit(eul, liveAt(eul), a.swing) });
+          added = true;
+        }
+        if (!added) break;
+        turnArms();
+      }
+    }
+    PARTS.forEach((part, k) => (out.bones[side + part] = keys.map(({ t, arm }) => [t, arm[k]])));
     out.retargeted[side] = report;
   }
   return out;
