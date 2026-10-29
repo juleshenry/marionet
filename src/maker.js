@@ -16,7 +16,8 @@ const hairCalls = new WeakMap(); // per avatar, the latest wearHair()
 
 export async function loadKit(url) {
   const base = new URL(url, location.href);
-  const response = await fetch(base);
+  // asked again each time (the parts it names are immutable, it is not)
+  const response = await fetch(base, { cache: "no-cache" });
   if (!response.ok) throw new Error(`${response.status} ${base}`);
   return { ...(await response.json()), base };
 }
@@ -153,12 +154,21 @@ export async function dress(vrm, kit, recipe) {
   return worn;
 }
 
+/** The parts of a list the maker offers: not the hidden ones. */
+export const offered = (list) => list.filter((item) => !item.hidden);
+
+/** The recipe with its body as the maker offers it (a hidden body as the one it is like). */
+export function offeredRecipe(kit, recipe) {
+  const body = kit.bodies.find((b) => b.id === recipe.body);
+  return body?.hidden && body.like ? { ...recipe, body: body.like } : recipe;
+}
+
 /** A recipe with one of each part drawn at random. */
 export function randomRecipe(kit) {
   const any = (list) => list[Math.floor(Math.random() * list.length)];
   const hex = (list) => any(list).hex;
   return {
-    body: any(kit.bodies).id,
+    body: any(offered(kit.bodies)).id,
     hair: any(kit.hair).id,
     skin: hex(kit.skin),
     hairColor: hex(kit.hairColor),

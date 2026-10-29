@@ -1,5 +1,5 @@
 import { validateClip } from "./ir.js";
-import { bodyUrl, dress, loadKit, randomRecipe, recipeOf, tint, wearHair } from "./maker.js";
+import { bodyUrl, dress, loadKit, offered, offeredRecipe, randomRecipe, recipeOf, tint, wearHair } from "./maker.js";
 import { createPlayer } from "./player.js";
 import { sampleUrl } from "./vrm.js";
 
@@ -375,7 +375,7 @@ function buildMaker() {
     strip.id = `mk-${key}`;
     strip.setAttribute("role", "tabpanel");
     strip.setAttribute("aria-labelledby", tab.id);
-    for (const item of state.kit[list]) {
+    for (const item of offered(state.kit[list])) {
       const button = document.createElement("button");
       button.type = "button";
       button.dataset.part = key;
@@ -474,11 +474,12 @@ function openMaker(start, editing = null) {
   closeMine();
   const own = ownOf(state.choice);
   start ??= own?.recipe ?? state.kit.signers?.[state.choice];
-  state.making = { recipe: recipeOf(state.kit, start), editing, vrm: null, body: null, hair: null };
+  state.making = { recipe: offeredRecipe(state.kit, recipeOf(state.kit, start)), editing, vrm: null, body: null, hair: null };
   const made = state.own.filter((a) => a.recipe).length;
   $("mk-name").value = editing?.name ?? (made ? `My avatar ${made + 1}` : "My avatar");
   $("avatar").disabled = true;
   $("maker").hidden = false;
+  $("gear").setAttribute("aria-expanded", "true");
   markPicked();
   showPart(PARTS[0][0]);
   draft();
@@ -488,6 +489,7 @@ function openMaker(start, editing = null) {
 function closeMaker() {
   state.making = null;
   $("maker").hidden = true;
+  $("gear").setAttribute("aria-expanded", "false");
   $("avatar").disabled = false;
   $("avatar").focus();
 }
@@ -567,6 +569,7 @@ $("file").addEventListener("change", (event) => {
 $("mine-add").addEventListener("click", () => $("file").click());
 $("mine-done").addEventListener("click", closeMine);
 $("mine").addEventListener("keydown", (event) => event.key === "Escape" && closeMine());
+$("gear").addEventListener("click", () => (state.making ? cancelMaker() : openMaker()));
 $("mk-save").addEventListener("click", saveMaker);
 $("mk-cancel").addEventListener("click", cancelMaker);
 $("mk-random").addEventListener("click", () => {
@@ -616,6 +619,7 @@ async function boot() {
     listOwn().catch(() => []),
   ]);
   if (state.kit) buildMaker();
+  $("gear").hidden = !state.kit;
   // A choice the viewer made before wins over the avatar the page suggests.
   let saved = remember.get(CHOICE_KEY);
   if (saved === LEGACY) remember.set(CHOICE_KEY, (saved = OWN + LEGACY));

@@ -1,30 +1,36 @@
 {
   "schema": "marionet.avatarkit/v1",
-  "note": "The avatar maker: bodies and hairstyles built by build_kit.py into {body}.vrm and {body}/{hair}.vrm beside this file, in neutral colours that src/maker.js sets. Saved avatars name these ids: add to them, never rename. signers gives each signer of roster.json as a recipe, for the maker to start from.",
+  "note": "The avatar maker: bodies and hairstyles built by build_kit.py into {body}.vrm and {body}/{hair}.vrm beside this file, in neutral colours that src/maker.js sets. Saved avatars name these ids: add to them, never rename or remove. A body marked hidden still loads (a saved avatar, a signer) and is not offered; the maker shows it as the body it is `like`: the three women's bodies and the two men's look alike once grown up. signers gives each signer of roster.json as a recipe, for the maker to start from.",
   "neutral": {
     "skin": 0.7,
     "tint": 0.25
   },
   "bodies": [
     {
-      "id": "Sendagaya_Shino",
-      "label": "Woman 1"
-    },
-    {
-      "id": "AvatarSample_D",
-      "label": "Woman 2"
-    },
-    {
       "id": "Base_Female",
-      "label": "Woman 3"
+      "label": "Woman"
     },
     {
       "id": "Base_Male",
-      "label": "Man 1"
+      "label": "Man"
+    },
+    {
+      "id": "Sendagaya_Shino",
+      "label": "Woman",
+      "hidden": true,
+      "like": "Base_Female"
+    },
+    {
+      "id": "AvatarSample_D",
+      "label": "Woman",
+      "hidden": true,
+      "like": "Base_Female"
     },
     {
       "id": "Sakurada_Fumiriya",
-      "label": "Man 2"
+      "label": "Man",
+      "hidden": true,
+      "like": "Base_Male"
     }
   ],
   "hair": [
