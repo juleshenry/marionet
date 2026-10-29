@@ -1,0 +1,411 @@
+{
+  "schema": "marionet.avatarkit/v1",
+  "note": "The avatar maker: bodies and hairstyles built by build_kit.py into {body}.vrm and {body}/{hair}.vrm beside this file, in neutral colours that src/maker.js sets. Saved avatars name these ids: add to them, never rename. signers gives each signer of roster.json as a recipe, for the maker to start from.",
+  "neutral": {
+    "skin": 0.7,
+    "tint": 0.25
+  },
+  "bodies": [
+    {
+      "id": "Sendagaya_Shino",
+      "label": "Woman 1"
+    },
+    {
+      "id": "AvatarSample_D",
+      "label": "Woman 2"
+    },
+    {
+      "id": "Base_Female",
+      "label": "Woman 3"
+    },
+    {
+      "id": "Base_Male",
+      "label": "Man 1"
+    },
+    {
+      "id": "Sakurada_Fumiriya",
+      "label": "Man 2"
+    }
+  ],
+  "hair": [
+    {
+      "id": "short",
+      "label": "Short"
+    },
+    {
+      "id": "fumiriya",
+      "label": "Tousled"
+    },
+    {
+      "id": "crop",
+      "label": "Close crop",
+      "none": true
+    },
+    {
+      "id": "hightop",
+      "label": "High-top"
+    },
+    {
+      "id": "afro",
+      "label": "Afro"
+    },
+    {
+      "id": "puffs",
+      "label": "Puffs"
+    },
+    {
+      "id": "shibu-back",
+      "label": "Bob"
+    },
+    {
+      "id": "shibu",
+      "label": "Bob, bangs"
+    },
+    {
+      "id": "victoria-back",
+      "label": "Ponytail"
+    },
+    {
+      "id": "victoria",
+      "label": "Ponytail, bangs"
+    },
+    {
+      "id": "shino-back",
+      "label": "Long"
+    },
+    {
+      "id": "shino",
+      "label": "Long, bangs"
+    }
+  ],
+  "skin": [
+    {
+      "hex": "#ecc8ae",
+      "name": "Tone 1"
+    },
+    {
+      "hex": "#dfb79c",
+      "name": "Tone 2"
+    },
+    {
+      "hex": "#d4a888",
+      "name": "Tone 3"
+    },
+    {
+      "hex": "#c79877",
+      "name": "Tone 4"
+    },
+    {
+      "hex": "#b98866",
+      "name": "Tone 5"
+    },
+    {
+      "hex": "#a97556",
+      "name": "Tone 6"
+    },
+    {
+      "hex": "#8e5d3f",
+      "name": "Tone 7"
+    },
+    {
+      "hex": "#7a4a33",
+      "name": "Tone 8"
+    },
+    {
+      "hex": "#5a3424",
+      "name": "Tone 9"
+    },
+    {
+      "hex": "#4b2c20",
+      "name": "Tone 10"
+    }
+  ],
+  "hairColor": [
+    {
+      "hex": "#16110f",
+      "name": "Black"
+    },
+    {
+      "hex": "#2a1c15",
+      "name": "Dark brown"
+    },
+    {
+      "hex": "#4a3020",
+      "name": "Brown"
+    },
+    {
+      "hex": "#6b4a2e",
+      "name": "Chestnut"
+    },
+    {
+      "hex": "#7a3b22",
+      "name": "Auburn"
+    },
+    {
+      "hex": "#9a7048",
+      "name": "Light brown"
+    },
+    {
+      "hex": "#c49a5e",
+      "name": "Dark blond"
+    },
+    {
+      "hex": "#dcc08a",
+      "name": "Blond"
+    },
+    {
+      "hex": "#e8dcc0",
+      "name": "Platinum"
+    },
+    {
+      "hex": "#8a8a8e",
+      "name": "Grey"
+    },
+    {
+      "hex": "#e4e2de",
+      "name": "White"
+    },
+    {
+      "hex": "#2f4f8f",
+      "name": "Blue"
+    },
+    {
+      "hex": "#5a3a7a",
+      "name": "Purple"
+    },
+    {
+      "hex": "#c0607f",
+      "name": "Pink"
+    },
+    {
+      "hex": "#2f6a4f",
+      "name": "Green"
+    }
+  ],
+  "eyes": [
+    {
+      "hex": "#2e1c12",
+      "name": "Dark brown"
+    },
+    {
+      "hex": "#4b2a1a",
+      "name": "Brown"
+    },
+    {
+      "hex": "#6a4526",
+      "name": "Light brown"
+    },
+    {
+      "hex": "#8a6020",
+      "name": "Amber"
+    },
+    {
+      "hex": "#4f7a4a",
+      "name": "Green"
+    },
+    {
+      "hex": "#6f7f8c",
+      "name": "Grey"
+    },
+    {
+      "hex": "#3f6fa8",
+      "name": "Blue"
+    }
+  ],
+  "top": [
+    {
+      "hex": "#24324a",
+      "name": "Navy"
+    },
+    {
+      "hex": "#2b2b30",
+      "name": "Charcoal"
+    },
+    {
+      "hex": "#18181c",
+      "name": "Black"
+    },
+    {
+      "hex": "#263a2f",
+      "name": "Forest"
+    },
+    {
+      "hex": "#1e3b4a",
+      "name": "Teal"
+    },
+    {
+      "hex": "#3a2440",
+      "name": "Plum"
+    },
+    {
+      "hex": "#4a1f2a",
+      "name": "Burgundy"
+    },
+    {
+      "hex": "#8a3f24",
+      "name": "Rust"
+    },
+    {
+      "hex": "#c8962e",
+      "name": "Mustard"
+    },
+    {
+      "hex": "#c7b48a",
+      "name": "Sand"
+    },
+    {
+      "hex": "#a8bfa3",
+      "name": "Sage"
+    },
+    {
+      "hex": "#8fb3c9",
+      "name": "Sky"
+    },
+    {
+      "hex": "#a99ac4",
+      "name": "Lilac"
+    },
+    {
+      "hex": "#e8e4dc",
+      "name": "White"
+    }
+  ],
+  "default": {
+    "body": "Base_Female",
+    "hair": "shino-back",
+    "skin": "#b98866",
+    "hairColor": "#2a1c15",
+    "eyes": "#4b2a1a",
+    "top": "#24324a"
+  },
+  "signers": {
+    "w-east-asian": {
+      "body": "Sendagaya_Shino",
+      "hair": "shino",
+      "skin": "#d4a888",
+      "hairColor": "#1b1720",
+      "eyes": "#4b2a1a",
+      "top": "#24324a"
+    },
+    "m-east-asian": {
+      "body": "Base_Male",
+      "hair": "short",
+      "skin": "#d1a585",
+      "hairColor": "#17141b",
+      "eyes": "#4b2a1a",
+      "top": "#2b2b30"
+    },
+    "w-south-asian": {
+      "body": "AvatarSample_D",
+      "hair": "victoria",
+      "skin": "#9c6a4a",
+      "hairColor": "#17110e",
+      "eyes": "#4b2a1a",
+      "top": "#8fb3c9"
+    },
+    "m-south-asian": {
+      "body": "Sakurada_Fumiriya",
+      "hair": "fumiriya",
+      "skin": "#8e5d3f",
+      "hairColor": "#15100d",
+      "eyes": "#4b2a1a",
+      "top": "#a8bfa3"
+    },
+    "w-southeast-asian": {
+      "body": "Sendagaya_Shino",
+      "hair": "shibu-back",
+      "skin": "#b98866",
+      "hairColor": "#2a1c15",
+      "eyes": "#5a3420",
+      "top": "#263a2f"
+    },
+    "m-southeast-asian": {
+      "body": "Base_Male",
+      "hair": "fumiriya",
+      "skin": "#b07d5b",
+      "hairColor": "#1d1612",
+      "eyes": "#5a3420",
+      "top": "#1f3550"
+    },
+    "w-black-1": {
+      "body": "Base_Female",
+      "hair": "afro",
+      "skin": "#5a3424",
+      "hairColor": "#16110f",
+      "eyes": "#4b2a1a",
+      "top": "#9fb8d6"
+    },
+    "m-black-1": {
+      "body": "Base_Male",
+      "hair": "hightop",
+      "skin": "#4b2c20",
+      "hairColor": "#120f0e",
+      "eyes": "#4b2a1a",
+      "top": "#b4c7dc"
+    },
+    "w-black-2": {
+      "body": "Base_Female",
+      "hair": "puffs",
+      "skin": "#7a4a33",
+      "hairColor": "#1c1410",
+      "eyes": "#5a3420",
+      "top": "#c7b48a"
+    },
+    "m-black-2": {
+      "body": "Base_Male",
+      "hair": "crop",
+      "skin": "#6c412d",
+      "hairColor": "#0f0c0b",
+      "eyes": "#4b2a1a",
+      "top": "#d2c39d"
+    },
+    "w-latino": {
+      "body": "AvatarSample_D",
+      "hair": "shibu",
+      "skin": "#be8d6b",
+      "hairColor": "#2e1d15",
+      "eyes": "#6a4526",
+      "top": "#3a2440"
+    },
+    "m-latino": {
+      "body": "Sakurada_Fumiriya",
+      "hair": "short",
+      "skin": "#b6845f",
+      "hairColor": "#2a1c15",
+      "eyes": "#6a4526",
+      "top": "#2a2f45"
+    },
+    "w-white": {
+      "body": "Base_Female",
+      "hair": "victoria-back",
+      "skin": "#dfb79c",
+      "hairColor": "#8a5a35",
+      "eyes": "#3f6fa8",
+      "top": "#1f2a44"
+    },
+    "m-white": {
+      "body": "Sakurada_Fumiriya",
+      "hair": "fumiriya",
+      "skin": "#e2b597",
+      "hairColor": "#6b4a2e",
+      "eyes": "#6f7f8c",
+      "top": "#2a3a2c"
+    },
+    "w-indigenous": {
+      "body": "Base_Female",
+      "hair": "shino-back",
+      "skin": "#a97556",
+      "hairColor": "#120e0d",
+      "eyes": "#4b2a1a",
+      "top": "#1e3b4a"
+    },
+    "m-indigenous": {
+      "body": "Sakurada_Fumiriya",
+      "hair": "shino-back",
+      "skin": "#9e6b4b",
+      "hairColor": "#110d0c",
+      "eyes": "#4b2a1a",
+      "top": "#4a1f2a"
+    }
+  }
+}

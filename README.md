@@ -110,6 +110,7 @@ ASL-LEX says which handshape, where and roughly how a sign moves, but not which 
 
 - `node scripts/render_videos.mjs` draws each sign on the signer `src/assign.js` deals it, into `dist/signs/`. It redraws a sign when its clip, its signer, or any module the player loads changes (`scripts/page_modules.mjs` finds them).
 - `node scripts/build_embed.mjs` builds the player, with three.js and three-vrm, into `dist/embed/`. glottosphere's `scripts/build/sync_marionet.sh` copies it in.
+- The embed keeps a viewer's own avatars in their browser: .vrm files they add, and avatars they make from the signers' parts (body, hairstyle, skin, hair, eyes and top). `blender -b --python avatars/build_kit.py` builds those parts into `avatars/kit/`: each body without hair, and each hairstyle fitted to it, in neutral colours that `src/maker.js` tints; `avatars/kit.json` names them. A made avatar is kept as a recipe of ids and colours. The player looks for the kit at `kit/kit.json` beside the roster it is given.
 
 When the player changes, and not only a clip, redraw the videos and sync the embed, then publish them together with glottosphere's `scripts/pipeline/publish_signs.py`. Otherwise the video and the 3D tab show the hand in different places.
 

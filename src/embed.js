@@ -1,4 +1,5 @@
 import { validateClip } from "./ir.js";
+import { bodyUrl, dress, loadKit, randomRecipe, recipeOf, tint, wearHair } from "./maker.js";
 import { createPlayer } from "./player.js";
 import { sampleUrl } from "./vrm.js";
 
@@ -6,6 +7,8 @@ import { sampleUrl } from "./vrm.js";
  * The player as a page another page frames:
  *
  *   embed.html?clip=<clip.json>&avatars=<roster.json>&avatar=<roster id or .vrm url>&speed=0.5
+ *             &kit=<kit.json>            (the avatar maker's parts, src/maker.js; by default
+ *                                         kit/kit.json beside the roster, when it is there)
  *             &theme=light&bg=f4ecd8      (match a light page whatever the viewer's system prefers)
  *
  * The framing page (same origin only) can then post
@@ -14,8 +17,8 @@ import { sampleUrl } from "./vrm.js";
  * and hears { type: "marionet:ready" } once an avatar is on stage, and
  * { type: "marionet:error", message } when something fails.
  *
- * A viewer's own .vrm files are read in the browser and kept in its IndexedDB, as many as they
- * add, under names they can change; they are never uploaded.
+ * A viewer's own avatars, the .vrm files they add and the ones they make (recipes of the kit's
+ * parts), are kept in the browser's IndexedDB under names they can change; nothing is uploaded.
  */
 
 const $ = (id) => document.getElementById(id);
@@ -25,6 +28,7 @@ if (/^[0-9a-f]{6}$/i.test(params.get("bg") || "")) document.documentElement.styl
 const OWN = "own:"; // before the id of one of the viewer's own avatars, in the menu and the saved choice
 const UPLOAD = "upload"; // the "add your own" entry of the menu
 const MANAGE = "manage"; // the "rename or remove" entry of the menu
+const MAKE = "make"; // the "make your own" entry of the menu
 const CHOICE_KEY = "marionet.avatar";
 const NAME_LENGTH = 40;
 
@@ -46,8 +50,9 @@ const remember = {
   },
 };
 
-// One IndexedDB store of the viewer's own avatars: id → { name, file: Blob, added }. Listing them
-// reads no file: a stored Blob is read when its avatar goes on stage. `act` gives a request, or
+// One IndexedDB store of the viewer's own avatars: id → { name, file: Blob, added } for a file they
+// added, { name, recipe, added } for one they made. Listing them reads no file: a stored Blob is
+// read when its avatar goes on stage. `act` gives a request, or
 // several, whose results the promise resolves to.
 function ownStore(mode, act) {
   return new Promise((resolve, reject) => {
@@ -85,8 +90,9 @@ async function listOwn() {
       record = { name: "Your avatar", file: new Blob([record]), added: 0 };
       await ownStore("readwrite", (store) => store.put(record, id)).catch(() => null);
     }
-    if (!(record?.file instanceof Blob)) continue;
-    own.push({ id: String(id), name: record.name || "Your avatar", file: record.file, added: record.added || 0, kept: true });
+    const kept = { id: String(id), name: record?.name || "Your avatar", added: record?.added || 0, kept: true };
+    if (record?.file instanceof Blob) own.push({ ...kept, file: record.file });
+    else if (record?.recipe) own.push({ ...kept, recipe: record.recipe });
   }
   return own.sort((a, b) => a.added - b.added);
 }
@@ -94,7 +100,8 @@ async function listOwn() {
 /** Keep an avatar in the browser; false when it would not (storage full or blocked). */
 async function keepOwn(avatar) {
   try {
-    await ownStore("readwrite", (store) => store.put({ name: avatar.name, file: avatar.file, added: avatar.added }, avatar.id));
+    const { name, file, recipe, added } = avatar;
+    await ownStore("readwrite", (store) => store.put(recipe ? { name, recipe, added } : { name, file, added }, avatar.id));
   } catch (err) {
     console.error(err);
     return false;
@@ -146,11 +153,13 @@ async function loadRoster(url) {
 
 // No floor: the frame sits on the host page's own background.
 const player = createPlayer($("stage"), { floor: false });
-const state = { roster: [], choice: null, own: [], clip: null, ready: false };
+const state = { roster: [], kit: null, choice: null, own: [], vrm: null, making: null, clip: null, ready: false };
 let playToken = 0;
 
 const isOwn = (choice) => typeof choice === "string" && choice.startsWith(OWN);
 const ownOf = (choice) => (isOwn(choice) ? state.own.find((a) => a.id === choice.slice(OWN.length)) : null);
+// a made avatar needs the kit to be shown
+const showable = (avatar) => Boolean(avatar && (avatar.file || state.kit));
 
 function renderMenu() {
   const menu = $("avatar");
@@ -167,32 +176,64 @@ function renderMenu() {
   if (state.choice && !isOwn(state.choice) && ![...menu.options].some((o) => o.value === state.choice)) add(state.choice, "This avatar");
   const yours = document.createElement("optgroup");
   yours.label = "Yours";
-  for (const a of state.own) add(OWN + a.id, a.name, yours);
+  for (const a of state.own.filter(showable)) add(OWN + a.id, a.name, yours);
+  if (state.kit) add(MAKE, "Make your own…", yours);
   add(UPLOAD, "Add your own .vrm…", yours);
   if (state.own.length) add(MANAGE, "Rename or remove…", yours);
   menu.append(yours);
   menu.value = state.choice ?? menu.options[0].value;
 }
 
-/** What a choice loads: one of the viewer's own files, a roster avatar, or a .vrm URL. */
+/**
+ * What a choice loads, { source, prepare }: one of the viewer's own files, a body of the kit and
+ * how to dress it, a roster avatar, or a .vrm URL. Null when it cannot be loaded.
+ */
 async function sourceOf(choice) {
-  if (isOwn(choice)) return ownOf(choice)?.file.arrayBuffer().catch(() => null) ?? null;
+  if (isOwn(choice)) {
+    const avatar = ownOf(choice);
+    if (avatar?.recipe) {
+      if (!state.kit) return null;
+      const recipe = recipeOf(state.kit, avatar.recipe);
+      return { source: bodyUrl(state.kit, recipe), prepare: (vrm) => dress(vrm, state.kit, recipe) };
+    }
+    const buffer = await avatar?.file.arrayBuffer().catch(() => null);
+    return buffer ? { source: buffer } : null;
+  }
   const listed = state.roster.find((a) => a.id === choice);
-  if (listed) return listed.url;
-  if (choice && /[/.]/.test(choice)) return new URL(choice, location.href).href;
-  return state.roster[0]?.url ?? sampleUrl();
+  if (listed) return { source: listed.url };
+  if (choice && /[/.]/.test(choice)) return { source: new URL(choice, location.href).href };
+  return { source: state.roster[0]?.url ?? sampleUrl() };
+}
+
+// Put a VRM on stage, dressed by `prepare` (the maker's hair and colours) before it shows. Done here
+// rather than in player.js: a change there redraws every sign's video (scripts/render_videos.mjs).
+let staging = 0;
+async function stage(source, prepare) {
+  const token = ++staging;
+  const vrm = await player.loadAvatar(source);
+  if (!vrm || !prepare) return vrm;
+  vrm.scene.visible = false;
+  try {
+    await prepare(vrm);
+  } finally {
+    vrm.scene.visible = true;
+  }
+  return token === staging ? vrm : null;
 }
 
 /** Put an avatar on stage: true once it is there, false when it fails, null when a later choice won. */
 async function useAvatar(choice) {
-  const source = await sourceOf(choice);
-  if (!source) return useAvatar(null);
+  const found = await sourceOf(choice);
+  if (!found) return useAvatar(null);
+  const { source, prepare } = found;
   setStatus("Loading avatar…");
   try {
-    if (!(await player.loadAvatar(source))) return null;
+    const vrm = await stage(source, prepare);
+    if (!vrm) return null;
+    state.vrm = vrm;
   } catch (err) {
     if (choice === remember.get(CHOICE_KEY)) remember.set(CHOICE_KEY, null);
-    fail(isOwn(choice) ? "That file is not a VRM avatar this player can read." : "Could not load this avatar.", err);
+    fail(ownOf(choice)?.file ? "That file is not a VRM avatar this player can read." : "Could not load this avatar.", err);
     return false;
   }
   const listed = state.roster.find((a) => a.id === choice);
@@ -272,7 +313,18 @@ function renderMine() {
       clearTimeout(asking);
       removeOwn(avatar);
     });
-    row.append(name, remove);
+    row.append(name);
+    if (avatar.recipe && state.kit) {
+      const edit = document.createElement("button");
+      edit.type = "button";
+      edit.textContent = "Edit";
+      edit.addEventListener("click", () => {
+        closeMine();
+        openMaker(avatar.recipe, avatar);
+      });
+      row.append(edit);
+    }
+    row.append(remove);
     if (!avatar.kept) {
       const note = document.createElement("small");
       note.textContent = "this visit only";
@@ -291,6 +343,179 @@ function openMine() {
 function closeMine() {
   $("mine").hidden = true;
   $("avatar").focus();
+}
+
+// The maker: a body, a hairstyle and colours from the kit, shown on stage as they are picked.
+const PARTS = [
+  ["body", "Body", "bodies"],
+  ["hair", "Hair", "hair"],
+  ["hairColor", "Hair colour", "hairColor"],
+  ["skin", "Skin", "skin"],
+  ["eyes", "Eyes", "eyes"],
+  ["top", "Top", "top"],
+];
+
+function buildMaker() {
+  const tabs = $("mk-tabs");
+  const parts = $("mk-parts");
+  tabs.innerHTML = "";
+  parts.innerHTML = "";
+  for (const [key, label, list] of PARTS) {
+    const tab = document.createElement("button");
+    tab.type = "button";
+    tab.id = `mk-tab-${key}`;
+    tab.textContent = label;
+    tab.setAttribute("role", "tab");
+    tab.setAttribute("aria-controls", `mk-${key}`);
+    tab.addEventListener("click", () => showPart(key));
+    tabs.append(tab);
+    const strip = document.createElement("div");
+    strip.className = "strip";
+    strip.id = `mk-${key}`;
+    strip.setAttribute("role", "tabpanel");
+    strip.setAttribute("aria-labelledby", tab.id);
+    for (const item of state.kit[list]) {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.dataset.part = key;
+      if (item.hex) {
+        button.className = "swatch";
+        button.dataset.value = item.hex;
+        button.style.background = item.hex;
+        button.title = item.name;
+        button.setAttribute("aria-label", item.name);
+      } else {
+        button.className = "chip";
+        button.dataset.value = item.id;
+        button.textContent = item.label;
+      }
+      button.addEventListener("click", () => pick(key, button.dataset.value));
+      strip.append(button);
+    }
+    parts.append(strip);
+  }
+  showPart(PARTS[0][0]);
+}
+
+/** Show one part's choices, scrolled to the one picked. */
+function showPart(key) {
+  for (const [part] of PARTS) {
+    $(`mk-tab-${part}`).setAttribute("aria-selected", String(part === key));
+    $(`mk-${part}`).hidden = part !== key;
+  }
+  const strip = $(`mk-${key}`);
+  const picked = strip.querySelector("[aria-pressed=true]");
+  if (picked) strip.scrollLeft = picked.offsetLeft - strip.offsetLeft - (strip.clientWidth - picked.offsetWidth) / 2;
+}
+
+function markPicked() {
+  const recipe = state.making?.recipe;
+  for (const button of $("mk-parts").querySelectorAll("button")) {
+    button.setAttribute("aria-pressed", String(recipe?.[button.dataset.part] === button.dataset.value));
+  }
+}
+
+/** Bring the stage up to the draft: a new body loads, a new hairstyle is put on, colours are set. */
+async function showDraft() {
+  const making = state.making;
+  const recipe = { ...making.recipe };
+  if (!making.vrm || making.body !== recipe.body) {
+    setStatus("Loading avatar…");
+    let vrm;
+    try {
+      vrm = await stage(bodyUrl(state.kit, recipe), (v) => dress(v, state.kit, recipe));
+    } catch (err) {
+      fail("Could not load this avatar.", err);
+      return;
+    }
+    if (!vrm) return;
+    Object.assign(making, { vrm, body: recipe.body, hair: recipe.hair });
+    state.vrm = vrm;
+    player.frameSigningSpace();
+    setStatus("");
+  } else if (making.hair !== recipe.hair) {
+    try {
+      if (await wearHair(making.vrm, state.kit, recipe)) making.hair = recipe.hair;
+    } catch (err) {
+      fail("Could not load this hairstyle.", err);
+      return;
+    }
+  }
+  tint(making.vrm, state.kit, making.recipe);
+}
+
+// One showDraft() at a time; picks made meanwhile are shown when it is done.
+let drafting = null;
+let redraft = false;
+function draft() {
+  if (drafting) {
+    redraft = true;
+    return drafting;
+  }
+  drafting = (async () => {
+    do {
+      redraft = false;
+      if (state.making) await showDraft();
+    } while (redraft);
+  })().finally(() => (drafting = null));
+  return drafting;
+}
+
+function pick(key, value) {
+  if (!state.making) return;
+  state.making.recipe[key] = value;
+  markPicked();
+  draft();
+}
+
+/** Open the maker on a recipe: the avatar on stage when it is a signer or one made, else the kit's. */
+function openMaker(start, editing = null) {
+  closeMine();
+  const own = ownOf(state.choice);
+  start ??= own?.recipe ?? state.kit.signers?.[state.choice];
+  state.making = { recipe: recipeOf(state.kit, start), editing, vrm: null, body: null, hair: null };
+  const made = state.own.filter((a) => a.recipe).length;
+  $("mk-name").value = editing?.name ?? (made ? `My avatar ${made + 1}` : "My avatar");
+  $("avatar").disabled = true;
+  $("maker").hidden = false;
+  markPicked();
+  showPart(PARTS[0][0]);
+  draft();
+  $(`mk-tab-${PARTS[0][0]}`).focus();
+}
+
+function closeMaker() {
+  state.making = null;
+  $("maker").hidden = true;
+  $("avatar").disabled = false;
+  $("avatar").focus();
+}
+
+async function cancelMaker() {
+  closeMaker();
+  await drafting;
+  await useAvatar(state.choice ?? params.get("avatar"));
+}
+
+async function saveMaker() {
+  const making = state.making;
+  $("mk-save").disabled = true;
+  await drafting;
+  $("mk-save").disabled = false;
+  if (state.making !== making) return;
+  const name = $("mk-name").value.trim().slice(0, NAME_LENGTH) || "My avatar";
+  let avatar = making.editing;
+  if (avatar) Object.assign(avatar, { name, recipe: { ...making.recipe } });
+  else {
+    avatar = { id: newId(), name, recipe: { ...making.recipe }, added: Date.now(), kept: false };
+    state.own.push(avatar);
+  }
+  closeMaker();
+  state.choice = OWN + avatar.id;
+  remember.set(CHOICE_KEY, state.choice);
+  renderMenu();
+  if (!(await keepOwn(avatar))) setStatus("This browser would not keep it: the avatar lasts for this visit.", { for: 6000 });
+  renderMine();
 }
 
 async function playClip(source) {
@@ -321,10 +546,11 @@ function setSpeed(speed) {
 
 $("avatar").addEventListener("change", (event) => {
   const choice = event.target.value;
-  if (choice === UPLOAD || choice === MANAGE) {
+  if (choice === UPLOAD || choice === MANAGE || choice === MAKE) {
     event.target.value = state.choice ?? event.target.options[0].value;
     if (choice === UPLOAD) $("file").click();
-    else openMine();
+    else if (choice === MANAGE) openMine();
+    else openMaker();
     return;
   }
   remember.set(CHOICE_KEY, choice);
@@ -340,6 +566,16 @@ $("file").addEventListener("change", (event) => {
 $("mine-add").addEventListener("click", () => $("file").click());
 $("mine-done").addEventListener("click", closeMine);
 $("mine").addEventListener("keydown", (event) => event.key === "Escape" && closeMine());
+$("mk-save").addEventListener("click", saveMaker);
+$("mk-cancel").addEventListener("click", cancelMaker);
+$("mk-random").addEventListener("click", () => {
+  if (!state.making) return;
+  state.making.recipe = randomRecipe(state.kit);
+  markPicked();
+  draft();
+});
+$("mk-name").addEventListener("keydown", (event) => event.key === "Enter" && saveMaker());
+$("maker").addEventListener("keydown", (event) => event.key === "Escape" && cancelMaker());
 
 for (const button of document.querySelectorAll("[data-speed]")) {
   button.addEventListener("click", () => setSpeed(Number(button.dataset.speed)));
@@ -359,6 +595,12 @@ window.addEventListener("message", (event) => {
 // The camera's framing depends on the stage's shape; keep it when the frame is resized.
 new ResizeObserver(() => player.frameSigningSpace()).observe($("stage"));
 
+function kitUrl() {
+  if (params.get("kit")) return params.get("kit");
+  const roster = params.get("avatars");
+  return roster ? new URL("kit/kit.json", new URL(roster, location.href)).href : null;
+}
+
 async function boot() {
   if (!player.ok) {
     fail("The 3D avatar needs WebGL, which this browser does not offer.");
@@ -366,12 +608,16 @@ async function boot() {
   }
   const speed = Number(params.get("speed"));
   if ([0.25, 0.5, 1].includes(speed)) setSpeed(speed);
-  state.roster = await loadRoster(params.get("avatars"));
-  state.own = await listOwn().catch(() => []);
+  [state.roster, state.kit, state.own] = await Promise.all([
+    loadRoster(params.get("avatars")),
+    kitUrl() ? loadKit(kitUrl()).catch(() => null) : null,
+    listOwn().catch(() => []),
+  ]);
+  if (state.kit) buildMaker();
   // A choice the viewer made before wins over the avatar the page suggests.
   let saved = remember.get(CHOICE_KEY);
   if (saved === LEGACY) remember.set(CHOICE_KEY, (saved = OWN + LEGACY));
-  const first = ownOf(saved) || (saved && state.roster.some((a) => a.id === saved)) ? saved : params.get("avatar");
+  const first = showable(ownOf(saved)) || (saved && state.roster.some((a) => a.id === saved)) ? saved : params.get("avatar");
   renderMenu();
   const clip = params.get("clip");
   await Promise.all([useAvatar(first), clip ? playClip(clip) : null]);

@@ -19,5 +19,6 @@ data/runs/*
 *.avi
 dist/
 avatars/out/
+avatars/kit/
 avatars/bases/
 data/sources/glosses/
